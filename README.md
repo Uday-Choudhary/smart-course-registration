@@ -1,77 +1,98 @@
-## Smart Course Registration System
+# 🎓 Smart Course Registration System
 
-A dynamic, university-level course registration platform for students, faculty, and admins to manage courses efficiently and stress-free! Go beyond basic enrollment with smart suggestions, automatic conflict detection, and insightful analytics.
+A dynamic, university-level course registration platform for students, faculty, and admins to manage courses efficiently and stress-free. Go beyond basic enrollment with **smart suggestions**, **automatic conflict detection**, and **insightful analytics**.
 
-## Key Features
+---
 
-- **Multi-Section Courses**  
-  Register for different sections (like CS101-A, CS101-B), each with its own schedule, instructor, and classroom.
+## ✨ Key Features
 
-- **Seat Limits & Waitlists**  
-  Sections have defined seat limits. When full, students automatically join a waitlist. Background automation promotes waitlisted students as soon as seats open up.
+### 📚 Multi-Section Courses  
+Register for different sections (e.g., `CS101-A`, `CS101-B`), each with its **own schedule, instructor, and classroom**.
 
-- **Timetable Clash Detection**  
-  No more accidental clashes! The system uses hard (same time) and soft (back-to-back) rules to prevent overlapping schedules.
+### 🎟️ Seat Limits & Waitlists  
+- Each section has a defined seat cap  
+- When full, students are **auto-added to the waitlist**  
+- Background automation promotes waitlisted students when seats free up
 
-- **Smart Suggestions**  
-  If a clash occurs, the system instantly proposes alternate sections or generates a custom, optimized schedule based on preferences like avoiding early mornings and long gaps.
+### ⏱️ Timetable Clash Detection  
+Avoid accidental overlaps with:
+- ✅ Hard clash detection (same time conflicts)  
+- ✅ Soft clash handling (back-to-back or buffer issues)
 
-- **Add/Drop Functionality**  
-  Add or drop courses with live updates to seats and waitlists, all within defined registration windows.
+### 🧠 Smart Suggestions  
+If a class clashes, the system:
+- Suggests alternate sections  
+- Or builds an optimized schedule based on preferences  
+  _(e.g., no early mornings, minimal gaps)_
 
-- **Notifications**  
-  Get instant alerts for waitlist movement, reminders before deadlines, and every key registration update.
+### 🔄 Add/Drop Functionality  
+Add or drop courses within deadlines — updates reflect instantly across:
+- ✅ Seats  
+- ✅ Waitlists  
+- ✅ Timetables
 
-- **Analytics & Reports**  
-  Track seat usage, monitor waitlist trends, view registration statistics, and easily export data for admin and faculty use.
+### 🔔 Notifications  
+Instant alerts for:
+- ✅ Waitlist movement  
+- ✅ Deadline reminders  
+- ✅ Registration updates
 
+### 📊 Analytics & Reports  
+Insights for admins and faculty on:
+- Seat usage  
+- Waitlist trends  
+- Registration stats  
+Exportable reports included ✅
 
-# Provides insights into:
-    Seat usage
-    Waitlist trends
+---
 
-Registration statistics
-Admins and faculty can export data for further use.
+## 👤 User Roles & Capabilities
 
-# User Roles 
+| Feature / Action       | 🧑‍🎓 Student | 👨‍🏫 Faculty | 🛡️ Admin |
+|------------------------|:-----------:|:------------:|:--------:|
+| Register / Drop        | ✅          | ❌           | ❌       |
+| Auto Waitlist Join     | ✅          | ❌           | ❌       |
+| Timetable View         | ✅          | ❌           | ❌       |
+| Notifications          | ✅          | ❌           | ❌       |
+| Manage Rosters         | ❌          | ✅           | ❌       |
+| Export Lists           | ❌          | ✅           | ✅       |
+| Approve Seat Increases | ❌          | ✅           | ❌       |
+| Create Course Catalog  | ❌          | ❌           | ✅       |
+| Assign Instructors     | ❌          | ❌           | ✅       |
+| Set Deadlines          | ❌          | ❌           | ✅       |
+| View Analytics         | ❌          | ❌           | ✅       |
 
-| Role      | Student            | Faculty              | Admin                |
-|-----------|--------------------|----------------------|----------------------|
-| Register  | ✅ Register/drop   |                      |                      |
-| Waitlist  | ✅ Auto-join       |                      |                      |
-| Timetable | ✅ View            |                      |                      |
-| Alerts    | ✅ Notifications   |                      |                      |
-| Rosters   |                   | ✅ Manage rosters     |                      |
-| Export    |                   | ✅ Export lists       | ✅ Export reports     |
-| Approve   |                   | ✅ Seat increases     |                      |
-| Catalog   |                   |                      | ✅ Create catalogs    |
-| Assign    |                   |                      | ✅ Assign instructors |
-| Deadlines |                   |                      | ✅ Set deadlines      |
-| Analytics |                   |                      | ✅ Reports            |
+---
 
-# Core Workflow
+## 🔄 Core Workflow
 
-## Login
-- Log in using your assigned role: **Student**, **Faculty**, or **Admin**
+### 🔐 1. Login  
+Choose your role at login:
+- Student  
+- Faculty  
+- Admin  
 
-## Student Flow
-    - Select academic term (e.g., Fall 2025)
-    - Browse or search the course catalog
-    - Register directly, or auto-join the waitlist if a section is full
-    - View your color-coded weekly timetable
-    - Receive friendly alerts and reminders
+---
 
-## Faculty Flow
-    - View assigned teaching sections
-    - Manage rosters and student lists
-    - Export data for attendance and grading
-    - Approve seat increases (if allowed)
+### 🧑‍🎓 Student Flow
+- Select academic term (e.g., **Fall 2025**)  
+- Browse or search the course catalog  
+- Register instantly or auto-join waitlist  
+- View your **color-coded weekly timetable**  
+- Get alerts and reminders in real-time  
 
-## Admin Flow
-    - Create and configure courses and sections
-    - Assign faculty and classroom locations
-    - Set academic deadlines
-    - Access analytics, registration trends, and detailed reports
+---
 
+### 👨‍🏫 Faculty Flow
+- View assigned teaching sections  
+- Manage student rosters  
+- Export lists for grading or attendance  
+- Approve seat increases (if applicable)
 
+---
 
+### 🛡️ Admin Flow
+- Create and configure courses and sections  
+- Assign instructors and classroom locations  
+- Set academic deadlines  
+- Monitor analytics, trends, and export reports  
