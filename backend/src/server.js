@@ -18,5 +18,10 @@ app.get("/roles", async (req, res) => {
   res.json(roles);
 });
 
+//auth routes and end points 
+const authRoutes = require("./routes/auth.route");
+app.use("/api/auth", authRoutes); 
+
+
 const PORT=process.env.PORT || 4000;
-app.listen(PORT,()=>console.log(`backend running on port ${PORT}`))
+app.listen(PORT,()=>console.log(`backend running on port ${PORT}`)) 
