@@ -13,8 +13,8 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
-        {/* Default route */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* Default route shows blank landing */}
+        <Route path="/" element={<Home />} />
         
         {/* Auth Routes */}
         <Route path="/login" element={<LoginPage />} />
@@ -24,8 +24,8 @@ function App() {
         <Route path="/student" element={<ProtectedRoute allowedRoles={["Student"]}><StudentDashboard /></ProtectedRoute>} />
         <Route path="/faculty" element={<ProtectedRoute allowedRoles={["Faculty","Admin"]}><FacultyDashboard /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute allowedRoles={["Admin"]}><AdminDashboard /></ProtectedRoute>} />
-        {/* Catch-all 404 */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* Catch-all 404 -> landing */}
+        <Route path="*" element={<Navigate to="/" replace />} />
         
       </Routes>
     </BrowserRouter>
