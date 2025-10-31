@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+// src/App.jsx
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
@@ -11,24 +12,57 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+function AppContent() {
+  const location = useLocation();
+
+  const hideNavbarPaths = ["/login", "/register"];
+  const shouldHideNavbar = hideNavbarPaths.includes(location.pathname);
+
+  return (
+    <>
+      {!shouldHideNavbar && <Navbar />}
+
       <Routes>
-        {/* Default route shows blank landing */}
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
-        
-        {/* Auth Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Dashboard Routes */}
-        <Route path="/student" element={<ProtectedRoute allowedRoles={["Student"]}><StudentDashboard /></ProtectedRoute>} />
-        <Route path="/faculty" element={<ProtectedRoute allowedRoles={["Faculty","Admin"]}><FacultyDashboard /></ProtectedRoute>} />
-        <Route path="/admin" element={<ProtectedRoute allowedRoles={["Admin"]}><AdminDashboard /></ProtectedRoute>} />
-        {/* Catch-all 404 -> landing */}
+        {/* Protected Dashboard Routes */}
+        <Route
+          path="/student"
+          element={
+            <ProtectedRoute allowedRoles={["Student"]}>
+              <StudentDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/faculty"
+          element={
+            <ProtectedRoute allowedRoles={["Faculty", "Admin"]}>
+              <FacultyDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Catch-all Route */}
         <Route path="*" element={<Navigate to="/" replace />} />
-        
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 
