@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const RegisterPage = () => {
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const { register } = useAuth();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("Student");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    try {
+      setLoading(true);
+      await register({ name, email, password, role });
+      navigate("/login");
+    } catch (err) {
+      setError(err?.data?.error || err.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -35,6 +56,8 @@ const RegisterPage = () => {
                 name="name"
                 placeholder="What should we call you?"
                 className="w-full p-2 mb-0 bg-slate-900 border border-slate-700 rounded-md focus:outline-none focus:ring-1 transition focus:ring-indigo-500 focus:border-indigo-500"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
 
@@ -51,6 +74,8 @@ const RegisterPage = () => {
                 name="email"
                 placeholder="Email"
                 className="w-full p-2 mb-0 bg-slate-900 border border-slate-700 rounded-md focus:outline-none focus:ring-1 transition focus:ring-indigo-500 focus:border-indigo-500"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -67,6 +92,8 @@ const RegisterPage = () => {
                 name="password"
                 placeholder="Password"
                 className="w-full p-2 mb-0 bg-slate-900 border border-slate-700 rounded-md focus:outline-none focus:ring-1 transition focus:ring-indigo-500 focus:border-indigo-500"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
@@ -79,14 +106,12 @@ const RegisterPage = () => {
                 id="role"
                 name="role"
                 className="w-full p-2 bg-slate-900 border border-slate-700 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                defaultValue=""
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
               >
-                <option value="" disabled>
-                  Select Role
-                </option>
-                <option value="student">Student</option>
-                <option value="faculty">Faculty</option>
-                <option value="admin">Admin</option>
+                <option value="Student">Student</option>
+                <option value="Faculty">Faculty</option>
+                <option value="Admin">Admin</option>
               </select>
             </div>
 
@@ -99,13 +124,19 @@ const RegisterPage = () => {
               </a>
             </div>
 
+            {error && <p className="text-red-400 text-sm">{error}</p>}
+
             <button
               type="submit"
-              className="w-full mt-2 px-4 py-2.5 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full mt-2 px-4 py-2.5 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-60"
+              disabled={loading}
             >
-              Sign Up
+              {loading ? 'Creating account...' : 'Sign Up'}
             </button>
           </form>
+          <p className="text-center mt-4 text-sm">
+            Already have an account? <Link to="/login" className="underline">Login</Link>
+          </p>
         </div>
       </div>
     </>

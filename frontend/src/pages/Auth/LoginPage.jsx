@@ -1,9 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { apiClient } from "../../api/client";
 
 const LoginPage = () => {
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: perform login
+    setError("");
+    try {
+      setLoading(true);
+      await login(email, password);
+      // Optional: fetch profile to route by role
+      const profile = await apiClient.get("/api/profile", { auth: true });
+      const role = profile?.user?.role;
+      if (role === "Admin") navigate("/admin");
+      else if (role === "Faculty") navigate("/faculty");
+      else navigate("/student");
+    } catch (err) {
+      setError(err?.data?.error || err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -36,6 +60,8 @@ const LoginPage = () => {
                 name="email"
                 placeholder="Email"
                 className="w-full p-2 mb-0 bg-slate-900 border border-slate-700 rounded-md focus:outline-none focus:ring-1 transition focus:ring-indigo-500 focus:border-indigo-500"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -52,28 +78,12 @@ const LoginPage = () => {
                 name="password"
                 placeholder="Password"
                 className="w-full p-2 mb-0 bg-slate-900 border border-slate-700 rounded-md focus:outline-none focus:ring-1 transition focus:ring-indigo-500 focus:border-indigo-500"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
-            {/* Role Dropdown */}
-            <div>
-              <label htmlFor="role" className="block mb-1 font-medium text-slate-300">
-                Role
-              </label>
-              <select
-                id="role"
-                name="role"
-                className="w-full p-2 bg-slate-900 border border-slate-700 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                defaultValue=""
-              >
-                <option value="" disabled>
-                  Select Role
-                </option>
-                <option value="student">Student</option>
-                <option value="faculty">Faculty</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
+            {error && <p className="text-red-400 text-sm">{error}</p>}
 
             <div className="text-right">
               <a
@@ -88,9 +98,12 @@ const LoginPage = () => {
               type="submit"
               className="w-full mt-2 px-4 py-2.5 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
-              Sign in
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
+          <p className="text-center mt-4 text-sm">
+            Don&apos;t have an account? <Link to="/register" className="underline">Sign up</Link>
+          </p>
         </div>
       </div>
     </>
