@@ -9,13 +9,14 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const bootstrap = async () => {
+    const loadUser = async () => {
       if (!token) return
       try {
         setLoading(true)
         const profile = await apiClient.get('/api/profile', { auth: true })
         setUser(profile.user)
-      } catch (e) {
+      } catch (err) {
+        // token probably invalid
         localStorage.removeItem('token')
         setToken('')
         setUser(null)
@@ -23,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(false)
       }
     }
-    bootstrap()
+    loadUser()
   }, [token])
 
   const login = async (email, password) => {
@@ -46,11 +47,25 @@ export const AuthProvider = ({ children }) => {
     setUser(null)
   }
 
-  const value = useMemo(() => ({ token, user, loading, login, register, logout, isAuthenticated: !!token }), [token, user, loading])
+  const value = useMemo(() => ({
+    token,
+    user,
+    loading,
+    login,
+    register,
+    logout,
+    isAuthenticated: !!token
+  }), [token, user, loading])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider')
+  }
+  return context
+}
 
 

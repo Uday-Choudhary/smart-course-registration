@@ -12,8 +12,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="z-50 flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur bg-white/100  text-slate-800 text-sm">
-      {/* Logo */}
+    <nav className="z-50 flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur bg-white/100 text-slate-800 text-sm">
       <Link
         to="/"
         className="flex items-center gap-2 font-semibold text-xl text-indigo-700"
@@ -21,7 +20,6 @@ const Navbar = () => {
         🎓 SmartReg
       </Link>
 
-      {/* Nav Links (visible to all) */}
       <div className="hidden md:flex items-center gap-8">
         <Link to="/" className="hover:text-indigo-600 transition">
           Home
@@ -40,7 +38,6 @@ const Navbar = () => {
         </a>
       </div>
 
-      {/* Auth Section */}
       <div className="hidden md:flex items-center gap-3">
         {!isAuthenticated ? (
           <>
@@ -73,7 +70,6 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Mobile Menu Icon */}
       <button id="open-menu" className="md:hidden active:scale-90 transition">
         <svg
           xmlns="http://www.w3.org/2000/svg"

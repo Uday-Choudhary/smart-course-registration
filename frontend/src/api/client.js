@@ -5,7 +5,9 @@ async function request(path, { method = "GET", body, headers = {}, auth = false 
 
   if (auth) {
     const token = localStorage.getItem("token");
-    if (token) requestHeaders.Authorization = `Bearer ${token}`;
+    if (token) {
+      requestHeaders.Authorization = `Bearer ${token}`;
+    }
   }
 
   const res = await fetch(`${API_BASE_URL}${path}`, {
@@ -20,7 +22,7 @@ async function request(path, { method = "GET", body, headers = {}, auth = false 
 
   if (!res.ok) {
     const message = (isJson && data && (data.error || data.message)) || res.statusText;
-    const error = new Error(message || "Request failed");
+    const error = new Error(message || "request failed");
     error.status = res.status;
     error.data = data;
     throw error;
