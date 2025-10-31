@@ -40,10 +40,10 @@ const LoginPage = () => {
                 }
             `}</style>
 
-      {/* Outer container centers the card vertically & horizontally */}
+  
       <div className="min-h-screen flex items-center justify-center bg-black p-6">
         <div className="w-full max-w-md rounded-xl px-6 py-8 border border-slate-700 bg-slate-800 text-white text-sm">
-          <h2 className="text-2xl font-semibold text-center">Sign In</h2>
+          <h2 className="text-2xl font-semibold text-center">LogIn</h2>
           <p className="text-slate-300 mt-1 text-center">Login to your account</p>
 
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
