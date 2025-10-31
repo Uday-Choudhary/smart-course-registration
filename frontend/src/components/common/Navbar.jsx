@@ -1,33 +1,96 @@
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Navbar = () => {
-  const { isAuthenticated, user, logout } = useAuth()
-  const navigate = useNavigate()
+  const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout()
-    navigate('/login')
-  }
+    logout();
+    navigate("/login");
+  };
 
   return (
-    <nav className="w-full border-b border-slate-200 px-4 py-3 flex items-center justify-between">
-      <Link to="/" className="font-semibold">Smart Course Reg</Link>
-      {!isAuthenticated && (
-        <div className="flex items-center gap-3">
-          <Link to="/login" className="underline">Login</Link>
-          <Link to="/register" className="underline">Sign up</Link>
-        </div>
-      )}
-      {isAuthenticated && (
-        <div className="flex items-center gap-3">
-          <span className="text-sm">{user?.name} ({user?.role})</span>
-          <button onClick={handleLogout} className="underline">Logout</button>
-        </div>
-      )}
-    </nav>
-  )
-}
+    <nav className="z-50 flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur bg-white/100  text-slate-800 text-sm">
+      {/* Logo */}
+      <Link
+        to="/"
+        className="flex items-center gap-2 font-semibold text-xl text-indigo-700"
+      >
+        🎓 SmartReg
+      </Link>
 
-export default Navbar
+      {/* Nav Links (visible to all) */}
+      <div className="hidden md:flex items-center gap-8">
+        <Link to="/" className="hover:text-indigo-600 transition">
+          Home
+        </Link>
+        <a href="#features" className="hover:text-indigo-600 transition">
+          Features
+        </a>
+        <a href="#workflow" className="hover:text-indigo-600 transition">
+          Workflow
+        </a>
+        <a href="#roles" className="hover:text-indigo-600 transition">
+          Roles
+        </a>
+        <a href="#contact" className="hover:text-indigo-600 transition">
+          Contact
+        </a>
+      </div>
+
+      {/* Auth Section */}
+      <div className="hidden md:flex items-center gap-3">
+        {!isAuthenticated ? (
+          <>
+            <Link
+              to="/login"
+              className="px-5 py-2 border border-indigo-600 rounded-md text-indigo-600 hover:bg-indigo-600 hover:text-white transition"
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition"
+            >
+              Register
+            </Link>
+          </>
+        ) : (
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-slate-700">
+              {user?.name}{" "}
+              <span className="text-indigo-600 font-medium">({user?.role})</span>
+            </span>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition"
+            >
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile Menu Icon */}
+      <button id="open-menu" className="md:hidden active:scale-90 transition">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M4 5h16M4 12h16M4 19h16" />
+        </svg>
+      </button>
+    </nav>
+  );
+};
+
+export default Navbar;
