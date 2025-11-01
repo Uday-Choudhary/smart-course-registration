@@ -12,6 +12,7 @@ const prisma = new PrismaClient();
 exports.registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
+    console.log(name , email)
 
     if (!email || !name || !password || !role) {
       return res.status(400).json({ error: "all fields are required" });
