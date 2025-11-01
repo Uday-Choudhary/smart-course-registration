@@ -12,10 +12,11 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json())
 
-app.get('/', (req, res) => {
-    res.status(200).json({ mes: "api is running" })
-})
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "API is running" });
+});
 
+// test route to check roles
 app.get("/roles", async (req, res) => {
   const roles = await prisma.role.findMany();
   res.json(roles);
