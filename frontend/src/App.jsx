@@ -1,4 +1,3 @@
-// src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import LoginPage from "./pages/Auth/LoginPage";
@@ -16,7 +15,6 @@ function App() {
     </BrowserRouter>
   );
 }
-
 function AppContent() {
   const location = useLocation();
 
@@ -26,14 +24,10 @@ function AppContent() {
   return (
     <>
       {!shouldHideNavbar && <Navbar />}
-
       <Routes>
-        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
-        {/* Protected Dashboard Routes */}
         <Route
           path="/student"
           element={
@@ -59,7 +53,6 @@ function AppContent() {
           }
         />
 
-        {/* Catch-all Route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>

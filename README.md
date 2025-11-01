@@ -2,6 +2,8 @@
 
 A dynamic, university-level course registration platform for students, faculty, and admins to manage courses efficiently and stress-free. Go beyond basic enrollment with **smart suggestions**, **automatic conflict detection**, and **insightful analytics**.
 
+[Know more](https://docs.google.com/document/d/14p7p9ZV3i9mIPea06WJN8XP5e1r97_yrZRzkQVDNIRo/edit?tab=t.0)
+
 ## Local Setup (after forking)
 
 1. Clone your fork

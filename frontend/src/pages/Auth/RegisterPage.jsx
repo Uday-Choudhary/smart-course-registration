@@ -20,7 +20,7 @@ const RegisterPage = () => {
       await register({ name, email, password, role });
       navigate("/login");
     } catch (err) {
-      setError(err?.data?.error || err.message || "Registration failed");
+      setError(err?.data?.error || err.message || "registration failed");
     } finally {
       setLoading(false);
     }
@@ -36,7 +36,6 @@ const RegisterPage = () => {
                 }
             `}</style>
 
-      {/* Outer container centers the card vertically & horizontally */}
       <div className="min-h-screen flex items-center justify-center bg-black p-6">
         <div className="w-full max-w-md rounded-xl px-6 py-8 border border-slate-700 bg-slate-800 text-white text-sm">
           <h2 className="text-2xl font-semibold text-center">Sign Up</h2>
@@ -115,14 +114,6 @@ const RegisterPage = () => {
               </select>
             </div>
 
-            <div className="text-right">
-              <a
-                href="#"
-                className="font-medium text-indigo-400 hover:text-indigo-300 text-sm"
-              >
-                Forgot password?
-              </a>
-            </div>
 
             {error && <p className="text-red-400 text-sm">{error}</p>}
 

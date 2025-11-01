@@ -74,8 +74,7 @@ const Home = () => {
           Smart Course Registration System
         </h1>
         <p className="text-center text-base text-slate-700 max-w-lg mt-2">
-          A dynamic platform for students, faculty, and admins to manage courses effortlessly — with smart suggestions, conflict detection, and insightful analytics.
-
+          A platform for students, faculty, and admins to manage courses — with smart suggestions, conflict detection, and analytics.
         </p>
 
         <div className="flex items-center gap-4 mt-8">

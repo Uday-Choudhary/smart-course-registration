@@ -10,21 +10,24 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     try {
       setLoading(true);
       await login(email, password);
-      // Optional: fetch profile to route by role
       const profile = await apiClient.get("/api/profile", { auth: true });
       const role = profile?.user?.role;
-      if (role === "Admin") navigate("/admin");
-      else if (role === "Faculty") navigate("/faculty");
-      else navigate("/student");
+      if (role === "Admin") {
+        navigate("/admin");
+      } else if (role === "Faculty") {
+        navigate("/faculty");
+      } else {
+        navigate("/student");
+      }
     } catch (err) {
-      setError(err?.data?.error || err.message || "Login failed");
+      setError(err?.data?.error || err.message || "login failed");
     } finally {
       setLoading(false);
     }
@@ -48,10 +51,7 @@ const LoginPage = () => {
 
           <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label
-                htmlFor="email"
-                className="block mb-1 font-medium text-slate-300"
-              >
+              <label htmlFor="email" className="block mb-1 font-medium text-slate-300">
                 Email address
               </label>
               <input
@@ -62,14 +62,12 @@ const LoginPage = () => {
                 className="w-full p-2 mb-0 bg-slate-900 border border-slate-700 rounded-md focus:outline-none focus:ring-1 transition focus:ring-indigo-500 focus:border-indigo-500"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block mb-1 font-medium text-slate-300"
-              >
+              <label htmlFor="password" className="block mb-1 font-medium text-slate-300">
                 Password
               </label>
               <input
@@ -80,23 +78,22 @@ const LoginPage = () => {
                 className="w-full p-2 mb-0 bg-slate-900 border border-slate-700 rounded-md focus:outline-none focus:ring-1 transition focus:ring-indigo-500 focus:border-indigo-500"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
 
             {error && <p className="text-red-400 text-sm">{error}</p>}
 
             <div className="text-right">
-              <a
-                href="#"
-                className="font-medium text-indigo-400 hover:text-indigo-300 text-sm"
-              >
+              <a href="#" className="font-medium text-indigo-400 hover:text-indigo-300 text-sm">
                 Forgot password?
               </a>
             </div>
 
             <button
               type="submit"
-              className="w-full mt-2 px-4 py-2.5 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              disabled={loading}
+              className="w-full mt-2 px-4 py-2.5 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
             >
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
