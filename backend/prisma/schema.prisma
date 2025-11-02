@@ -71,18 +71,16 @@ model Section {
   waitlists      Waitlist[]
 }
 
-//  scehdule / timetable models
 
 model Room {
   id       Int    @id @default(autoincrement())
   roomCode String @unique
-
   schedules SectionSchedule[]
 }
 
 model SectionSchedule {
   id        Int      @id @default(autoincrement())
-  dayOfWeek String    // Mon, Tue, Wed, Thu, Fri
+  dayOfWeek String    
   startTime DateTime
   endTime   DateTime
 
@@ -93,7 +91,7 @@ model SectionSchedule {
   room    Room    @relation(fields: [roomId], references: [id])
 }
 
-//  Registartions (student enrrols in Section Table )
+
 model Registration {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -105,7 +103,6 @@ model Registration {
   section Section @relation(fields: [sectionId], references: [id])
 }
 
-//  Waitlist
 model Waitlist {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -117,7 +114,6 @@ model Waitlist {
   section Section @relation(fields: [sectionId], references: [id])
 }
 
-//  NOtificatiosn
 
 model Notification {
   id        Int      @id @default(autoincrement())
