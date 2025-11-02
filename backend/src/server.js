@@ -13,8 +13,10 @@ app.use(helmet());
 app.use(express.json())
 app.use("/api/department", require("./routes/academic/department.route"));
 app.use("/api/program", require("./routes/academic/program.route"));
+app.use("/api/term", require("./routes/academic/term.route"));
 app.use("/api/course", require("./routes/academic/course.route"));
 app.use("/api/section", require("./routes/academic/section.route"));
+app.use("/api/room", require("./routes/academic/room.route"));
 app.use("/api/enroll", require("./routes/academic/enroll.route")); 
 
 
@@ -77,7 +79,7 @@ app.get("/api/test/student", verifyToken, (req, res) => {
 
 app.get("/api/profile", verifyToken, (req, res) => {
   res.json({
-    message: "profile info",
+    message:"profile info",
     user: req.user
   });
 }); 
