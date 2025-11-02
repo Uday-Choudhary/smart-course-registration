@@ -1,3 +1,4 @@
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -10,7 +11,8 @@ generator client {
 model Role {
   id    Int    @id @default(autoincrement())
   name  String @unique
-  users User[]
+
+  users User[] 
 }
 
 model User {
@@ -19,6 +21,121 @@ model User {
   email      String   @unique
   password   String
   createdAt  DateTime @default(now())
-  roleId     Int
-  role       Role     @relation(fields: [roleId], references: [id])
+
+  roleId   Int
+  role     Role     @relation(fields: [roleId], references: [id])
+
+  registrations   Registration[]
+  waitlists       Waitlist[]
+  notifications   Notification[]
+  auditLogs       AuditLog[]
+  sectionsTaught  Section[]   
+
+}
+
+//  academic structure (vary imp core of project is this onky )
+
+model Term {
+  id        Int      @id @default(autoincrement())
+  year      Int
+  semester  String   // exmaple odd/even/summer etc 
+
+  courses   Section[]
+}
+
+model Course {
+  id          Int        @id @default(autoincrement())
+  code        String      @unique
+  title       String
+  creditHours Int
+  description String?
+
+  sections    Section[]
+}
+
+model Section {
+  id          Int        @id @default(autoincrement())
+  sectionCode String      // ex: Rama/Hopper/Turing
+  capacity    Int
+
+  courseId Int
+  termId   Int
+  facultyId String? 
+
+  course  Course   @relation(fields: [courseId], references: [id])
+  term    Term     @relation(fields: [termId], references: [id])
+  faculty User?    @relation(fields: [facultyId], references: [id])  
+
+  schedule       SectionSchedule[]
+  registrations  Registration[]
+  waitlists      Waitlist[]
+}
+
+//  scehdule / timetable models
+
+model Room {
+  id       Int    @id @default(autoincrement())
+  roomCode String @unique
+
+  schedules SectionSchedule[]
+}
+
+model SectionSchedule {
+  id        Int      @id @default(autoincrement())
+  dayOfWeek String    // Mon, Tue, Wed, Thu, Fri
+  startTime DateTime
+  endTime   DateTime
+
+  sectionId Int
+  roomId    Int
+
+  section Section @relation(fields: [sectionId], references: [id])
+  room    Room    @relation(fields: [roomId], references: [id])
+}
+
+//  Registartions (student enrrols in Section Table )
+model Registration {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  studentId String
+  sectionId Int
+
+  student User    @relation(fields: [studentId], references: [id])
+  section Section @relation(fields: [sectionId], references: [id])
+}
+
+//  Waitlist
+model Waitlist {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  studentId String
+  sectionId Int
+
+  student User    @relation(fields: [studentId], references: [id])
+  section Section @relation(fields: [sectionId], references: [id])
+}
+
+//  NOtificatiosn
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User @relation(fields: [userId], references: [id])
+}
+
+//  Audit logs  
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  activity  String
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User @relation(fields: [userId], references: [id])
 }

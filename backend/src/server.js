@@ -11,6 +11,12 @@ const prisma = new PrismaClient();
 app.use(cors());
 app.use(helmet());
 app.use(express.json())
+app.use("/api/department", require("./routes/academic/department.route"));
+app.use("/api/program", require("./routes/academic/program.route"));
+app.use("/api/course", require("./routes/academic/course.route"));
+app.use("/api/section", require("./routes/academic/section.route"));
+app.use("/api/enroll", require("./routes/academic/enroll.route")); 
+
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "API is running" });
