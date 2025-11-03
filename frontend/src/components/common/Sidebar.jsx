@@ -1,11 +1,96 @@
-import React from 'react'
+import React from "react";
+import { Link } from "react-router-dom";
 
-const Sidebar = () => {
+const menuItems = [
+  // === STUDENT MENU ===
+  {
+    title: "STUDENT",
+    visible: ["Student"], // This whole section only shows for students
+    items: [
+      { icon: "/home.png", label: "Dashboard", href: "/", visible: ["Student"] },
+      { icon: "/subject.png", label: "Browse Courses", href: "/courses", visible: ["Student"] },
+      { icon: "/assignment.png", label: "My Registrations", href: "/my-registrations", visible: ["Student"] },
+      { icon: "/calendar.png", label: "My Timetable", href: "/timetable", visible: ["Student"] },
+      { icon: "/announcement.png", label: "Notifications", href: "/notifications", visible: ["Student"] },
+    ],
+  },
+  // === FACULTY MENU ===
+  {
+    title: "FACULTY",
+    visible: ["Faculty"], // This whole section only shows for faculty
+    items: [
+      { icon: "/home.png", label: "Dashboard", href: "/", visible: ["Faculty"] },
+      { icon: "/class.png", label: "My Sections", href: "/faculty/sections", visible: ["Faculty"] },
+      { icon: "/student.png", label: "Student Rosters", href: "/faculty/rosters", visible: ["Faculty"] },
+      { icon: "/result.png", label: "Export Lists", href: "/faculty/export", visible: ["Faculty"] },
+      { icon: "/announcement.png", label: "Notifications", href: "/notifications", visible: ["Faculty"] },
+    ],
+  },
+  // === ADMIN MENU ===
+  {
+    title: "ADMINISTRATION",
+    visible: ["Admin"], // This whole section only shows for admins
+    items: [
+      { icon: "/home.png", label: "Dashboard", href: "/", visible: ["Admin"] },
+      { icon: "/subject.png", label: "Manage Courses", href: "/admin/courses", visible: ["Admin"] },
+      { icon: "/class.png", label: "Manage Sections", href: "/admin/sections", visible: ["Admin"] },
+      { icon: "/teacher.png", label: "Manage Faculty", href: "/admin/faculty", visible: ["Admin"] },
+      { icon: "/student.png", label: "Manage Students", href: "/admin/students", visible: ["Admin"] },
+      { icon: "/calendar.png", label: "Manage Deadlines", href: "/admin/deadlines", visible: ["Admin"] },
+      { icon: "/exam.png", label: "View Reports", href: "/admin/reports", visible: ["Admin"] },
+    ],
+  },
+  // === GENERAL MENU ===
+  {
+    title: "OTHER",
+    visible: ["Admin", "Faculty", "Student"], // Shows for everyone
+    items: [
+      { icon: "/profile.png", label: "Profile", href: "/profile", visible: ["Admin", "Faculty", "Student"] },
+      { icon: "/setting.png", label: "Settings", href: "/settings", visible: ["Admin", "Faculty", "Student"] },
+      { icon: "/logout.png", label: "Logout", href: "/logout", visible: ["Admin", "Faculty", "Student"] },
+    ],
+  },
+];
+
+/**
+ * Menu component that dynamically renders links based on user role.
+ * @param {object} props - Component props
+ * @param {string} props.role - The role of the current user (e.g., "student", "faculty", "admin")
+ */
+const Menu = ({ role }) => {
   return (
-    <div>
-      
-    </div>
-  )
-}
+    <div className="mt-4 text-sm">
+      {menuItems.map((section) => {
+        // Check if the whole section is visible for the current role
+        if (!role || !section.visible.includes(role)) {
+          return null;
+        }
 
-export default Sidebar
+        return (
+          <div className="flex flex-col gap-2" key={section.title}>
+            {/* <span className="hidden lg:block text-gray-400 font-light my-4">
+              {section.title}
+            </span> */}
+            {section.items.map((item) => {
+              if (item.visible.includes(role)) {
+                return (
+                  <Link
+                    to={item.href}
+                    key={item.label}
+                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-blue-100 transition"
+                  >
+                    <img src={item.icon} alt={item.label} width={20} height={20} />
+                    <span className="hidden lg:block">{item.label}</span>
+                  </Link>
+                );
+              }
+              return null;
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export default Menu;

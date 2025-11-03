@@ -8,6 +8,7 @@ import AdminDashboard from "./components/dashboard/AdminDashboard";
 import Navbar from "./components/common/Navbar";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
+
 function App() {
   return (
     <BrowserRouter>
