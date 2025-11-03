@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   }, [token])
 
   const login = async (email, password) => {
-    const res = await apiClient.post('/api/auth/login', { email, password })
+    const res = await apiClient.post('/api/login', { email, password })
     if (res?.token) {
       localStorage.setItem('token', res.token)
       setToken(res.token)
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   const register = async ({ name, email, password, role }) => {
-    return apiClient.post('/api/auth/register', { name, email, password, role })
+    return apiClient.post('/api/register', { name, email, password, role })
   }
 
   const logout = () => {
