@@ -59,7 +59,7 @@ const menuItems = [
  */
 const Menu = ({ role }) => {
   return (
-    <div className="mt-4 text-sm">
+    <div className="mt-8 text-sm flex flex-col gap-8">
       {menuItems.map((section) => {
         // Check if the whole section is visible for the current role
         if (!role || !section.visible.includes(role)) {
@@ -67,10 +67,10 @@ const Menu = ({ role }) => {
         }
 
         return (
-          <div className="flex flex-col gap-2" key={section.title}>
-            {/* <span className="hidden lg:block text-gray-400 font-light my-4">
+          <div className="flex flex-col gap-4" key={section.title}>
+            <span className="hidden lg:block text-gray-400 font-light ">
               {section.title}
-            </span> */}
+            </span>
             {section.items.map((item) => {
               if (item.visible.includes(role)) {
                 return (
@@ -91,6 +91,6 @@ const Menu = ({ role }) => {
       })}
     </div>
   );
-};
+}
 
 export default Menu;
