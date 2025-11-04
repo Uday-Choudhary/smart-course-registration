@@ -42,7 +42,7 @@ const {
   verifyToken,
   requireAdmin,
   requireFacultyOrAdmin,
-} = require("./miiddleware/authMiddleware"); 
+} = require("./miiddleware/authMiddleware");
 
 
 

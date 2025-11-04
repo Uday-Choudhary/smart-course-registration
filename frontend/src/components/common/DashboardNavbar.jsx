@@ -5,18 +5,18 @@ const DashboardNavbar = () => {
   const { user } = useAuth();
 
   return (
-    <div className='flex items-center justify-between p-4'>
+    <div className='flex items-center justify-between p-4 shadow-sm rounded-2xl bg-[#F7F7F7]'>
       {/* SEARCH BAR */}
-      <div className='hidden md:flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-gray-300 px-10'>
+      <div className='hidden md:flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-gray-300 px-10 bg-[#ffffff]'>
         <img src="/search.png" alt="" width={14} height={14}/>
         <input type="text" placeholder="Search..." className="w-[200px] p-2 bg-transparent outline-none placeholder-gray-700 text-gray-800"/>
       </div>
       {/* ICONS AND USER */}
       <div className='flex items-center gap-7 justify-end w-full mx-3 py-1'>
-        <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer'>
+        <div className='w-7 h-7 flex items-center justify-center cursor-pointer'>
           <img src="/message.png" alt="" width={20} height={20}/>
         </div>
-        <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer relative'>
+        <div className='w-7 h-7 flex items-center justify-center cursor-pointer relative'>
           <img src="/announcement.png" alt="" width={20} height={20}/>
           <div className='absolute -top-3 -right-3 w-5 h-5 flex items-center justify-center bg-purple-500 text-white rounded-full text-xs'>1</div>
         </div>
