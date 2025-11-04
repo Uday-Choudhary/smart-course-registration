@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const menuItems = [
   // === STUDENT MENU ===
@@ -58,8 +59,10 @@ const menuItems = [
  * @param {string} props.role - The role of the current user (e.g., "student", "faculty", "admin")
  */
 const Menu = ({ role }) => {
+  const { user } = useAuth();
   return (
     <div className="mt-8 text-sm flex flex-col gap-8">
+        <p className="hidden lg:block text-gray-600">Welcome, {user?.name}!</p>
       {menuItems.map((section) => {
         // Check if the whole section is visible for the current role
         if (!role || !section.visible.includes(role)) {
@@ -77,7 +80,7 @@ const Menu = ({ role }) => {
                   <Link
                     to={item.href}
                     key={item.label}
-                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-md hover:bg-blue-100 transition"
+                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-4xl hover:bg-blue-100 transition"
                   >
                     <img src={item.icon} alt={item.label} width={20} height={20} />
                     <span className="hidden lg:block">{item.label}</span>
