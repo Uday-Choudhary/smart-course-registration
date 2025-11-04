@@ -1,4 +1,7 @@
+// AdminDashboard is the main layout for admin pages
+// It uses Outlet from react-router-dom to show nested routes (like /admin/terms)
 import React from 'react'
+import { Outlet, Navigate } from 'react-router-dom'
 import SidebarAdmin from '../common/Sidebar'
 import { useAuth } from '../../context/AuthContext'
 import { Link } from 'react-router-dom'
@@ -29,8 +32,9 @@ const AdminDashboard = () => {
         </div>
         {/* MAIN */}
         <main className=" rounded-2xl flex-1 p-8 bg-[#F7F7F7]">
-          <h1 className="text-2xl font-bold mb-4 text-gray-800">Admin Dashboard</h1>
-          <p className="text-gray-700">This is where the main content of the admin dashboard will go.</p>
+          {/* Outlet renders the nested route component (like TermsPage) */}
+          {/* If no route matches, it shows nothing - that's why we redirect to /admin/terms */}
+          <Outlet />
         </main>
       </div>
     </div>
