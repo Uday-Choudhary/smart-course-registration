@@ -32,8 +32,7 @@ const menuItems = [
     title: "ADMINISTRATION",
     visible: ["Admin"], // This whole section only shows for admins
     items: [
-      { icon: "/home.png", label: "Dashboard", href: "/admin", visible: ["Admin"] },
-      { icon: "/calendar.png", label: "Manage Terms", href: "/admin/terms", visible: ["Admin"] },
+      { icon: "/home.png", label: "Dashboard", href: "/", visible: ["Admin"] },
       { icon: "/subject.png", label: "Manage Courses", href: "/admin/courses", visible: ["Admin"] },
       { icon: "/class.png", label: "Manage Sections", href: "/admin/sections", visible: ["Admin"] },
       { icon: "/teacher.png", label: "Manage Faculty", href: "/admin/faculty", visible: ["Admin"] },
@@ -63,7 +62,7 @@ const Menu = ({ role }) => {
   const { user } = useAuth();
   return (
     <div className="mt-8 text-sm flex flex-col gap-8">
-        <p className="hidden lg:block text-gray-600">Welcome, {user?.name}!</p>
+      <p className="hidden lg:block text-gray-600">Welcome, {user?.name}!</p>
       {menuItems.map((section) => {
         // Check if the whole section is visible for the current role
         if (!role || !section.visible.includes(role)) {
@@ -81,7 +80,7 @@ const Menu = ({ role }) => {
                   <Link
                     to={item.href}
                     key={item.label}
-                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-4xl hover:bg-blue-100 transition"
+                    className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-4xl hover:bg-[#E4F1FF] transition"
                   >
                     <img src={item.icon} alt={item.label} width={20} height={20} />
                     <span className="hidden lg:block">{item.label}</span>
