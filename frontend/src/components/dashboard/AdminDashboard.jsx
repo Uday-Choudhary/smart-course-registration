@@ -1,11 +1,9 @@
-// AdminDashboard is the main layout for admin pages
-// It uses Outlet from react-router-dom to show nested routes (like /admin/terms)
 import React from 'react'
-import { Outlet, Navigate } from 'react-router-dom'
 import SidebarAdmin from '../common/Sidebar'
 import { useAuth } from '../../context/AuthContext'
 import { Link } from 'react-router-dom'
 import DashboardNavbar from '../common/DashboardNavbar'
+import UserCard from '../common/UserCard'
 
 const AdminDashboard = () => {
   const { user } = useAuth()
@@ -13,7 +11,7 @@ const AdminDashboard = () => {
   return (
     <div className="flex h-screen bg-[#ffffff] p-4 gap-4">
       {/* LEFT - SIDEBAR */}
-      <div className="w-[18%] p-4 bg-[#F7F7F7] rounded-3xl">
+      <div className="w-[18%] p-4 bg-[#F7F7F7] rounded-3xl shadow-sm">
         <Link
           to="/"
           className="flex items-center justify-center lg:justify-start gap-2 mb-8"
@@ -31,10 +29,16 @@ const AdminDashboard = () => {
           <DashboardNavbar />
         </div>
         {/* MAIN */}
-        <main className=" rounded-2xl flex-1 p-8 bg-[#F7F7F7]">
-          {/* Outlet renders the nested route component (like TermsPage) */}
-          {/* If no route matches, it shows nothing - that's why we redirect to /admin/terms */}
-          <Outlet />
+        <main className=" rounded-2xl shadow-sm flex-1 p-8 bg-[#F7F7F7] ">
+          {/* <h1 className="text-2xl font-bold mb-4 text-gray-800">Admin Dashboard</h1> */}
+          <div className="flex gap-4 justify-between flex-wrap">
+            <UserCard type="student" color="bg-[#FAE27C]" />
+            <UserCard type="teacher" color="bg-[#c7b8ff]" />
+            <UserCard type="parent" color="bg-[#b9e3ff]" />
+            <UserCard type="parent" color="bg-[#ffd6e0]" />
+            <UserCard type="parent" color="bg-[#ffe3b3]" />
+            <UserCard type="parent" color="bg-[#b8f2b6]" />
+          </div>
         </main>
       </div>
     </div>
