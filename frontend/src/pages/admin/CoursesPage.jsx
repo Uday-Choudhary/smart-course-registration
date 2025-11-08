@@ -4,6 +4,7 @@ import Table from "../../components/admin/faculty/Table";
 import TableSearch from "../../components/admin/students/TableSearch";
 import { coursesData } from "../../lib/data";
 import FormModal from "../../components/admin/students/FormModal";
+import CourseForm from "../../components/admin/courses/CourseForm"; // Import CourseForm
 
 const columns = [
     { header: "Course Name", accessor: "courseName" },
@@ -13,13 +14,40 @@ const columns = [
 
 const CoursesPage = () => {
     const [courses, setCourses] = useState(coursesData);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalType, setModalType] = useState("create");
+    const [selectedCourse, setSelectedCourse] = useState(null);
 
-    const handleAddCourse = (newCourse) => {
-        setCourses([...courses, { ...newCourse, id: courses.length + 1 }]);
+    const openModal = (type, course = null) => {
+        setModalType(type);
+        setSelectedCourse(course);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedCourse(null);
+    };
+
+    const addCourse = (newCourse) => {
+        setCourses([...courses, { ...newCourse, id: courses.length + 1, teachers: newCourse.teachers }]);
+        closeModal();
+    };
+
+    const updateCourse = (updatedCourse) => {
+        setCourses(
+            courses.map((course) =>
+                course.id === updatedCourse.id
+                    ? { ...course, ...updatedCourse, teachers: updatedCourse.teachers }
+                    : course
+            )
+        );
+        closeModal();
     };
 
     const handleDeleteCourse = (id) => {
         setCourses(courses.filter((course) => course.id !== id));
+        closeModal(); // Close modal after delete
     };
 
     const renderRow = (item) => (
@@ -36,15 +64,15 @@ const CoursesPage = () => {
                     {/* Update Button */}
                     <button
                         className="w-7 h-7 flex items-center justify-center rounded-full bg-[#b9e3ff] hover:bg-[#a3d8ff] transition"
-                        onClick={() => alert(`Edit ${item.courseName}`)}
+                        onClick={() => openModal("update", item)} // Use openModal
                     >
-                        <img src="/view.png" alt="edit" width={16} height={16} />
+                        <img src="/update.png" alt="edit" width={16} height={16} /> {/* Changed icon */}
                     </button>
 
                     {/* Delete Button */}
                     <button
                         className="w-7 h-7 flex items-center justify-center rounded-full bg-[#c7b8ff] hover:bg-[#b7a6ff] transition"
-                        onClick={() => handleDeleteCourse(item.id)}
+                        onClick={() => openModal("delete", item)} // Use openModal for delete confirmation
                     >
                         <img src="/delete.png" alt="delete" width={16} height={16} />
                     </button>
@@ -75,12 +103,7 @@ const CoursesPage = () => {
 
                         {/* ADD COURSE BUTTON */}
                         <button
-                            onClick={() =>
-                                handleAddCourse({
-                                    courseName: "New Course",
-                                    teachers: ["Example Teacher"],
-                                })
-                            }
+                            onClick={() => openModal("create")} // Use openModal
                             className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAE27C] hover:bg-[#f8d84e] shadow-md hover:shadow-lg transition-all duration-200 ease-in-out hover:rotate-90 hover:scale-110"
                         >
                             <svg
@@ -107,6 +130,36 @@ const CoursesPage = () => {
             <div className="px-6 py-4 border-t border-gray-100 flex justify-center md:justify-end">
                 <Pagination />
             </div>
+
+            {/* ===== MODAL SECTION ===== */}
+            <FormModal isOpen={isModalOpen} onClose={closeModal}>
+                {modalType === "delete" ? (
+                    <div>
+                        <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+                        <p>Are you sure you want to delete this course?</p>
+                        <div className="flex justify-end mt-4">
+                            <button
+                                onClick={closeModal}
+                                className="bg-gray-300 text-gray-800 px-4 py-2 rounded mr-2"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => handleDeleteCourse(selectedCourse.id)}
+                                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <CourseForm
+                        type={modalType}
+                        data={selectedCourse ? { ...selectedCourse, teachers: selectedCourse.teachers.join(', ') } : null}
+                        onSubmit={modalType === "create" ? addCourse : updateCourse}
+                    />
+                )}
+            </FormModal>
         </div>
     );
 };
