@@ -1,73 +1,73 @@
-// courses management where admin can create,edit,and delete courses
+// rooms management where admin can create,edit,and delete rooms
 import React, { useState, useEffect } from 'react'
-import {getAllCourses,deleteCourse } from '../../api/courses'
-import CourseForm from '../../components/admin/CourseForm'
+import {getAllRooms,deleteRoom } from '../../api/rooms'
+import RoomForm from '../../components/admin/RoomForm'
 
-const CoursesPage = () => {
-  const [courses, setCourses] =useState([])
+const RoomsPage = () => {
+  const [rooms, setRooms] =useState([])
   const [loading, setLoading] =useState(true)
   const [error, setError] =useState('')
   const [showForm, setShowForm] =useState(false)
-  const [editingCourse, setEditingCourse] =useState(null)
+  const [editingRoom, setEditingRoom] =useState(null)
 
   useEffect(() => {
-    loadCourses()
+    loadRooms()
   },[])
 
-  const loadCourses =async()=>{
+  const loadRooms =async()=>{
     try {
       setLoading(true)
       setError('')
-      const data =await getAllCourses()
-      setCourses(data)
+      const data =await getAllRooms()
+      setRooms(data)
     } catch (err) {
-      setError(err.message ||'Failed to load courses')
+      setError(err.message ||'Failed to load rooms')
     } finally {
       setLoading(false)
     }
   }
 
   const handleDelete =async(id)=> {
-    if (!window.confirm('Are you sure you want to delete this course?')) {
+    if (!window.confirm('Are you sure you want to delete this room?')) {
       return
     }
     try{
-      await deleteCourse(id)
-      loadCourses()
+      await deleteRoom(id)
+      loadRooms()
     } catch (err) {
-      alert(err.message ||'Failed to delete course')
+      alert(err.message ||'Failed to delete room')
     }
   }
 
-  const handleEdit =(course)=> {
-    setEditingCourse(course)
+  const handleEdit =(room)=> {
+    setEditingRoom(room)
     setShowForm(true)
   }
 
   const handleCreate = () => {
-    setEditingCourse(null)
+    setEditingRoom(null)
     setShowForm(true)
   }
 
   const handleFormClose =()=>{
     setShowForm(false)
-    setEditingCourse(null)
-    loadCourses()
+    setEditingRoom(null)
+    loadRooms()
   }
 
   if (loading) {
-    return <div className="p-8">Loading courses...</div>
+    return <div className="p-8">Loading rooms...</div>
   }
 
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Manage Courses</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Manage Rooms</h1>
         <button
           onClick={handleCreate}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
-          + Create New Course
+          + Create New Room
         </button>
       </div>
 
@@ -80,13 +80,13 @@ const CoursesPage = () => {
 
       {/* Show form when creating or editing */}
       {showForm && (
-        <CourseForm
-          course={editingCourse}
+        <RoomForm
+          room={editingRoom}
           onClose={handleFormClose}
         />
       )}
 
-      {/* Table showing all courses */}
+      {/* Table showing all rooms */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -95,13 +95,7 @@ const CoursesPage = () => {
                 ID
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Code
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Title
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Credit Hours
+                Room Code
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
@@ -109,36 +103,30 @@ const CoursesPage = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {courses.length === 0 ? (
+            {rooms.length === 0 ? (
               <tr>
-                <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
-                  No courses found. Create one to get started!
+                <td colSpan="3" className="px-6 py-4 text-center text-gray-500">
+                  No rooms found. Create one to get started!
                 </td>
               </tr>
             ) : (
-              courses.map((course) => (
-                <tr key={course.id}>
+              rooms.map((room) => (
+                <tr key={room.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {course.id}
+                    {room.id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {course.code}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {course.title}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {course.creditHours}
+                    {room.roomCode}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
-                      onClick={() => handleEdit(course)}
+                      onClick={() => handleEdit(room)}
                       className="text-blue-600 hover:text-blue-900 mr-4"
                     >
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(course.id)}
+                      onClick={() => handleDelete(room.id)}
                       className="text-red-600 hover:text-red-900"
                     >
                       Delete
@@ -154,4 +142,4 @@ const CoursesPage = () => {
   )
 }
 
-export default CoursesPage
+export default RoomsPage
