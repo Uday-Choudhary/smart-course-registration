@@ -4,6 +4,7 @@ import Table from "../../components/admin/faculty/Table";
 import TableSearch from "../../components/admin/students/TableSearch";
 import { sectionsData } from "../../lib/data";
 import FormModal from "../../components/admin/students/FormModal";
+import SectionForm from "../../components/admin/sections/SectionForm"; // Import SectionForm
 
 const columns = [
     { header: "Section Name", accessor: "sectionName" },
@@ -15,20 +16,40 @@ const columns = [
 
 const SectionsPage = () => {
     const [sections, setSections] = useState(sectionsData);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalType, setModalType] = useState("create");
+    const [selectedSection, setSelectedSection] = useState(null);
 
-    const handleAddSection = () => {
-        const newSection = {
-            id: sections.length + 1,
-            sectionName: `New${sections.length + 1}`,
-            capacity: 20,
-            grade: 1,
-            supervisor: "New Supervisor",
-        };
-        setSections([...sections, newSection]);
+    const openModal = (type, section = null) => {
+        setModalType(type);
+        setSelectedSection(section);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedSection(null);
+    };
+
+    const addSection = (newSection) => {
+        setSections([...sections, { ...newSection, id: sections.length + 1 }]);
+        closeModal();
+    };
+
+    const updateSection = (updatedSection) => {
+        setSections(
+            sections.map((section) =>
+                section.id === updatedSection.id
+                    ? { ...section, ...updatedSection }
+                    : section
+            )
+        );
+        closeModal();
     };
 
     const handleDelete = (id) => {
         setSections(sections.filter((sec) => sec.id !== id));
+        closeModal(); // Close modal after delete
     };
 
     const renderRow = (item) => (
@@ -45,15 +66,15 @@ const SectionsPage = () => {
                     {/* Update Button */}
                     <button
                         className="w-7 h-7 flex items-center justify-center rounded-full bg-[#b9e3ff] hover:bg-[#a3d8ff] transition"
-                        onClick={() => alert(`Edit ${item.sectionName}`)}
+                        onClick={() => openModal("update", item)} // Use openModal
                     >
-                        <img src="/view.png" alt="edit" width={16} height={16} />
+                        <img src="/update.png" alt="edit" width={16} height={16} /> {/* Changed icon */}
                     </button>
 
                     {/* Delete Button */}
                     <button
                         className="w-7 h-7 flex items-center justify-center rounded-full bg-[#c7b8ff] hover:bg-[#b7a6ff] transition"
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => openModal("delete", item)} // Use openModal for delete confirmation
                     >
                         <img src="/delete.png" alt="delete" width={16} height={16} />
                     </button>
@@ -84,7 +105,7 @@ const SectionsPage = () => {
 
                         {/* ADD SECTION BUTTON */}
                         <button
-                            onClick={handleAddSection}
+                            onClick={() => openModal("create")} // Use openModal
                             className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAE27C] hover:bg-[#f8d84e] shadow-md hover:shadow-lg transition-all duration-200 ease-in-out hover:rotate-90 hover:scale-110"
                         >
                             <svg
@@ -111,6 +132,36 @@ const SectionsPage = () => {
             <div className="px-6 py-4 border-t border-gray-100 flex justify-center md:justify-end">
                 <Pagination />
             </div>
+
+            {/* ===== MODAL SECTION ===== */}
+            <FormModal isOpen={isModalOpen} onClose={closeModal}>
+                {modalType === "delete" ? (
+                    <div>
+                        <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+                        <p>Are you sure you want to delete this section?</p>
+                        <div className="flex justify-end mt-4">
+                            <button
+                                onClick={closeModal}
+                                className="bg-gray-300 text-gray-800 px-4 py-2 rounded mr-2"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => handleDelete(selectedSection.id)}
+                                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <SectionForm
+                        type={modalType}
+                        data={selectedSection}
+                        onSubmit={modalType === "create" ? addSection : updateSection}
+                    />
+                )}
+            </FormModal>
         </div>
     );
 };

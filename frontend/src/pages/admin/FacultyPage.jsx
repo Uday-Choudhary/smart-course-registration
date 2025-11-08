@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import FormModal from "../../components/admin/students/FormModal";
-import Pagination from "../../components/admin/students/Pagination";
+import TeacherView from "../../components/admin/faculty/TeacherView"; // Import TeacherView
+import { useState } from "react";
+import { teachersData } from "../../lib/data";
 import Table from "../../components/admin/faculty/Table";
 import TableSearch from "../../components/admin/students/TableSearch";
-import { teachersData } from "../../lib/data";
+import FormModal from "../../components/admin/students/FormModal";
+import Pagination from "../../components/admin/students/Pagination";
 import TeacherForm from "../../components/admin/faculty/TeacherForm";
 
 const columns = [
@@ -85,12 +85,20 @@ const FacultyPage = () => {
       <td className="hidden md:table-cell text-gray-700">{item.phone}</td>
       <td className="pr-4">
         <div className="flex items-center justify-center gap-2">
+          {/* View Button */}
+          <button
+            onClick={() => openModal("view", item)}
+            className="w-7 h-7 flex items-center justify-center rounded-full bg-[#b9e3ff] hover:bg-[#a3d8ff] transition"
+          >
+            <img src="/view.png" alt="view" width={16} height={16} />
+          </button>
+
           {/* Update Button */}
           <button
             onClick={() => openModal("update", item)}
             className="w-7 h-7 flex items-center justify-center rounded-full bg-[#b9e3ff] hover:bg-[#a3d8ff] transition"
           >
-            <img src="/view.png" alt="update" width={16} height={16} />
+            <img src="/update.png" alt="update" width={16} height={16} />
           </button>
 
           {/* Delete Button */}
@@ -157,33 +165,35 @@ const FacultyPage = () => {
 
       {/* ===== MODAL SECTION ===== */}
       <FormModal isOpen={isModalOpen} onClose={closeModal}>
-          {modalType === "delete" ? (
-            <div>
-              <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
-              <p>Are you sure you want to delete this teacher?</p>
-              <div className="flex justify-end mt-4">
-                <button
-                  onClick={closeModal}
-                  className="bg-gray-300 text-gray-800 px-4 py-2 rounded mr-2"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={deleteTeacher}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </div>
+        {modalType === "delete" ? (
+          <div>
+            <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+            <p>Are you sure you want to delete this teacher?</p>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={closeModal}
+                className="bg-gray-300 text-gray-800 px-4 py-2 rounded mr-2"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={deleteTeacher}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Delete
+              </button>
             </div>
-          ) : (
-            <TeacherForm
-              type={modalType}
-              data={selectedTeacher}
-              onSubmit={modalType === "create" ? addTeacher : updateTeacher}
-            />
-          )}
-        </FormModal>
+          </div>
+        ) : modalType === "view" ? ( // Added for view mode
+          <TeacherView teacher={selectedTeacher} onClose={closeModal} />
+        ) : (
+          <TeacherForm
+            type={modalType}
+            data={selectedTeacher}
+            onSubmit={modalType === "create" ? addTeacher : updateTeacher}
+          />
+        )}
+      </FormModal>
     </div>
   );
 };
