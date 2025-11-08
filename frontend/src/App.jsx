@@ -9,6 +9,8 @@ import Navbar from "./components/common/Navbar";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import StudentsPage from "./pages/admin/StudentsPage";
 import FacultyPage from "./pages/admin/FacultyPage";
+import CoursesPage from "./pages/admin/CoursesPage";
+import SectionsPage from "./pages/admin/SectionsPage";
 
 
 function App() {
@@ -21,7 +23,7 @@ function App() {
 function AppContent() {
   const location = useLocation();
 
-  const hideNavbarPaths = ["/login", "/register", "/student", "/faculty", "/admin", "/admin/students", "/admin/faculty"];
+  const hideNavbarPaths = ["/login", "/register", "/student", "/faculty", "/admin", "/admin/students", "/admin/faculty", "/admin/courses", "/admin/sections"];
   const shouldHideNavbar = hideNavbarPaths.includes(location.pathname);
 
   return (
@@ -75,6 +77,29 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin/courses"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminDashboard>
+                <CoursesPage />
+              </AdminDashboard>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/sections"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminDashboard>
+                <SectionsPage />
+              </AdminDashboard>
+            </ProtectedRoute>
+          }
+        />
+
+
 
         {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
       </Routes>
