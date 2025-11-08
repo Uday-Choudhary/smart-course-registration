@@ -7,6 +7,8 @@ import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
 import Navbar from "./components/common/Navbar";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import StudentsPage from "./pages/admin/StudentsPage";
+import FacultyPage from "./pages/admin/FacultyPage";
 
 
 function App() {
@@ -19,7 +21,7 @@ function App() {
 function AppContent() {
   const location = useLocation();
 
-  const hideNavbarPaths = ["/login", "/register", "/student", "/faculty", "/admin"];
+  const hideNavbarPaths = ["/login", "/register", "/student", "/faculty", "/admin", "/admin/students", "/admin/faculty"];
   const shouldHideNavbar = hideNavbarPaths.includes(location.pathname);
 
   return (
@@ -50,6 +52,26 @@ function AppContent() {
           element={
             <ProtectedRoute allowedRoles={["Admin"]}>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/students"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminDashboard>
+                <StudentsPage />
+              </AdminDashboard>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/faculty"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminDashboard>
+                <FacultyPage />
+              </AdminDashboard>
             </ProtectedRoute>
           }
         />

@@ -32,7 +32,7 @@ const menuItems = [
     title: "ADMINISTRATION",
     visible: ["Admin"], // This whole section only shows for admins
     items: [
-      { icon: "/home.png", label: "Dashboard", href: "/", visible: ["Admin"] },
+      { icon: "/home.png", label: "Dashboard", href: "/admin", visible: ["Admin"] },
       { icon: "/subject.png", label: "Manage Courses", href: "/admin/courses", visible: ["Admin"] },
       { icon: "/class.png", label: "Manage Sections", href: "/admin/sections", visible: ["Admin"] },
       { icon: "/teacher.png", label: "Manage Faculty", href: "/admin/faculty", visible: ["Admin"] },

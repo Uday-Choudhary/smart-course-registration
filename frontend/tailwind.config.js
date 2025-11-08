@@ -9,8 +9,11 @@ export default {
             colors: {
                 lamaPurple: "#6B46C1",
                 lamaYellow: "#F6E05E",
+                lamaPurpleLight: "#E9D8FD",
             },
         },
     },
     plugins: [],
 }
+
+
