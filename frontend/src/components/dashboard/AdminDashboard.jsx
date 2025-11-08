@@ -10,7 +10,7 @@ const AdminDashboard = ({ children }) => {
   const location = useLocation();
 
   // Pages that should not have padding (full-width table layout)
-  const noPaddingPaths = ["/admin/students", "/admin/faculty ", "/admin/courses", "/admin/sections"];
+  const noPaddingPaths = ["/admin/students", "/admin/faculty", "/admin/courses", "/admin/sections"];
   const isNoPaddingPage = noPaddingPaths.includes(location.pathname);
 
   return (

@@ -112,21 +112,14 @@ const SectionForm = ({ section, onClose }) => {
   }
 
   if (loadingOptions) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6">
-          <p>Loading options...</p>
-        </div>
-      </div>
-    )
+    return <p>Loading options...</p>
   }
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">
-          {section ? 'Edit Section' : 'Create New Section'}
-        </h2>
+  const formContent = (
+    <>
+      <h2 className="text-xl font-bold mb-4">
+        {section ? 'Edit Section' : 'Create New Section'}
+      </h2>
 
         {/* Show error message if any */}
         {error && (
@@ -246,9 +239,11 @@ const SectionForm = ({ section, onClose }) => {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </>
   )
+
+  // If used inside FormModal, just return the content without the modal wrapper
+  return formContent
 }
 
 export default SectionForm

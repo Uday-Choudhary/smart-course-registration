@@ -58,12 +58,11 @@ const CourseForm = ({ course, onClose }) => {
     }
   }
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">
-          {course ? 'Edit Course' : 'Create New Course'}
-        </h2>
+  const formContent = (
+    <>
+      <h2 className="text-xl font-bold mb-4">
+        {course ? 'Edit Course' : 'Create New Course'}
+      </h2>
 
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -151,9 +150,11 @@ const CourseForm = ({ course, onClose }) => {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </>
   )
+
+  // If used inside FormModal, just return the content without the modal wrapper
+  return formContent
 }
 
 export default CourseForm
