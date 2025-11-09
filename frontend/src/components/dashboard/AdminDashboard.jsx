@@ -9,9 +9,22 @@ const AdminDashboard = ({ children }) => {
   const { user } = useAuth();
   const location = useLocation();
 
-  // Pages that should not have padding (full-width table layout)
-  const noPaddingPaths = ["/admin/students", "/admin/faculty", "/admin/courses", "/admin/sections"];
-  const isNoPaddingPage = noPaddingPaths.includes(location.pathname);
+  // Pages that should have full-width layout (no padding)
+  const noPaddingPaths = [
+    "/admin/students",
+    "/admin/faculty",
+    "/admin/courses",
+    "/admin/sections",
+    "/admin/terms",
+    "/admin/deadlines"
+  ];
+
+  // ✅ Allow dynamic routes like /admin/terms/1/courses
+  const isTermCoursesPage = /^\/admin\/terms\/\d+\/courses$/.test(location.pathname);
+
+  // Check if current path is one of the no-padding or dynamic term page
+  const isNoPaddingPage =
+    noPaddingPaths.includes(location.pathname) || isTermCoursesPage;
 
   return (
     <div className="flex h-screen bg-[#ffffff] p-4 gap-4">

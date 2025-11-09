@@ -76,57 +76,76 @@ export const teachersData = [
 export const coursesData = [
   {
     id: 1,
-    courseName: "Math",
+    courseName: "Mathematics",
+    courseCode: "MATH101",
+    creditHours: 3,
     teachers: ["Alice Phelps", "Russell Davidson"],
   },
   {
     id: 2,
-    courseName: "English",
+    courseName: "English Literature",
+    courseCode: "ENG201",
+    creditHours: 4,
     teachers: ["Manuel Becker", "Eddie Chavez"],
   },
   {
     id: 3,
     courseName: "Physics",
+    courseCode: "PHY301",
+    creditHours: 3,
     teachers: ["Lola Newman", "Darrell Delgado"],
   },
   {
     id: 4,
     courseName: "Chemistry",
+    courseCode: "CHEM210",
+    creditHours: 3,
     teachers: ["Nathan Kelly", "Benjamin Snyder"],
   },
   {
     id: 5,
     courseName: "Biology",
+    courseCode: "BIO110",
+    creditHours: 4,
     teachers: ["Alma Benson", "Lina Collier"],
   },
   {
     id: 6,
     courseName: "History",
+    courseCode: "HIS205",
+    creditHours: 2,
     teachers: ["Hannah Bowman", "Betty Obrien"],
   },
   {
     id: 7,
     courseName: "Geography",
+    courseCode: "GEO105",
+    creditHours: 2,
     teachers: ["Lora French", "Sue Brady"],
   },
   {
     id: 8,
     courseName: "Art",
+    courseCode: "ART120",
+    creditHours: 2,
     teachers: ["Harriet Alvarado", "Mayme Keller"],
   },
   {
     id: 9,
     courseName: "Music",
+    courseCode: "MUS130",
+    creditHours: 2,
     teachers: ["Gertrude Roy", "Rosa Singleton"],
   },
   {
     id: 10,
     courseName: "Literature",
+    courseCode: "LIT140",
+    creditHours: 3,
     teachers: ["Effie Lynch", "Brett Flowers"],
   },
 ];
 
-// ===============================
 // ===============================
 // 🧩 Sections Data
 // ===============================
@@ -143,7 +162,68 @@ export const sectionsData = [
   { id: 10, sectionName: "6D", capacity: 20, grade: 6, supervisor: "Ophelia Marsh" },
 ];
 
+// ===============================
+// 📆 Terms Data
+// ===============================
+export const termsData = [
+  {
+    id: 1,
+    year: 2025,
+    semester: "Spring",
+    totalCourses: 10,
+    totalSections: 25,
+  },
+  {
+    id: 2,
+    year: 2025,
+    semester: "Fall",
+    totalCourses: 8,
+    totalSections: 20,
+  },
+  {
+    id: 3,
+    year: 2026,
+    semester: "Summer",
+    totalCourses: 5,
+    totalSections: 10,
+  },
+];
 
+// ===============================
+// ⏰ Deadlines Data
+// ===============================
+export const deadlinesData = [
+  {
+    id: 1,
+    term: "Spring 2025",
+    course: "MATH101 - Mathematics",
+    registrationOpen: "2025-01-10",
+    addDropStart: "2025-01-15",
+    addDropEnd: "2025-01-25",
+    registrationClose: "2025-02-01",
+    waitlistClose: "2025-02-10",
+  },
+  {
+    id: 2,
+    term: "Fall 2025",
+    course: "ENG201 - English Literature",
+    registrationOpen: "2025-07-01",
+    addDropStart: "2025-07-05",
+    addDropEnd: "2025-07-20",
+    registrationClose: "2025-07-30",
+    waitlistClose: "2025-08-10",
+  },
+  {
+    id: 3,
+    term: "Summer 2026",
+    course: "PHY301 - Physics",
+    registrationOpen: "2026-03-05",
+    addDropStart: "2026-03-10",
+    addDropEnd: "2026-03-25",
+    registrationClose: "2026-04-01",
+    waitlistClose: "2026-04-10",
+  },
+];
 
 // ===============================
 // 🧑‍💻 Role
