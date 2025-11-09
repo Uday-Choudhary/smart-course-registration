@@ -16,7 +16,8 @@ const AdminDashboard = ({ children }) => {
     "/admin/courses",
     "/admin/sections",
     "/admin/terms",
-    "/admin/deadlines"
+    "/admin/deadlines",
+    "/admin/rooms"
   ];
 
   // ✅ Allow dynamic routes like /admin/terms/1/courses

@@ -39,6 +39,7 @@ const menuItems = [
       { icon: "/student.png", label: "Manage Students", href: "/admin/students", visible: ["Admin"] },
       { icon: "/calendar.png", label: "Manage Terms", href: "/admin/terms", visible: ["Admin"] },
       { icon: "/calendar.png", label: "Manage Deadlines", href: "/admin/deadlines", visible: ["Admin"] },
+      { icon: "/studyroom.png", label: "Manage Rooms", href: "/admin/rooms", visible: ["Admin"] },
       { icon: "/exam.png", label: "View Reports", href: "/admin/reports", visible: ["Admin"] },
     ],
   },
