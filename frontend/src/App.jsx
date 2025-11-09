@@ -16,6 +16,7 @@ import SectionsPage from "./pages/admin/SectionsPage";
 import TermsPage from "./pages/admin/TermsPage";
 import DeadlinesPage from "./pages/admin/DeadlinePage";
 import TermCoursesPage from "./pages/admin/TermCoursesPage";
+import RoomsPage from "./pages/admin/RoomsPage";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function AppContent() {
     "/admin/sections",
     "/admin/terms",
     "/admin/deadlines",
+    "/admin/rooms",
   ];
 
   // ✅ Detect dynamic routes like `/admin/terms/1/courses`
@@ -157,6 +159,16 @@ function AppContent() {
             <ProtectedRoute allowedRoles={["Admin"]}>
               <AdminDashboard>
                 <DeadlinesPage />
+              </AdminDashboard>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/rooms"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminDashboard>
+                <RoomsPage />
               </AdminDashboard>
             </ProtectedRoute>
           }
