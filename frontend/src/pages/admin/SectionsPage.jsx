@@ -1,10 +1,10 @@
 // sections management where admin can create,edit,and delete sections
 import React, { useState, useEffect } from 'react'
 import { getAllSections, deleteSection } from '../../api/sections'
-import Pagination from "../../components/admin/students/Pagination";
+import Pagination from "../../components/admin/common/Pagination";
 import Table from "../../components/admin/faculty/Table";
-import TableSearch from "../../components/admin/students/TableSearch";
-import FormModal from "../../components/admin/students/FormModal";
+import TableSearch from "../../components/admin/common/TableSearch";
+import FormModal from "../../components/admin/common/FormModal";
 import SectionForm from '../../components/admin/sections/SectionForm'
 
 const columns = [

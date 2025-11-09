@@ -1,10 +1,10 @@
 // rooms management where admin can create,edit,and delete rooms
 import React, { useState, useEffect } from 'react'
 import { getAllRooms, deleteRoom } from '../../api/rooms'
-import Pagination from "../../components/admin/students/Pagination";
+import Pagination from "../../components/admin/common/Pagination";
 import Table from "../../components/admin/faculty/Table";
-import TableSearch from "../../components/admin/students/TableSearch";
-import FormModal from "../../components/admin/students/FormModal";
+import TableSearch from "../../components/admin/common/TableSearch";
+import FormModal from "../../components/admin/common/FormModal";
 import RoomForm from '../../components/admin/rooms/RoomForm'
 
 const columns = [

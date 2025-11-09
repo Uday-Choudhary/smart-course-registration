@@ -39,9 +39,12 @@ exports.getAllTerms = async (req, res) => {
         {semester:'asc' },
       ],
       include:{
-        courses:{
-          include:{
-            course:true,
+        courses: {
+          select: {
+            id: true,
+            code: true,
+            title: true,
+            creditHours: true,
           },
         },
       },
@@ -68,14 +71,28 @@ exports.getTermById = async (req, res) => {
     const term =await prisma.term.findUnique({
       where:{ id: parseInt(id) },
       include:{
-        courses:{
-          include:{
-            course:true,
-            faculty:{
-              select:{
-                id:true,
-                full_name:true,
-                email:true,
+        courses: {
+          select: {
+            id: true,
+            code: true,
+            title: true,
+            creditHours: true,
+          },
+        },
+        sections: {
+          include: {
+            course: {
+              select: {
+                id: true,
+                code: true,
+                title: true,
+              },
+            },
+            faculty: {
+              select: {
+                id: true,
+                full_name: true,
+                email: true,
               },
             },
           },

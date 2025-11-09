@@ -4,7 +4,14 @@ const prisma = new PrismaClient();
 // Create a new course
 exports.createCourse = async (req, res) => {
   try {
-    const { code, title, creditHours, description } = req.body;
+    const { code, title, creditHours, description, termId } = req.body;
+
+    if (!termId) {
+      return res.status(400).json({
+        success: false,
+        error: "Term ID is required",
+      });
+    }
 
     const course = await prisma.course.create({
       data: {
@@ -12,6 +19,7 @@ exports.createCourse = async (req, res) => {
         title: title.trim(),
         creditHours: parseInt(creditHours),
         description: description ? description.trim() : null,
+        termId: parseInt(termId),
       },
     });
 
@@ -44,9 +52,22 @@ exports.getAllCourses = async (req, res) => {
         code: 'asc',
       },
       include: {
+        term: {
+          select: {
+            id: true,
+            year: true,
+            semester: true,
+          },
+        },
         sections: {
           include: {
-            term: true,
+            term: {
+              select: {
+                id: true,
+                year: true,
+                semester: true,
+              },
+            },
             faculty: {
               select: {
                 id: true,
@@ -127,13 +148,14 @@ exports.getCourseById = async (req, res) => {
 exports.updateCourse = async (req, res) => {
   try {
     const { id } = req.params;
-    const { code, title, creditHours, description } = req.body;
+    const { code, title, creditHours, description, termId } = req.body;
 
     const updateData = {};
     if (code !== undefined) updateData.code = code.trim().toUpperCase();
     if (title !== undefined) updateData.title = title.trim();
     if (creditHours !== undefined) updateData.creditHours = parseInt(creditHours);
     if (description !== undefined) updateData.description = description ? description.trim() : null;
+    if (termId !== undefined) updateData.termId = parseInt(termId);
 
     const course = await prisma.course.update({
       where: { id: parseInt(id) },

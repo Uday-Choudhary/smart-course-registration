@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import InputField from "./InputField";
+import InputField from "../common/InputField";
 
 const schema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters long!").max(20),

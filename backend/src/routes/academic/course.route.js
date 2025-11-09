@@ -36,6 +36,9 @@ const courseValidation=[
   body("creditHours")
     .isInt({ min:1,max:10 })
     .withMessage("Credit hours must be an integer between 1 and 10"),
+  body("termId")
+    .isInt({ min:1 })
+    .withMessage("Term ID is required and must be a valid positive integer"),
   body("description")
     .optional()
     .trim()
@@ -70,6 +73,10 @@ const updateCourseValidation=[
     .optional()
     .isInt({ min:1,max:10 })
     .withMessage("Credit hours must be an integer between 1 and 10"),
+  body("termId")
+    .optional()
+    .isInt({ min:1 })
+    .withMessage("Term ID must be a valid positive integer"),
   body("description")
     .optional()
     .trim()
@@ -78,7 +85,7 @@ const updateCourseValidation=[
 ];
 
 // Routes
-router.get("/",getAllCourses);
+router.get("/", verifyToken, requireAdmin, getAllCourses);
 router.get("/:id",idValidation,handleValidationErrors,
   getCourseById
 );

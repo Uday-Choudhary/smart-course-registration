@@ -24,3 +24,5 @@ export const deleteCourse=async(id)=>{
   const response=await apiClient.delete(`/api/course/${id}`, {auth:true })
   return response.data
 }
+
+

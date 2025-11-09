@@ -2,9 +2,9 @@ import TeacherView from "../../components/admin/faculty/TeacherView"; // Import 
 import { useState } from "react";
 import { teachersData } from "../../lib/data";
 import Table from "../../components/admin/faculty/Table";
-import TableSearch from "../../components/admin/students/TableSearch";
-import FormModal from "../../components/admin/students/FormModal";
-import Pagination from "../../components/admin/students/Pagination";
+import TableSearch from "../../components/admin/common/TableSearch";
+import FormModal from "../../components/admin/common/FormModal";
+import Pagination from "../../components/admin/common/Pagination";
 import TeacherForm from "../../components/admin/faculty/TeacherForm";
 
 const columns = [

@@ -52,7 +52,7 @@ const updateTermValidation =[
 ];
 
 // Routes
-router.get("/", getAllTerms);
+router.get("/", verifyToken, requireAdmin, getAllTerms);
 router.get("/:id",idValidation,handleValidationErrors,
   getTermById
 );

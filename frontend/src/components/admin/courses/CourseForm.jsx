@@ -1,15 +1,34 @@
 import React, { useState, useEffect } from 'react'
 import { createCourse, updateCourse } from '../../../api/courses'
+import { getAllTerms } from '../../../api/terms'
 
 const CourseForm = ({ course, onClose }) => {
   const [formData, setFormData] = useState({
     code: '',
     title: '',
     creditHours: '',
-    description: ''
+    description: '',
+    termId: ''
   })
+  const [terms, setTerms] = useState([])
+  const [loadingTerms, setLoadingTerms] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const loadTerms = async () => {
+      try {
+        setLoadingTerms(true)
+        const termsData = await getAllTerms()
+        setTerms(Array.isArray(termsData) ? termsData : [])
+      } catch (err) {
+        setError('Failed to load terms')
+      } finally {
+        setLoadingTerms(false)
+      }
+    }
+    loadTerms()
+  }, [])
 
   useEffect(() => {
     if (course) {
@@ -17,14 +36,16 @@ const CourseForm = ({ course, onClose }) => {
         code: course.code || '',
         title: course.title || '',
         creditHours: course.creditHours?.toString() || '',
-        description: course.description || ''
+        description: course.description || '',
+        termId: course.termId?.toString() || ''
       })
     } else {
       setFormData({
         code: '',
         title: '',
         creditHours: '',
-        description: ''
+        description: '',
+        termId: ''
       })
     }
   }, [course])
@@ -116,6 +137,32 @@ const CourseForm = ({ course, onClose }) => {
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="e.g., 3"
           />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Term <span className="text-red-500">*</span>
+          </label>
+          {loadingTerms ? (
+            <div className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100">
+              Loading terms...
+            </div>
+          ) : (
+            <select
+              name="termId"
+              value={formData.termId}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select a term</option>
+              {terms.map((term) => (
+                <option key={term.id} value={term.id}>
+                  {term.year} - {term.semester}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="mb-4">

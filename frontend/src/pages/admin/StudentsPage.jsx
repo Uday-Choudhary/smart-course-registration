@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import FormModal from "../../components/admin/students/FormModal";
-import Pagination from "../../components/admin/students/Pagination";
-import Table from "../../components/admin/students/Table";
-import TableSearch from "../../components/admin/students/TableSearch";
+import FormModal from "../../components/admin/common/FormModal";
+import Pagination from "../../components/admin/common/Pagination";
+import Table from "../../components/admin/common/Table";
+import TableSearch from "../../components/admin/common/TableSearch";
 import { role, studentsData } from "../../lib/data";
 import StudentForm from "../../components/admin/students/StudentForm";
 
