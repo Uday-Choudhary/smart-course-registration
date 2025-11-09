@@ -5,7 +5,7 @@ import Pagination from "../../components/admin/students/Pagination";
 import Table from "../../components/admin/faculty/Table";
 import TableSearch from "../../components/admin/students/TableSearch";
 import FormModal from "../../components/admin/students/FormModal";
-import SectionForm from '../../components/admin/SectionForm'
+import SectionForm from '../../components/admin/sections/SectionForm'
 
 const columns = [
     { header: "Section Code", accessor: "sectionCode" },

@@ -1,4 +1,3 @@
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -9,78 +8,81 @@ generator client {
 }
 
 model Role {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
-  users User[] 
+  users User[]
 }
 
 model User {
-  id         String   @id @default(uuid())
-  full_name  String
-  email      String   @unique
-  password   String
-  createdAt  DateTime @default(now())
+  id        String   @id @default(uuid())
+  full_name String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
 
-  roleId   Int
-  role     Role     @relation(fields: [roleId], references: [id])
+  roleId Int
+  role   Role @relation(fields: [roleId], references: [id])
 
-  registrations   Registration[]
-  waitlists       Waitlist[]
-  notifications   Notification[]
-  auditLogs       AuditLog[]
-  sectionsTaught  Section[]   
-
+  registrations  Registration[]
+  waitlists      Waitlist[]
+  notifications  Notification[]
+  auditLogs      AuditLog[]
+  sectionsTaught Section[]
 }
 
 //  academic structure (vary imp core of project is this onky )
 
 model Term {
-  id        Int      @id @default(autoincrement())
-  year      Int
-  semester  String   // exmaple odd/even/summer etc 
+  id       Int    @id @default(autoincrement())
+  year     Int
+  semester String // exmaple odd/even/summer etc 
 
-  courses   Section[]
+  courses   Course[]
+  deadlines Deadline[]
+  sections  Section[]
 }
 
 model Course {
-  id          Int        @id @default(autoincrement())
-  code        String      @unique
+  id          Int     @id @default(autoincrement())
+  code        String  @unique
   title       String
   creditHours Int
   description String?
 
-  sections    Section[]
+  termId    Int
+  term      Term       @relation(fields: [termId], references: [id])
+  sections  Section[]
+  deadlines Deadline[]
 }
 
 model Section {
-  id          Int        @id @default(autoincrement())
-  sectionCode String      // ex: Rama/Hopper/Turing
+  id          Int    @id @default(autoincrement())
+  sectionCode String // ex: Rama/Hopper/Turing
   capacity    Int
 
-  courseId Int
-  termId   Int
-  facultyId String? 
+  courseId  Int
+  termId    Int
+  facultyId String?
 
-  course  Course   @relation(fields: [courseId], references: [id])
-  term    Term     @relation(fields: [termId], references: [id])
-  faculty User?    @relation(fields: [facultyId], references: [id])  
+  course  Course @relation(fields: [courseId], references: [id])
+  term    Term   @relation(fields: [termId], references: [id])
+  faculty User?  @relation(fields: [facultyId], references: [id])
 
-  schedule       SectionSchedule[]
-  registrations  Registration[]
-  waitlists      Waitlist[]
+  schedule      SectionSchedule[]
+  registrations Registration[]
+  waitlists     Waitlist[]
 }
 
-
 model Room {
-  id       Int    @id @default(autoincrement())
-  roomCode String @unique
+  id        Int               @id @default(autoincrement())
+  roomCode  String            @unique
   schedules SectionSchedule[]
 }
 
 model SectionSchedule {
   id        Int      @id @default(autoincrement())
-  dayOfWeek String    
+  dayOfWeek String
   startTime DateTime
   endTime   DateTime
 
@@ -90,7 +92,6 @@ model SectionSchedule {
   section Section @relation(fields: [sectionId], references: [id])
   room    Room    @relation(fields: [roomId], references: [id])
 }
-
 
 model Registration {
   id        Int      @id @default(autoincrement())
@@ -114,7 +115,6 @@ model Waitlist {
   section Section @relation(fields: [sectionId], references: [id])
 }
 
-
 model Notification {
   id        Int      @id @default(autoincrement())
   message   String
@@ -122,7 +122,7 @@ model Notification {
   createdAt DateTime @default(now())
 
   userId String
-  user   User @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 //  Audit logs  
@@ -133,5 +133,20 @@ model AuditLog {
   createdAt DateTime @default(now())
 
   userId String
-  user   User @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Deadline {
+  id                Int      @id @default(autoincrement())
+  registrationOpen  DateTime
+  addDropStart      DateTime
+  addDropEnd        DateTime
+  registrationClose DateTime
+  waitlistClose     DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  termId            Int
+  courseId          Int
+  term              Term     @relation(fields: [termId], references: [id])
+  course            Course   @relation(fields: [courseId], references: [id])
 }
