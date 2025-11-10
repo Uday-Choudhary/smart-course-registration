@@ -1,61 +1,88 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import InputField from "../../admin/common/InputField"; // ✅ use your existing input field
+import React, { useState, useEffect } from "react";
+import { createTerm, updateTerm } from "../../../api/terms";
 
-// 🧩 Schema validation using Zod
-const schema = z.object({
-  year: z
-    .string()
-    .min(4, { message: "Year is required and must be at least 4 digits" })
-    .max(4, { message: "Year must be 4 digits" }),
-  semester: z.string().min(1, { message: "Semester is required!" }),
-});
+const TermForm = ({ term, onClose }) => {
+  const [formData, setFormData] = useState({ year: "", semester: "" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-// 🧩 Form Component
-const TermForm = ({ type, data, onSubmit }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: data || {},
-  });
+  useEffect(() => {
+    if (term) {
+      setFormData({
+        year: term.year?.toString() || "",
+        semester: term.semester || "",
+      });
+    } else {
+      setFormData({ year: "", semester: "" });
+    }
+  }, [term]);
 
-  const handleFormSubmit = handleSubmit((formData) => {
-    onSubmit(formData);
-  });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      if (term) {
+        await updateTerm(term.id, formData);
+        alert("Term updated successfully!");
+      } else {
+        await createTerm(formData);
+        alert("Term created successfully!");
+      }
+      onClose();
+    } catch (err) {
+      setError(err.message || "Failed to save term");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <form onSubmit={handleFormSubmit} className="flex flex-col gap-8">
-      {/* Title */}
-      <h1 className="text-xl font-semibold text-gray-800">
-        {type === "create" ? "Add New Term" : "Update Term"}
-      </h1>
+    <div>
+      <h2 className="text-xl font-bold mb-4">
+        {term ? "Edit Term" : "Create New Term"}
+      </h2>
 
-      {/* Academic Info */}
-      <span className="text-xs text-gray-400 font-medium">
-        Academic Term Information
-      </span>
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
 
-      <div className="flex flex-wrap justify-between gap-4">
-        <InputField
-          label="Year"
-          name="year"
-          register={register}
-          error={errors.year}
-          defaultValue={data?.year}
-          type="number"
-        />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Year
+          </label>
+          <input
+            type="number"
+            name="year"
+            value={formData.year}
+            onChange={handleChange}
+            required
+            min="2000"
+            max="2100"
+            placeholder="e.g., 2025"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Semester</label>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Semester
+          </label>
           <select
-            {...register("semester")}
-            defaultValue={data?.semester || ""}
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            name="semester"
+            value={formData.semester}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">-- Select Semester --</option>
             <option value="Spring">Spring</option>
@@ -63,25 +90,30 @@ const TermForm = ({ type, data, onSubmit }) => {
             <option value="Fall">Fall</option>
             <option value="Winter">Winter</option>
           </select>
-          {errors.semester && (
-            <p className="text-xs text-red-400">{errors.semester.message}</p>
-          )}
         </div>
-      </div>
 
-      {/* Submit Button */}
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          className={`p-2 rounded-md text-white w-max ${type === "create"
-              ? "bg-blue-400 hover:bg-blue-500"
-              : "bg-green-500 hover:bg-green-600"
-            }`}
-        >
-          {type === "create" ? "Create Term" : "Update Term"}
-        </button>
-      </div>
-    </form>
+        <div className="flex justify-end gap-2 mt-6">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+            disabled={loading}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`px-4 py-2 text-white rounded ${term
+              ? "bg-green-500 hover:bg-green-600"
+              : "bg-blue-500 hover:bg-blue-600"
+              } disabled:bg-gray-400`}
+          >
+            {loading ? "Saving..." : term ? "Update" : "Create"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 
