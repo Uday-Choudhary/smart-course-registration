@@ -24,7 +24,7 @@ A dynamic, university-level course registration platform for students, faculty, 
 4. Run the apps (in two terminals)
    - Backend: cd backend && npm run dev (or npm start)
    - Frontend: cd frontend && npm run dev (or npm start)
-   - Then open the frontend URL shown in the terminal
+   - ```npm run dev:all`` to run both frontend and backend at a time .
 
 ---
 
