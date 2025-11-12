@@ -27,8 +27,6 @@ model User {
   sex            String?
 
   subjects       Json?          //  stores ["DSA","M1","AP"]
-
-  auditLogs      AuditLog[]
   notifications  Notification[]
   registrations  Registration[]
   sectionsTaught Section[]
@@ -41,6 +39,7 @@ model Term {
   id       Int       @id @default(autoincrement())
   year     Int
   semester String
+  courses  Course[]  
   sections Section[]
 }
 
@@ -50,6 +49,8 @@ model Course {
   title       String
   creditHours Int
   description String?
+  termId      Int           
+  term        Term @relation(fields: [termId], references: [id])
   sections    Section[]
 }
 
@@ -112,10 +113,3 @@ model Notification {
   user      User     @relation(fields: [userId], references: [id])
 }
 
-model AuditLog {
-  id        Int      @id @default(autoincrement())
-  activity  String
-  createdAt DateTime @default(now())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-}
