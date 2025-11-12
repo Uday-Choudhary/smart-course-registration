@@ -7,47 +7,43 @@ const TeacherView = ({ teacher, onClose }) => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Teacher Details</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">Faculty Details</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex flex-col">
           <span className="text-sm font-medium text-gray-500">Name:</span>
-          <span className="text-gray-800">{teacher.name}</span>
+          <span className="text-gray-800">{teacher.full_name || "N/A"}</span>
         </div>
         <div className="flex flex-col">
-          <span className="text-sm font-medium text-gray-500">Teacher ID:</span>
-          <span className="text-gray-800">{teacher.teacherId}</span>
+          <span className="text-sm font-medium text-gray-500">Faculty ID:</span>
+          <span className="text-gray-800">{teacher.id ? teacher.id.slice(0, 8) : "N/A"}</span>
         </div>
         <div className="flex flex-col">
           <span className="text-sm font-medium text-gray-500">Email:</span>
-          <span className="text-gray-800">{teacher.email}</span>
+          <span className="text-gray-800">{teacher.email || "N/A"}</span>
         </div>
         <div className="flex flex-col">
           <span className="text-sm font-medium text-gray-500">Phone:</span>
-          <span className="text-gray-800">{teacher.phone}</span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium text-gray-500">Subjects:</span>
-          <span className="text-gray-800">{teacher.subjects.join(", ")}</span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium text-gray-500">Classes:</span>
-          <span className="text-gray-800">{teacher.classes.join(", ")}</span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium text-gray-500">Address:</span>
-          <span className="text-gray-800">{teacher.address}</span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium text-gray-500">Blood Type:</span>
-          <span className="text-gray-800">{teacher.bloodType}</span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-medium text-gray-500">Birthday:</span>
-          <span className="text-gray-800">{teacher.birthday}</span>
+          <span className="text-gray-800">{teacher.phone || "N/A"}</span>
         </div>
         <div className="flex flex-col">
           <span className="text-sm font-medium text-gray-500">Sex:</span>
-          <span className="text-gray-800">{teacher.sex}</span>
+          <span className="text-gray-800 capitalize">{teacher.sex || "N/A"}</span>
+        </div>
+        <div className="flex flex-col md:col-span-2">
+          <span className="text-sm font-medium text-gray-500">Subjects:</span>
+          <span className="text-gray-800">
+            {teacher.subjects && teacher.subjects.length > 0 
+              ? teacher.subjects.join(", ") 
+              : "No subjects assigned"}
+          </span>
+        </div>
+        <div className="flex flex-col md:col-span-2">
+          <span className="text-sm font-medium text-gray-500">Classes:</span>
+          <span className="text-gray-800">
+            {teacher.classes && teacher.classes.length > 0 
+              ? teacher.classes.join(", ") 
+              : "No classes assigned"}
+          </span>
         </div>
       </div>
       <div className="mt-6 flex justify-end">

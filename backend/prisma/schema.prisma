@@ -1,76 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model Role {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-
+  id    Int    @id @default(autoincrement())
+  name  String @unique
   users User[]
 }
 
 model User {
-  id        String   @id @default(uuid())
-  full_name String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id             String         @id @default(uuid())
+  email          String         @unique
+  createdAt      DateTime       @default(now())
+  full_name      String
+  password       String
+  roleId         Int
+  address        String?
+  birthday       String?
+  bloodType      String?
+  phone          String?
+  sex            String?
 
-  roleId Int
-  role   Role @relation(fields: [roleId], references: [id])
+  subjects       Json?          //  stores ["DSA","M1","AP"]
 
-  registrations  Registration[]
-  waitlists      Waitlist[]
-  notifications  Notification[]
   auditLogs      AuditLog[]
+  notifications  Notification[]
+  registrations  Registration[]
   sectionsTaught Section[]
+  role           Role           @relation(fields: [roleId], references: [id])
+  waitlists      Waitlist[]
 }
 
-//  academic structure (vary imp core of project is this onky )
 
 model Term {
-  id       Int    @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   year     Int
-  semester String // exmaple odd/even/summer etc 
-
-  courses   Course[]
-  deadlines Deadline[]
-  sections  Section[]
+  semester String
+  sections Section[]
 }
 
 model Course {
-  id          Int     @id @default(autoincrement())
-  code        String  @unique
+  id          Int       @id @default(autoincrement())
+  code        String    @unique
   title       String
   creditHours Int
   description String?
-
-  termId    Int
-  term      Term       @relation(fields: [termId], references: [id])
-  sections  Section[]
-  deadlines Deadline[]
+  sections    Section[]
 }
 
 model Section {
-  id          Int    @id @default(autoincrement())
-  sectionCode String // ex: Rama/Hopper/Turing
-  capacity    Int
-
-  courseId  Int
-  termId    Int
-  facultyId String?
-
-  course  Course @relation(fields: [courseId], references: [id])
-  term    Term   @relation(fields: [termId], references: [id])
-  faculty User?  @relation(fields: [facultyId], references: [id])
-
-  schedule      SectionSchedule[]
+  id            Int               @id @default(autoincrement())
+  sectionCode   String
+  capacity      Int
+  courseId      Int
+  termId        Int
+  facultyId     String?
   registrations Registration[]
+  course        Course            @relation(fields: [courseId], references: [id])
+  faculty       User?             @relation(fields: [facultyId], references: [id])
+  term          Term              @relation(fields: [termId], references: [id])
+  schedule      SectionSchedule[]
   waitlists     Waitlist[]
 }
 
@@ -85,34 +79,28 @@ model SectionSchedule {
   dayOfWeek String
   startTime DateTime
   endTime   DateTime
-
   sectionId Int
   roomId    Int
-
-  section Section @relation(fields: [sectionId], references: [id])
-  room    Room    @relation(fields: [roomId], references: [id])
+  room      Room     @relation(fields: [roomId], references: [id])
+  section   Section  @relation(fields: [sectionId], references: [id])
 }
 
 model Registration {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-
   studentId String
   sectionId Int
-
-  student User    @relation(fields: [studentId], references: [id])
-  section Section @relation(fields: [sectionId], references: [id])
+  section   Section  @relation(fields: [sectionId], references: [id])
+  student   User     @relation(fields: [studentId], references: [id])
 }
 
 model Waitlist {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-
   studentId String
   sectionId Int
-
-  student User    @relation(fields: [studentId], references: [id])
-  section Section @relation(fields: [sectionId], references: [id])
+  section   Section  @relation(fields: [sectionId], references: [id])
+  student   User     @relation(fields: [studentId], references: [id])
 }
 
 model Notification {
@@ -120,33 +108,14 @@ model Notification {
   message   String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 }
-
-//  Audit logs  
 
 model AuditLog {
   id        Int      @id @default(autoincrement())
   activity  String
   createdAt DateTime @default(now())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-}
-
-model Deadline {
-  id                Int      @id @default(autoincrement())
-  registrationOpen  DateTime
-  addDropStart      DateTime
-  addDropEnd        DateTime
-  registrationClose DateTime
-  waitlistClose     DateTime
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  termId            Int
-  courseId          Int
-  term              Term     @relation(fields: [termId], references: [id])
-  course            Course   @relation(fields: [courseId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 }

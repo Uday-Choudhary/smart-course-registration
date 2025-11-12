@@ -1,112 +1,110 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InputField from "../common/InputField";
+import { getAllCourses } from "../../../api/courses";
 
 const schema = z.object({
-  username: z
-    .string()
-    .min(3, { message: "Username must be at least 3 characters long!" })
-    .max(20, { message: "Username must be at most 20 characters long!" }),
+  full_name: z.string().min(1, { message: "Full name is required!" }),
   email: z.string().email({ message: "Invalid email address!" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters long!" }),
-  firstName: z.string().min(1, { message: "First name is required!" }),
-  lastName: z.string().min(1, { message: "Last name is required!" }),
   phone: z.string().min(1, { message: "Phone is required!" }),
-  address: z.string().min(1, { message: "Address is required!" }),
-  bloodType: z.string().min(1, { message: "Blood Type is required!" }),
-  birthday: z.string().min(1, { message: "Birthday is required!" }),
   sex: z.enum(["male", "female"], { message: "Sex is required!" }),
-  img: z.any().optional(),
+  subjects: z.array(z.string()).optional(),
 });
 
 const TeacherForm = ({ type, data, onSubmit }) => {
+  const [courses, setCourses] = useState([]);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+
+  useEffect(() => {
+    const loadCourses = async () => {
+      try {
+        const coursesData = await getAllCourses();
+        setCourses(coursesData);
+      } catch (err) {
+        console.error("Error loading courses:", err);
+      }
+    };
+    loadCourses();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setSelectedSubjects(data.subjects || []);
+    }
+  }, [data]);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: data || {},
+    defaultValues: data
+      ? {
+          full_name: data.full_name || "",
+          email: data.email || "",
+          phone: data.phone || "",
+          sex: data.sex || "",
+          subjects: data.subjects || [],
+        }
+      : {
+          full_name: "",
+          email: "",
+          phone: "",
+          sex: "",
+          subjects: [],
+        },
   });
 
+  const handleSubjectChange = (courseCode, isChecked) => {
+    let updatedSubjects;
+    if (isChecked) {
+      updatedSubjects = [...selectedSubjects, courseCode];
+    } else {
+      updatedSubjects = selectedSubjects.filter((s) => s !== courseCode);
+    }
+    setSelectedSubjects(updatedSubjects);
+    setValue("subjects", updatedSubjects);
+  };
+
   const handleFormSubmit = (formData) => {
-    console.log("Teacher form data:", formData);
-    if (onSubmit) onSubmit(formData);
+    const submitData = {
+      ...formData,
+      subjects: selectedSubjects,
+    };
+    if (onSubmit) onSubmit(submitData);
   };
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleSubmit(handleFormSubmit)}>
       <h1 className="text-xl font-semibold">
-        {type === "create" ? "Create a new teacher" : "Update teacher"}
+        {type === "create" ? "Create a new faculty" : "Update faculty"}
       </h1>
 
-      {/* ==== AUTHENTICATION INFO ==== */}
-      <span className="text-xs text-gray-400 font-medium">Authentication Information</span>
+      {/* ==== BASIC INFORMATION ==== */}
+      <span className="text-xs text-gray-400 font-medium">Basic Information</span>
       <div className="flex justify-between flex-wrap gap-4">
         <InputField
-          label="Username"
-          name="username"
+          label="Full Name"
+          name="full_name"
           register={register}
-          error={errors?.username}
+          error={errors?.full_name}
         />
         <InputField
           label="Email"
           name="email"
+          type="email"
           register={register}
           error={errors?.email}
-        />
-        <InputField
-          label="Password"
-          name="password"
-          type="password"
-          register={register}
-          error={errors?.password}
-        />
-      </div>
-
-      {/* ==== PERSONAL INFO ==== */}
-      <span className="text-xs text-gray-400 font-medium">Personal Information</span>
-      <div className="flex justify-between flex-wrap gap-4">
-        <InputField
-          label="First Name"
-          name="firstName"
-          register={register}
-          error={errors?.firstName}
-        />
-        <InputField
-          label="Last Name"
-          name="lastName"
-          register={register}
-          error={errors?.lastName}
         />
         <InputField
           label="Phone"
           name="phone"
           register={register}
           error={errors?.phone}
-        />
-        <InputField
-          label="Address"
-          name="address"
-          register={register}
-          error={errors?.address}
-        />
-        <InputField
-          label="Blood Type"
-          name="bloodType"
-          register={register}
-          error={errors?.bloodType}
-        />
-        <InputField
-          label="Birthday"
-          name="birthday"
-          type="date"
-          register={register}
-          error={errors?.birthday}
         />
 
         {/* ==== SEX ==== */}
@@ -124,21 +122,34 @@ const TeacherForm = ({ type, data, onSubmit }) => {
             <p className="text-xs text-red-400">{errors.sex.message}</p>
           )}
         </div>
+      </div>
 
-        {/* ==== IMAGE UPLOAD ==== */}
-        <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
-          <label
-            className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
-            htmlFor="img"
-          >
-            <img src="/upload.png" alt="upload" width={28} height={28} />
-            <span>Upload a photo</span>
-          </label>
-          <input type="file" id="img" {...register("img")} className="hidden" />
-          {errors?.img && (
-            <p className="text-xs text-red-400">{errors.img.message}</p>
-          )}
+      {/* ==== SUBJECTS ==== */}
+      <span className="text-xs text-gray-400 font-medium">Subjects</span>
+      <div className="flex flex-col gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-48 overflow-y-auto p-2 border border-gray-200 rounded-md">
+          {courses.map((course) => (
+            <label
+              key={course.id}
+              className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+            >
+              <input
+                type="checkbox"
+                checked={selectedSubjects.includes(course.code)}
+                onChange={(e) => handleSubjectChange(course.code, e.target.checked)}
+                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-700">
+                {course.code} - {course.title}
+              </span>
+            </label>
+          ))}
         </div>
+        {selectedSubjects.length > 0 && (
+          <p className="text-xs text-gray-500">
+            Selected: {selectedSubjects.join(", ")}
+          </p>
+        )}
       </div>
 
       <button

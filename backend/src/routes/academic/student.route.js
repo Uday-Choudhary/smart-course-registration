@@ -1,0 +1,26 @@
+const express = require("express");
+const router = express.Router();
+
+const {
+  getAllStudents,
+  createStudent,
+  updateStudent,
+  deleteStudent,
+  getMyProfile,
+} = require("../../controllers/academic/student.controller");
+
+const {
+  verifyToken,
+  requireAdmin,
+} = require("../../miiddleware/authMiddleware");
+
+// Self profile for any authenticated user
+router.get("/me", verifyToken, getMyProfile);
+
+// Admin CRUD
+router.get("/", verifyToken, requireAdmin, getAllStudents);
+router.post("/", verifyToken, requireAdmin, createStudent);
+router.put("/:id", verifyToken, requireAdmin, updateStudent);
+router.delete("/:id", verifyToken, requireAdmin, deleteStudent);
+
+module.exports = router;

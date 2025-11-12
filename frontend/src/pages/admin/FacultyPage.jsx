@@ -1,11 +1,11 @@
 import TeacherView from "../../components/admin/faculty/TeacherView"; // Import TeacherView
-import { useState } from "react";
-import { teachersData } from "../../lib/data";
+import { useState, useEffect } from "react";
 import Table from "../../components/admin/faculty/Table";
 import TableSearch from "../../components/admin/common/TableSearch";
 import FormModal from "../../components/admin/common/FormModal";
 import Pagination from "../../components/admin/common/Pagination";
 import TeacherForm from "../../components/admin/faculty/TeacherForm";
+import { getAllFaculty, createFaculty, updateFaculty, deleteFaculty } from "../../api/faculty";
 
 const columns = [
   { header: "Info", accessor: "info" },
@@ -20,10 +20,31 @@ const FacultyPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState("create");
   const [selectedTeacher, setSelectedTeacher] = useState(null);
-  const [teachers, setTeachers] = useState(teachersData);
+  const [teachers, setTeachers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch faculty from API
+  useEffect(() => {
+    fetchFaculty();
+  }, []);
+
+  const fetchFaculty = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllFaculty();
+      setTeachers(data);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching faculty:", err);
+      setError("Failed to load faculty data");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const openModal = (type, teacher = null) => {
-    setModalType(type);
+    setModalType(type);  
     setSelectedTeacher(teacher);
     setIsModalOpen(true);
   };
@@ -33,28 +54,37 @@ const FacultyPage = () => {
     setSelectedTeacher(null);
   };
 
-  const addTeacher = (teacher) => {
-    setTeachers([
-      ...teachers,
-      { ...teacher, id: teachers.length + 1, photo: "/avatar.png" },
-    ]);
-    closeModal();
+  const addTeacher = async (teacherData) => {
+    try {
+      await createFaculty(teacherData);
+      await fetchFaculty(); // Refresh the list
+      closeModal();
+    } catch (err) {
+      console.error("Error creating faculty:", err);
+      alert("Failed to create faculty. Please try again.");
+    }
   };
 
-  const deleteTeacher = () => {
-    setTeachers(teachers.filter((t) => t.id !== selectedTeacher.id));
-    closeModal();
+  const handleDeleteTeacher = async () => {
+    try {
+      await deleteFaculty(selectedTeacher.id);
+      await fetchFaculty(); // Refresh the list
+      closeModal();
+    } catch (err) {
+      console.error("Error deleting faculty:", err);
+      alert("Failed to delete faculty. Please try again.");
+    }
   };
 
-  const updateTeacher = (updatedTeacher) => {
-    setTeachers(
-      teachers.map((teacher) =>
-        teacher.id === updatedTeacher.id
-          ? { ...teacher, ...updatedTeacher }
-          : teacher
-      )
-    );
-    closeModal();
+  const updateTeacher = async (updatedTeacherData) => {
+    try {
+      await updateFaculty(selectedTeacher.id, updatedTeacherData);
+      await fetchFaculty(); // Refresh the list
+      closeModal();
+    } catch (err) {
+      console.error("Error updating faculty:", err);
+      alert("Failed to update faculty. Please try again.");
+    }
   };
 
   const renderRow = (item) => (
@@ -64,25 +94,25 @@ const FacultyPage = () => {
     >
       <td className="flex items-center gap-4 p-4">
         <img
-          src={item.photo || "/avatar.png"}
+          src="/avatar.png"
           alt="teacher"
           width={40}
           height={40}
           className="w-10 h-10 rounded-full object-cover border border-gray-200"
         />
         <div className="flex flex-col">
-          <h3 className="font-semibold text-gray-800 leading-tight">{item.name}</h3>
-          <p className="text-xs text-gray-500">{item.teacherId}</p>
+          <h3 className="font-semibold text-gray-800 leading-tight">{item.full_name}</h3>
+          <p className="text-xs text-gray-500">{item.email}</p>
         </div>
       </td>
-      <td className="hidden md:table-cell text-gray-700">{item.teacherId}</td>
+      <td className="hidden md:table-cell text-gray-700">{item.id.slice(0, 8)}</td>
       <td className="hidden md:table-cell text-gray-700">
-        {item.subjects.join(", ")}
+        {item.subjects && item.subjects.length > 0 ? item.subjects.join(", ") : "N/A"}
       </td>
       <td className="hidden md:table-cell text-gray-700">
-        {item.classes.join(", ")}
+        {item.classes && item.classes.length > 0 ? item.classes.join(", ") : "No classes assigned"}
       </td>
-      <td className="hidden md:table-cell text-gray-700">{item.phone}</td>
+      <td className="hidden md:table-cell text-gray-700">{item.phone || "N/A"}</td>
       <td className="pr-4">
         <div className="flex items-center justify-center gap-2">
           {/* View Button */}
@@ -155,7 +185,17 @@ const FacultyPage = () => {
 
       {/* ===== TABLE LIST ===== */}
       <div className="px-4 md:px-6 py-2">
-        <Table columns={columns} renderRow={renderRow} data={teachers} />
+        {loading ? (
+          <div className="flex justify-center items-center py-8">
+            <p className="text-gray-500">Loading faculty...</p>
+          </div>
+        ) : error ? (
+          <div className="flex justify-center items-center py-8">
+            <p className="text-red-500">{error}</p>
+          </div>
+        ) : (
+          <Table columns={columns} renderRow={renderRow} data={teachers} />
+        )}
       </div>
 
       {/* ===== PAGINATION ===== */}
@@ -164,7 +204,7 @@ const FacultyPage = () => {
       </div>
 
       {/* ===== MODAL SECTION ===== */}
-      <FormModal isOpen={isModalOpen} onClose={closeModal}>
+      <FormModal isOpen={isModalOpen} onClose={closeModal}> 
         {modalType === "delete" ? (
           <div>
             <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
@@ -177,7 +217,7 @@ const FacultyPage = () => {
                 Cancel
               </button>
               <button
-                onClick={deleteTeacher}
+                onClick={handleDeleteTeacher}
                 className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
               >
                 Delete
