@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { createSection, updateSection } from '../../../api/sections'
 import { getAllCourses } from '../../../api/courses'
 import { getAllTerms } from '../../../api/terms'
+import { getAllFaculty } from '../../../api/faculty'
 
 const SectionForm = ({ section, onClose }) => {
   // State to store form data
@@ -21,6 +22,7 @@ const SectionForm = ({ section, onClose }) => {
   // State for dropdown options
   const [courses, setCourses] = useState([])
   const [terms, setTerms] = useState([])
+  const [faculties, setFaculties] = useState([])
   const [loadingOptions, setLoadingOptions] = useState(true)
 
   // Load dropdown options
@@ -28,12 +30,14 @@ const SectionForm = ({ section, onClose }) => {
     const loadOptions = async () => {
       try {
         setLoadingOptions(true)
-        const [coursesData, termsData] = await Promise.all([
+        const [coursesData, termsData, facultiesData] = await Promise.all([
           getAllCourses(),
-          getAllTerms()
+          getAllTerms(),
+          getAllFaculty()
         ])
         setCourses(coursesData)
         setTerms(termsData)
+        setFaculties(facultiesData)
       } catch (err) {
         setError('Failed to load options')
       } finally {
@@ -205,19 +209,24 @@ const SectionForm = ({ section, onClose }) => {
           </select>
         </div>
 
-        {/* Faculty ID input field (optional) */}
+        {/* Faculty dropdown (optional) */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Faculty ID (Optional)
+            Faculty (Optional)
           </label>
-          <input
-            type="text"
+          <select
             name="facultyId"
             value={formData.facultyId}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Leave empty if not assigned"
-          />
+          >
+            <option value="">Select a faculty (optional)</option>
+            {faculties.map((faculty) => (
+              <option key={faculty.id} value={faculty.id}>
+                {faculty.full_name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Buttons */}

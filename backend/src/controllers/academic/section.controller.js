@@ -31,8 +31,17 @@ exports.createSection = async (req, res) => {
 
     // If facultyId is provided, verify faculty exists
     if (facultyId) {
-      const faculty = await prisma.user.findUnique({
-        where: { id: facultyId },
+      const facultyRole = await prisma.role.findUnique({
+        where: { name: "Faculty" },
+      });
+      if (!facultyRole) {
+        return res.status(500).json({
+          success: false,
+          error: "Faculty role not found. Please check your database seed.",
+        });
+      }
+      const faculty = await prisma.user.findFirst({
+        where: { id: facultyId, roleId: facultyRole.id },
       });
 
       if (!faculty) {
@@ -71,10 +80,10 @@ exports.createSection = async (req, res) => {
     });
   } catch (error) {
     console.error("createSection Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: "Failed to create section",
-      details: error.message 
+      details: error.message
     });
   }
 };
@@ -113,10 +122,10 @@ exports.getAllSections = async (req, res) => {
     });
   } catch (error) {
     console.error("getAllSections Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: "Failed to fetch sections",
-      details: error.message 
+      details: error.message
     });
   }
 };
@@ -181,10 +190,10 @@ exports.getSectionById = async (req, res) => {
     });
   } catch (error) {
     console.error("getSectionById Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: "Failed to fetch section",
-      details: error.message 
+      details: error.message
     });
   }
 };
@@ -238,8 +247,19 @@ exports.updateSection = async (req, res) => {
       if (facultyId === null || facultyId === '') {
         updateData.facultyId = null;
       } else {
-        const faculty = await prisma.user.findUnique({
-          where: { id: facultyId },
+        console.log("facultyId:", facultyId); // Logging facultyId
+        const facultyRole = await prisma.role.findUnique({
+          where: { name: "Faculty" },
+        });
+        console.log("facultyRole:", facultyRole); // Logging facultyRole
+        if (!facultyRole) {
+          return res.status(500).json({
+            success: false,
+            error: "Faculty role not found. Please check your database seed.",
+          });
+        }
+        const faculty = await prisma.user.findFirst({
+          where: { id: facultyId, roleId: facultyRole.id },
         });
         if (!faculty) {
           return res.status(404).json({
@@ -280,10 +300,10 @@ exports.updateSection = async (req, res) => {
         error: "Section not found",
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: "Failed to update section",
-      details: error.message 
+      details: error.message
     });
   }
 };
@@ -330,10 +350,10 @@ exports.deleteSection = async (req, res) => {
         error: "Section not found",
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: "Failed to delete section",
-      details: error.message 
+      details: error.message
     });
   }
 };
