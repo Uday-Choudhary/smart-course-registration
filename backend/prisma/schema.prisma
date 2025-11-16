@@ -30,6 +30,7 @@ model User {
   notifications  Notification[]
   registrations  Registration[]
   sectionsTaught Section[]
+  schedulesTaught SectionSchedule[]
   role           Role           @relation(fields: [roleId], references: [id])
   waitlists      Waitlist[]
 }
@@ -82,8 +83,10 @@ model SectionSchedule {
   endTime   DateTime
   sectionId Int
   roomId    Int
+  facultyId String?
   room      Room     @relation(fields: [roomId], references: [id])
   section   Section  @relation(fields: [sectionId], references: [id])
+  faculty   User?    @relation(fields: [facultyId], references: [id])
 }
 
 model Registration {

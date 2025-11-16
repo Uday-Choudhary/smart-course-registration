@@ -18,9 +18,10 @@ app.use("/api/term", require("./routes/academic/term.route"));
 app.use("/api/course", require("./routes/academic/course.route"));
 app.use("/api/section", require("./routes/academic/section.route"));
 app.use("/api/room", require("./routes/academic/room.route"));
+app.use("/api/schedule", require("./routes/academic/schedule.route"));
 app.use("/api/enroll", require("./routes/academic/enroll.route"));
 app.use("/api/students", require("./routes/academic/student.route"));
-app.use("/api/faculty", require("./routes/academic/faculty.route"));  
+app.use("/api/faculty", require("./routes/academic/faculty.route"));
 
 
 
