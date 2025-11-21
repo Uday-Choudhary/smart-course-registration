@@ -5,7 +5,7 @@ exports.enrollStudent = async (req, res) => {
   try {
     const { studentId, sectionId } = req.body;
 
-    const enrollment = await prisma.enrollment.create({
+    const enrollment = await prisma.registration.create({
       data: { studentId, sectionId },
     });
 
