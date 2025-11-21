@@ -33,9 +33,6 @@ const Navbar = () => {
         <a href="#roles" className="hover:text-indigo-600 transition">
           Roles
         </a>
-        <a href="#contact" className="hover:text-indigo-600 transition">
-          Contact
-        </a>
       </div>
 
       <div className="hidden md:flex items-center gap-3">

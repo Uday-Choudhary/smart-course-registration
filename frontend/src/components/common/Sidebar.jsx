@@ -9,7 +9,7 @@ const menuItems = [
     visible: ["Student"], // This whole section only shows for students
     items: [
       { icon: "/home.png", label: "Dashboard", href: "/", visible: ["Student"] },
-      { icon: "/subject.png", label: "Browse Courses", href: "/courses", visible: ["Student"] },
+      { icon: "/subject.png", label: "Browse Courses", href: "/student/browse-courses", visible: ["Student"] },
       { icon: "/assignment.png", label: "My Registrations", href: "/my-registrations", visible: ["Student"] },
       { icon: "/calendar.png", label: "My Timetable", href: "/timetable", visible: ["Student"] },
       { icon: "/announcement.png", label: "Notifications", href: "/notifications", visible: ["Student"] },

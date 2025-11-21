@@ -3,6 +3,8 @@ import Home from "./pages/Home";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import StudentDashboard from "./components/dashboard/StudentDashboard";
+import BrowseCourses from "./pages/student/BrowseCourses";
+import CourseDetails from "./pages/student/CourseDetails";
 import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
 import Navbar from "./components/common/Navbar";
@@ -45,14 +47,17 @@ function AppContent() {
     "/admin/deadlines",
     "/admin/rooms",
     "/admin/schedules",
+    "/student/browse-courses",
+    "/student/courses",
   ];
 
-  // ✅ Detect dynamic routes like `/admin/terms/1/courses`
+  // ✅ Detect dynamic routes like `/admin/terms/1/courses` or `/student/courses/1`
   const isDynamicAdminRoute = /^\/admin\/terms\/\d+\/courses$/.test(location.pathname);
+  const isStudentCourseDetail = /^\/student\/courses\/\d+$/.test(location.pathname);
 
   // ✅ Hide Navbar for admin dashboard and dynamic admin routes
   const shouldHideNavbar =
-    hideNavbarPaths.includes(location.pathname) || isDynamicAdminRoute;
+    hideNavbarPaths.includes(location.pathname) || isDynamicAdminRoute || isStudentCourseDetail;
 
   return (
     <>
@@ -70,6 +75,22 @@ function AppContent() {
           element={
             <ProtectedRoute allowedRoles={["Student"]}>
               <StudentDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/browse-courses"
+          element={
+            <ProtectedRoute allowedRoles={["Student"]}>
+              <BrowseCourses />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/courses/:id"
+          element={
+            <ProtectedRoute allowedRoles={["Student"]}>
+              <CourseDetails />
             </ProtectedRoute>
           }
         />
