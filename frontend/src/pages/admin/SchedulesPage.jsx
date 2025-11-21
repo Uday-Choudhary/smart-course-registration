@@ -111,7 +111,6 @@ const SchedulesPage = () => {
                 key={item.id}
                 className="border-b border-gray-200 even:bg-gray-50 text-sm hover:bg-[#f3e8ff] transition"
             >
-                <td className="p-4 text-gray-800 font-medium">{item.id}</td>
                 <td className="p-4 text-gray-700">
                     {item.sectionCourse?.section?.sectionCode || 'N/A'}
                 </td>

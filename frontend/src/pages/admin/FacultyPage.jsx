@@ -44,7 +44,7 @@ const FacultyPage = () => {
   };
 
   const openModal = (type, teacher = null) => {
-    setModalType(type);  
+    setModalType(type);
     setSelectedTeacher(teacher);
     setIsModalOpen(true);
   };
@@ -108,9 +108,6 @@ const FacultyPage = () => {
       <td className="hidden md:table-cell text-gray-700">{item.id.slice(0, 8)}</td>
       <td className="hidden md:table-cell text-gray-700">
         {item.subjects && item.subjects.length > 0 ? item.subjects.join(", ") : "N/A"}
-      </td>
-      <td className="hidden md:table-cell text-gray-700">
-        {item.classes && item.classes.length > 0 ? item.classes.join(", ") : "No classes assigned"}
       </td>
       <td className="hidden md:table-cell text-gray-700">{item.phone || "N/A"}</td>
       <td className="pr-4">
@@ -204,7 +201,7 @@ const FacultyPage = () => {
       </div>
 
       {/* ===== MODAL SECTION ===== */}
-      <FormModal isOpen={isModalOpen} onClose={closeModal}> 
+      <FormModal isOpen={isModalOpen} onClose={closeModal}>
         {modalType === "delete" ? (
           <div>
             <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>

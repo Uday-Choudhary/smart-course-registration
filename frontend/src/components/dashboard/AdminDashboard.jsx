@@ -31,10 +31,10 @@ const AdminDashboard = ({ children }) => {
   return (
     <div className="flex h-screen bg-[#ffffff] p-4 gap-4">
       {/* ===== LEFT - SIDEBAR ===== */}
-      <div className="w-[18%] p-4 bg-[#F7F7F7] rounded-3xl shadow-sm">
+      <div className="w-[18%] p-4 bg-[#F7F7F7] rounded-3xl shadow-sm h-full overflow-y-auto flex flex-col">
         <Link
           to="/"
-          className="flex items-center justify-center lg:justify-start gap-2 mb-8"
+          className="flex items-center justify-center lg:justify-start gap-2 mb-8 shrink-0"
         >
           <img src="/logo.png" alt="logo" width={32} height={32} />
           <span className="hidden lg:block font-bold text-gray-800">
