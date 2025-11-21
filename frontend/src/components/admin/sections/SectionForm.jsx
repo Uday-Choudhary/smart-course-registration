@@ -2,27 +2,21 @@
 // It receives a section prop - if section exists, we're editing; if null, we're creating
 import React, { useState, useEffect } from 'react'
 import { createSection, updateSection } from '../../../api/sections'
-import { getAllCourses } from '../../../api/courses'
 import { getAllTerms } from '../../../api/terms'
-import { getAllFaculty } from '../../../api/faculty'
 
 const SectionForm = ({ section, onClose }) => {
   // State to store form data
   const [formData, setFormData] = useState({
     sectionCode: '',
     capacity: '',
-    courseId: '',
     termId: '',
-    facultyId: ''
   })
   // State to track if form is being submitted
   const [loading, setLoading] = useState(false)
   // State to store error messages
   const [error, setError] = useState('')
   // State for dropdown options
-  const [courses, setCourses] = useState([])
   const [terms, setTerms] = useState([])
-  const [faculties, setFaculties] = useState([])
   const [loadingOptions, setLoadingOptions] = useState(true)
 
   // Load dropdown options
@@ -30,14 +24,8 @@ const SectionForm = ({ section, onClose }) => {
     const loadOptions = async () => {
       try {
         setLoadingOptions(true)
-        const [coursesData, termsData, facultiesData] = await Promise.all([
-          getAllCourses(),
-          getAllTerms(),
-          getAllFaculty()
-        ])
-        setCourses(coursesData)
+        const termsData = await getAllTerms()
         setTerms(termsData)
-        setFaculties(facultiesData)
       } catch (err) {
         setError('Failed to load options')
       } finally {
@@ -54,18 +42,14 @@ const SectionForm = ({ section, onClose }) => {
       setFormData({
         sectionCode: section.sectionCode || '',
         capacity: section.capacity?.toString() || '',
-        courseId: section.courseId?.toString() || '',
         termId: section.termId?.toString() || '',
-        facultyId: section.facultyId || ''
       })
     } else {
       // If creating new, start with empty form
       setFormData({
         sectionCode: '',
         capacity: '',
-        courseId: '',
         termId: '',
-        facultyId: ''
       })
     }
   }, [section])
@@ -90,9 +74,7 @@ const SectionForm = ({ section, onClose }) => {
       const submitData = {
         sectionCode: formData.sectionCode,
         capacity: parseInt(formData.capacity),
-        courseId: parseInt(formData.courseId),
         termId: parseInt(formData.termId),
-        ...(formData.facultyId && { facultyId: formData.facultyId })
       }
 
       // Check if we're editing (section exists) or creating (section is null)
@@ -167,27 +149,6 @@ const SectionForm = ({ section, onClose }) => {
           />
         </div>
 
-        {/* Course dropdown */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Course
-          </label>
-          <select
-            name="courseId"
-            value={formData.courseId}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select a course</option>
-            {courses.map((course) => (
-              <option key={course.id} value={course.id}>
-                {course.code} - {course.title}
-              </option>
-            ))}
-          </select>
-        </div>
-
         {/* Term dropdown */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -204,26 +165,6 @@ const SectionForm = ({ section, onClose }) => {
             {terms.map((term) => (
               <option key={term.id} value={term.id}>
                 {term.year} - {term.semester}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Faculty dropdown (optional) */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Faculty (Optional)
-          </label>
-          <select
-            name="facultyId"
-            value={formData.facultyId}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select a faculty (optional)</option>
-            {faculties.map((faculty) => (
-              <option key={faculty.id} value={faculty.id}>
-                {faculty.full_name}
               </option>
             ))}
           </select>

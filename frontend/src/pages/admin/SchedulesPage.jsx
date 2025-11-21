@@ -113,7 +113,10 @@ const SchedulesPage = () => {
             >
                 <td className="p-4 text-gray-800 font-medium">{item.id}</td>
                 <td className="p-4 text-gray-700">
-                    {item.section?.course?.code || item.section?.sectionCode || 'N/A'}
+                    {item.sectionCourse?.section?.sectionCode || 'N/A'}
+                </td>
+                <td className="p-4 text-gray-700">
+                    {item.sectionCourse?.course?.code || 'N/A'}
                 </td>
                 <td className="p-4 text-gray-700">{item.room?.roomCode || 'N/A'}</td>
                 <td className="p-4 text-gray-700">{item.dayOfWeek || 'N/A'}</td>
@@ -131,7 +134,7 @@ const SchedulesPage = () => {
                         hour12: true
                     }) : 'N/A'}
                 </td>
-                <td className="p-4 text-gray-700">{item.faculty?.full_name || 'N/A'}</td>
+                <td className="p-4 text-gray-700">{item.sectionCourse?.faculty?.full_name || 'N/A'}</td>
                 <td className="pr-4">
                     <div className="flex items-center justify-center gap-2">
                         <button

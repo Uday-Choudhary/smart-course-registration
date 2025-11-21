@@ -6,10 +6,11 @@ import Table from "../../components/admin/faculty/Table";
 import TableSearch from "../../components/admin/common/TableSearch";
 import FormModal from "../../components/admin/common/FormModal";
 import SectionForm from '../../components/admin/sections/SectionForm'
+import SectionCoursesManager from '../../components/admin/sections/SectionCoursesManager'
 
 const columns = [
     { header: "Section Code", accessor: "sectionCode" },
-    { header: "Course", accessor: "course", className: "hidden md:table-cell" },
+    { header: "Courses", accessor: "courses", className: "hidden md:table-cell" },
     { header: "Term", accessor: "term", className: "hidden md:table-cell" },
     { header: "Capacity", accessor: "capacity", className: "hidden lg:table-cell" },
     { header: "Actions", accessor: "action" },
@@ -68,7 +69,9 @@ const SectionsPage = () => {
         <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
             <td className="p-4 font-medium text-gray-800">{item.sectionCode}</td>
             <td className="hidden md:table-cell text-gray-700">
-                {item.course ? `${item.course.code} - ${item.course.title}` : 'N/A'}
+                {item.sectionCourses && item.sectionCourses.length > 0
+                    ? item.sectionCourses.map(sc => sc.course.code).join(', ')
+                    : 'No courses'}
             </td>
             <td className="hidden md:table-cell text-gray-700">
                 {item.term ? `${item.term.year} - ${item.term.semester}` : 'N/A'}
@@ -76,6 +79,17 @@ const SectionsPage = () => {
             <td className="hidden lg:table-cell text-gray-700">{item.capacity}</td>
             <td className="pr-4">
                 <div className="flex items-center justify-center gap-2">
+                    {/* Manage Courses Button */}
+                    <button
+                        className="w-7 h-7 flex items-center justify-center rounded-full bg-[#dcfce7] hover:bg-[#bbf7d0] transition"
+                        onClick={() => openModal("manage_courses", item)}
+                        title="Manage Courses"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-green-700">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                        </svg>
+                    </button>
+
                     {/* Update Button */}
                     <button
                         className="w-7 h-7 flex items-center justify-center rounded-full bg-[#b9e3ff] hover:bg-[#a3d8ff] transition"
@@ -104,7 +118,7 @@ const SectionsPage = () => {
         <div className="bg-white rounded-xl shadow-sm flex-1">
             {/* ===== TOP BAR ===== */}
             <div className="flex flex-wrap md:flex-nowrap items-center justify-between border-b border-gray-200 px-6 py-4">
-                <h1 className="text-lg font-semibold text-gray-800">All Sections</h1>
+                <h1 className="text-lg font-semibold text-gray-800">All Sections (Batches)</h1>
 
                 <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
                     {/* SEARCH BAR */}
@@ -184,6 +198,11 @@ const SectionsPage = () => {
                             </button>
                         </div>
                     </div>
+                ) : modalType === "manage_courses" ? (
+                    <SectionCoursesManager
+                        section={selectedSection}
+                        onClose={closeModal}
+                    />
                 ) : (
                     <SectionForm
                         section={modalType === "update" ? selectedSection : null}

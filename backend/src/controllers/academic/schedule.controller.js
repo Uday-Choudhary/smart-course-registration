@@ -6,13 +6,14 @@ const getAllSchedules = async (req, res) => {
     try {
         const schedules = await prisma.sectionSchedule.findMany({
             include: {
-                section: {
+                sectionCourse: {
                     include: {
+                        section: true,
                         course: true,
+                        faculty: true,
                     },
                 },
                 room: true,
-                faculty: true,
             },
         });
         console.log("Schedules from DB:", schedules);
@@ -24,25 +25,39 @@ const getAllSchedules = async (req, res) => {
 
 // Create a new schedule
 const createSchedule = async (req, res) => {
-    const { sectionId, roomId, dayOfWeek, startTime, endTime, facultyId } = req.body;
+    const { sectionId, courseId, roomId, dayOfWeek, startTime, endTime } = req.body;
     try {
+        // Find the SectionCourse
+        const sectionCourse = await prisma.sectionCourse.findUnique({
+            where: {
+                sectionId_courseId: {
+                    sectionId: parseInt(sectionId),
+                    courseId: parseInt(courseId),
+                },
+            },
+        });
+
+        if (!sectionCourse) {
+            return res.status(404).json({ error: "Course not found in this section (Batch). Please add the course to the section first." });
+        }
+
         const newSchedule = await prisma.sectionSchedule.create({
             data: {
-                sectionId: parseInt(sectionId),
+                sectionCourseId: sectionCourse.id,
                 roomId: parseInt(roomId),
                 dayOfWeek,
                 startTime: new Date(`1970-01-01T${startTime}Z`),
                 endTime: new Date(`1970-01-01T${endTime}Z`),
-                facultyId,
             },
             include: {
-                section: {
+                sectionCourse: {
                     include: {
+                        section: true,
                         course: true,
+                        faculty: true,
                     },
                 },
                 room: true,
-                faculty: true,
             },
         });
         res.status(201).json(newSchedule);
@@ -54,26 +69,43 @@ const createSchedule = async (req, res) => {
 // Update a schedule
 const updateSchedule = async (req, res) => {
     const { id } = req.params;
-    const { sectionId, roomId, dayOfWeek, startTime, endTime, facultyId } = req.body;
+    const { sectionId, courseId, roomId, dayOfWeek, startTime, endTime } = req.body;
     try {
+        const updateData = {
+            roomId: parseInt(roomId),
+            dayOfWeek,
+            startTime: new Date(`1970-01-01T${startTime}Z`),
+            endTime: new Date(`1970-01-01T${endTime}Z`),
+        };
+
+        if (sectionId && courseId) {
+            const sectionCourse = await prisma.sectionCourse.findUnique({
+                where: {
+                    sectionId_courseId: {
+                        sectionId: parseInt(sectionId),
+                        courseId: parseInt(courseId),
+                    },
+                },
+            });
+
+            if (!sectionCourse) {
+                return res.status(404).json({ error: "Course not found in this section (Batch)." });
+            }
+            updateData.sectionCourseId = sectionCourse.id;
+        }
+
         const updatedSchedule = await prisma.sectionSchedule.update({
             where: { id: parseInt(id) },
-            data: {
-                sectionId: parseInt(sectionId),
-                roomId: parseInt(roomId),
-                dayOfWeek,
-                startTime: new Date(`1970-01-01T${startTime}Z`),
-                endTime: new Date(`1970-01-01T${endTime}Z`),
-                facultyId,
-            },
+            data: updateData,
             include: {
-                section: {
+                sectionCourse: {
                     include: {
+                        section: true,
                         course: true,
+                        faculty: true,
                     },
                 },
                 room: true,
-                faculty: true,
             },
         });
         res.json(updatedSchedule);

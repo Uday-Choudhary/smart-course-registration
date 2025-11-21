@@ -13,20 +13,24 @@ exports.getAllFaculty = async (req, res) => {
         phone: true,
         sex: true,
         subjects: true,
-        sectionsTaught: {
+        sectionCoursesTaught: {
           select: {
             id: true,
-            sectionCode: true,
+            section: {
+              select: {
+                sectionCode: true,
+                term: {
+                  select: {
+                    year: true,
+                    semester: true,
+                  },
+                },
+              },
+            },
             course: {
               select: {
                 code: true,
                 title: true,
-              },
-            },
-            term: {
-              select: {
-                year: true,
-                semester: true,
               },
             },
           },
@@ -38,8 +42,8 @@ exports.getAllFaculty = async (req, res) => {
     const formattedFaculty = faculty.map((f) => ({
       ...f,
       subjects: f.subjects ? (typeof f.subjects === 'string' ? JSON.parse(f.subjects) : f.subjects) : [],
-      classes: f.sectionsTaught.map((section) => 
-        `${section.course.code} - ${section.sectionCode} (${section.term.semester} ${section.term.year})`
+      classes: f.sectionCoursesTaught.map((sc) =>
+        `${sc.course.code} - ${sc.section.sectionCode} (${sc.section.term.semester} ${sc.section.term.year})`
       ),
     }));
 
@@ -78,20 +82,24 @@ exports.createFaculty = async (req, res) => {
         phone: true,
         sex: true,
         subjects: true,
-        sectionsTaught: {
+        sectionCoursesTaught: {
           select: {
             id: true,
-            sectionCode: true,
+            section: {
+              select: {
+                sectionCode: true,
+                term: {
+                  select: {
+                    year: true,
+                    semester: true,
+                  },
+                },
+              },
+            },
             course: {
               select: {
                 code: true,
                 title: true,
-              },
-            },
-            term: {
-              select: {
-                year: true,
-                semester: true,
               },
             },
           },
@@ -103,8 +111,8 @@ exports.createFaculty = async (req, res) => {
     const formattedFaculty = {
       ...newFaculty,
       subjects: newFaculty.subjects ? (typeof newFaculty.subjects === 'string' ? JSON.parse(newFaculty.subjects) : newFaculty.subjects) : [],
-      classes: newFaculty.sectionsTaught.map((section) => 
-        `${section.course.code} - ${section.sectionCode} (${section.term.semester} ${section.term.year})`
+      classes: newFaculty.sectionCoursesTaught.map((sc) =>
+        `${sc.course.code} - ${sc.section.sectionCode} (${sc.section.term.semester} ${sc.section.term.year})`
       ),
     };
 
@@ -137,20 +145,24 @@ exports.updateFaculty = async (req, res) => {
         phone: true,
         sex: true,
         subjects: true,
-        sectionsTaught: {
+        sectionCoursesTaught: {
           select: {
             id: true,
-            sectionCode: true,
+            section: {
+              select: {
+                sectionCode: true,
+                term: {
+                  select: {
+                    year: true,
+                    semester: true,
+                  },
+                },
+              },
+            },
             course: {
               select: {
                 code: true,
                 title: true,
-              },
-            },
-            term: {
-              select: {
-                year: true,
-                semester: true,
               },
             },
           },
@@ -162,8 +174,8 @@ exports.updateFaculty = async (req, res) => {
     const formattedFaculty = {
       ...updatedFaculty,
       subjects: updatedFaculty.subjects ? (typeof updatedFaculty.subjects === 'string' ? JSON.parse(updatedFaculty.subjects) : updatedFaculty.subjects) : [],
-      classes: updatedFaculty.sectionsTaught.map((section) => 
-        `${section.course.code} - ${section.sectionCode} (${section.term.semester} ${section.term.year})`
+      classes: updatedFaculty.sectionCoursesTaught.map((sc) =>
+        `${sc.course.code} - ${sc.section.sectionCode} (${sc.section.term.semester} ${sc.section.term.year})`
       ),
     };
 

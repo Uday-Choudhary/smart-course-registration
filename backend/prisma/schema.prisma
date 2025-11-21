@@ -26,11 +26,13 @@ model User {
   phone          String?
   sex            String?
 
-  subjects       Json?          //  stores ["DSA","M1","AP"]
+  subjects       Json?
   notifications  Notification[]
   registrations  Registration[]
-  sectionsTaught Section[]
-  schedulesTaught SectionSchedule[]
+  
+  // Faculty relations
+  sectionCoursesTaught SectionCourse[]
+  
   role           Role           @relation(fields: [roleId], references: [id])
   waitlists      Waitlist[]
 }
@@ -52,22 +54,36 @@ model Course {
   description String?
   termId      Int           
   term        Term @relation(fields: [termId], references: [id])
-  sections    Section[]
+  
+  sectionCourses SectionCourse[]
 }
 
 model Section {
   id            Int               @id @default(autoincrement())
   sectionCode   String
   capacity      Int
-  courseId      Int
   termId        Int
-  facultyId     String?
-  registrations Registration[]
-  course        Course            @relation(fields: [courseId], references: [id])
-  faculty       User?             @relation(fields: [facultyId], references: [id])
+  
   term          Term              @relation(fields: [termId], references: [id])
-  schedule      SectionSchedule[]
-  waitlists     Waitlist[]
+  
+  sectionCourses SectionCourse[]
+  registrations  Registration[]
+  waitlists      Waitlist[]
+}
+
+model SectionCourse {
+  id        Int      @id @default(autoincrement())
+  sectionId Int
+  courseId  Int
+  facultyId String?
+
+  section   Section  @relation(fields: [sectionId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id])
+  faculty   User?    @relation(fields: [facultyId], references: [id])
+  
+  schedules SectionSchedule[]
+
+  @@unique([sectionId, courseId])
 }
 
 model Room {
@@ -77,16 +93,15 @@ model Room {
 }
 
 model SectionSchedule {
-  id        Int      @id @default(autoincrement())
-  dayOfWeek String
-  startTime DateTime
-  endTime   DateTime
-  sectionId Int
-  roomId    Int
-  facultyId String?
-  room      Room     @relation(fields: [roomId], references: [id])
-  section   Section  @relation(fields: [sectionId], references: [id])
-  faculty   User?    @relation(fields: [facultyId], references: [id])
+  id              Int           @id @default(autoincrement())
+  dayOfWeek       String
+  startTime       DateTime
+  endTime         DateTime
+  roomId          Int
+  sectionCourseId Int
+
+  sectionCourse   SectionCourse @relation(fields: [sectionCourseId], references: [id])
+  room            Room          @relation(fields: [roomId], references: [id])
 }
 
 model Registration {

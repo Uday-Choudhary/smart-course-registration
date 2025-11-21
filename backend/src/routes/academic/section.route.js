@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { body, param, validationResult } = require("express-validator");
 const { verifyToken, requireAdmin } = require("../../miiddleware/authMiddleware");
-const { createSection, getAllSections, getSectionById, updateSection, deleteSection, } = require("../../controllers/academic/section.controller");
+const { createSection, getAllSections, getSectionById, updateSection, deleteSection, addCourseToSection } = require("../../controllers/academic/section.controller");
 
 // Validation middleware
 const handleValidationErrors = (req, res, next) => {
@@ -21,8 +21,12 @@ const handleValidationErrors = (req, res, next) => {
 const sectionValidation = [
   body("sectionCode").trim().notEmpty(),
   body("capacity").isInt({ min: 1 }),
-  body("courseId").isInt({ min: 1 }),
   body("termId").isInt({ min: 1 }),
+];
+
+const addCourseValidation = [
+  body("sectionId").isInt({ min: 1 }),
+  body("courseId").isInt({ min: 1 }),
   body("facultyId").optional(),
 ];
 
@@ -33,9 +37,7 @@ const idValidation = [
 const updateSectionValidation = [
   body("sectionCode").optional().trim().notEmpty(),
   body("capacity").optional().isInt({ min: 1 }),
-  body("courseId").optional().isInt({ min: 1 }),
   body("termId").optional().isInt({ min: 1 }),
-  body("facultyId").optional(),
 ];
 
 // Routes
@@ -45,6 +47,9 @@ router.get("/:id", idValidation, handleValidationErrors,
 );
 router.post("/create", verifyToken, requireAdmin, sectionValidation, handleValidationErrors,
   createSection
+);
+router.post("/add-course", verifyToken, requireAdmin, addCourseValidation, handleValidationErrors,
+  addCourseToSection
 );
 router.put("/:id", verifyToken, requireAdmin, idValidation, updateSectionValidation, handleValidationErrors,
   updateSection

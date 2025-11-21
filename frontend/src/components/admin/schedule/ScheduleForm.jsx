@@ -2,50 +2,61 @@ import React, { useState, useEffect } from "react";
 import { createSchedule, updateSchedule } from "../../../api/schedules";
 import { getAllRooms } from "../../../api/rooms";
 import { getAllSections } from "../../../api/sections";
-import { getAllFaculty } from "../../../api/faculty";
 
 const ScheduleForm = ({ schedule, onClose }) => {
   const [formData, setFormData] = useState({
     sectionId: "",
+    courseId: "",
     roomId: "",
     dayOfWeek: "",
     startTime: "",
     endTime: "",
-    facultyId: "",
   });
   const [rooms, setRooms] = useState([]);
   const [sections, setSections] = useState([]);
-  const [faculty, setFaculty] = useState([]);
+  const [availableCourses, setAvailableCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (schedule) {
       setFormData({
-        sectionId: schedule.sectionId || "",
-        roomId: schedule.roomId || "",
+        sectionId: schedule.sectionCourse?.sectionId?.toString() || "",
+        courseId: schedule.sectionCourse?.courseId?.toString() || "",
+        roomId: schedule.roomId?.toString() || "",
         dayOfWeek: schedule.dayOfWeek || "",
         startTime: schedule.startTime ? new Date(schedule.startTime).toTimeString().slice(0, 5) : "",
         endTime: schedule.endTime ? new Date(schedule.endTime).toTimeString().slice(0, 5) : "",
-        facultyId: schedule.facultyId || "",
       });
     }
     loadData();
   }, [schedule]);
 
+  // Update available courses when section changes or sections are loaded
+  useEffect(() => {
+    if (formData.sectionId && sections.length > 0) {
+      const selectedSection = sections.find(s => s.id === parseInt(formData.sectionId));
+      if (selectedSection && selectedSection.sectionCourses) {
+        setAvailableCourses(selectedSection.sectionCourses.map(sc => sc.course));
+      } else {
+        setAvailableCourses([]);
+      }
+    } else {
+      setAvailableCourses([]);
+    }
+  }, [formData.sectionId, sections]);
+
   const loadData = async () => {
     try {
-      const [roomList, sectionList, facultyList] = await Promise.all([
+      const [roomList, sectionList] = await Promise.all([
         getAllRooms(),
         getAllSections(),
-        getAllFaculty(),
       ]);
       setRooms(roomList);
       setSections(sectionList);
-      setFaculty(facultyList);
     } catch (err) {
       console.error("Error loading form data:", err);
-      setError("Failed to load rooms, sections, or faculty");
+      setError("Failed to load rooms or sections");
     }
   };
 
@@ -95,7 +106,7 @@ const ScheduleForm = ({ schedule, onClose }) => {
         {/* Select Section */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Section <span className="text-red-500">*</span>
+            Section (Batch) <span className="text-red-500">*</span>
           </label>
           <select
             name="sectionId"
@@ -111,6 +122,31 @@ const ScheduleForm = ({ schedule, onClose }) => {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Select Course */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Course <span className="text-red-500">*</span>
+          </label>
+          <select
+            name="courseId"
+            value={formData.courseId}
+            onChange={handleChange}
+            required
+            disabled={!formData.sectionId}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+          >
+            <option value="">-- Select Course --</option>
+            {availableCourses.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.code} - {c.title}
+              </option>
+            ))}
+          </select>
+          {formData.sectionId && availableCourses.length === 0 && (
+            <p className="text-sm text-red-500 mt-1">No courses added to this section yet.</p>
+          )}
         </div>
 
         {/* Select Room */}
@@ -129,27 +165,6 @@ const ScheduleForm = ({ schedule, onClose }) => {
             {rooms.map((r) => (
               <option key={r.id} value={r.id}>
                 {r.roomCode}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Select Faculty */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Faculty <span className="text-red-500">*</span>
-          </label>
-          <select
-            name="facultyId"
-            value={formData.facultyId}
-            onChange={handleChange}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">-- Select Faculty --</option>
-            {faculty.map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.full_name}
               </option>
             ))}
           </select>

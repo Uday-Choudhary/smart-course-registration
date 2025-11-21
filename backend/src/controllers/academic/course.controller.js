@@ -31,15 +31,15 @@ exports.createCourse = async (req, res) => {
   } catch (error) {
     console.error("createCourse Error:", error);
     if (error.code === 'P2002') {
-      return res.status(409).json({ 
+      return res.status(409).json({
         success: false,
-        error: "Course with this code already exists" 
+        error: "Course with this code already exists"
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: "Failed to create course",
-      details: error.message 
+      details: error.message
     });
   }
 };
@@ -59,15 +59,9 @@ exports.getAllCourses = async (req, res) => {
             semester: true,
           },
         },
-        sections: {
+        sectionCourses: {
           include: {
-            term: {
-              select: {
-                id: true,
-                year: true,
-                semester: true,
-              },
-            },
+            section: true,
             faculty: {
               select: {
                 id: true,
@@ -87,10 +81,10 @@ exports.getAllCourses = async (req, res) => {
     });
   } catch (error) {
     console.error("getAllCourses Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: "Failed to fetch courses",
-      details: error.message 
+      details: error.message
     });
   }
 };
@@ -103,9 +97,9 @@ exports.getCourseById = async (req, res) => {
     const course = await prisma.course.findUnique({
       where: { id: parseInt(id) },
       include: {
-        sections: {
+        sectionCourses: {
           include: {
-            term: true,
+            section: true,
             faculty: {
               select: {
                 id: true,
@@ -113,7 +107,7 @@ exports.getCourseById = async (req, res) => {
                 email: true,
               },
             },
-            schedule: {
+            schedules: {
               include: {
                 room: true,
               },
@@ -136,10 +130,10 @@ exports.getCourseById = async (req, res) => {
     });
   } catch (error) {
     console.error("getCourseById Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: "Failed to fetch course",
-      details: error.message 
+      details: error.message
     });
   }
 };
@@ -181,10 +175,10 @@ exports.updateCourse = async (req, res) => {
         error: "Course with this code already exists",
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: "Failed to update course",
-      details: error.message 
+      details: error.message
     });
   }
 };
@@ -194,15 +188,15 @@ exports.deleteCourse = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Check if course has sections
-    const sections = await prisma.section.findFirst({
+    // Check if course has sections (via SectionCourse)
+    const sectionCourses = await prisma.sectionCourse.findFirst({
       where: { courseId: parseInt(id) },
     });
 
-    if (sections) {
+    if (sectionCourses) {
       return res.status(400).json({
         success: false,
-        error: "Cannot delete course: Sections are associated with this course. Please delete sections first.",
+        error: "Cannot delete course: Sections are associated with this course. Please remove course from sections first.",
       });
     }
 
@@ -222,10 +216,10 @@ exports.deleteCourse = async (req, res) => {
         error: "Course not found",
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: "Failed to delete course",
-      details: error.message 
+      details: error.message
     });
   }
 };
