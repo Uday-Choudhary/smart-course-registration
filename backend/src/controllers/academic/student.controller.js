@@ -1,4 +1,5 @@
 const prisma = require("../../prisma");
+const { validateEmail } = require("../../utils/validators");
 
 // GET all students (Admin)
 exports.getAllStudents = async (req, res) => {
@@ -28,6 +29,10 @@ exports.getAllStudents = async (req, res) => {
 exports.createStudent = async (req, res) => {
   try {
     const { full_name, email, phone, sex, address, birthday, bloodType } = req.body;
+
+    if (email && !validateEmail(email)) {
+      return res.status(400).json({ error: "Invalid email format" });
+    }
 
     const role = await prisma.role.findUnique({ where: { name: "Student" } });
     if (!role) return res.status(400).json({ error: "Student role not found" });
@@ -68,6 +73,10 @@ exports.updateStudent = async (req, res) => {
   try {
     const { id } = req.params;
     const { full_name, email, phone, sex, address, birthday, bloodType } = req.body;
+
+    if (email && !validateEmail(email)) {
+      return res.status(400).json({ error: "Invalid email format" });
+    }
 
     const updatedStudent = await prisma.user.update({
       where: { id },

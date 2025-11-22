@@ -1,9 +1,9 @@
-const express=require("express");
-const router=express.Router();
-const {body,param,validationResult} =require("express-validator");
-const {verifyToken,requireAdmin} =require("../../miiddleware/authMiddleware");
-const {createProgram,getAllPrograms,getProgramById,updateProgram,deleteProgram,}= 
-require("../../controllers/academic/program.controller");
+const express = require("express");
+const router = express.Router();
+const { body, param, validationResult } = require("express-validator");
+const { verifyToken, requireAdmin } = require("../../miiddleware/authMiddleware");
+const { createProgram, getAllPrograms, getProgramById, updateProgram, deleteProgram, } =
+  require("../../controllers/academic/program.controller");
 
 // Validation middleware
 const handleValidationErrors = (req, res, next) => {
@@ -37,7 +37,7 @@ const idValidation = [
     .withMessage("ID must be a valid positive integer"),
 ];
 
-const updateProgramValidation =[
+const updateProgramValidation = [
   body("name")
     .optional()
     .trim()
@@ -53,19 +53,19 @@ const updateProgramValidation =[
 
 // Routes
 router.get("/", getAllPrograms);
-router.get("/:id",idValidation,handleValidationErrors,
+router.get("/:id", idValidation, handleValidationErrors,
   getProgramById
 );
 //admin only
-router.post("/create",verifyToken,requireAdmin,programValidation,handleValidationErrors,
+router.post("/create", verifyToken, requireAdmin, programValidation, handleValidationErrors,
   createProgram
 );
 //admin only
-router.put("/:id",verifyToken,requireAdmin,idValidation,updateProgramValidation,handleValidationErrors,
+router.put("/:id", verifyToken, requireAdmin, idValidation, updateProgramValidation, handleValidationErrors,
   updateProgram
 );
 // admin only
-router.delete("/:id",verifyToken,requireAdmin,idValidation,handleValidationErrors,
+router.delete("/:id", verifyToken, requireAdmin, idValidation, handleValidationErrors,
   deleteProgram
 );
 module.exports = router;

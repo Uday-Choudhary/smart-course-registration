@@ -1,21 +1,23 @@
 const prisma = require("../prisma");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { validateEmail, validatePassword, validateRequiredFields } = require("../utils/validators");
 
 // register
 exports.registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    if (!email || !name || !password || !role) {
+    const missingField = validateRequiredFields({ name, email, password, role });
+    if (missingField) {
       return res.status(400).json({ error: "all fields are required" });
     }
 
-    if (password.length < 6) {
+    if (!validatePassword(password)) {
       return res.status(400).json({ error: "password too short, need at least 6 chars" });
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+
+    if (!validateEmail(email)) {
       return res.status(400).json({ error: "email format is wrong" });
     }
     const validRoles = ["Student", "Faculty", "Admin"];
@@ -66,7 +68,8 @@ exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    const missingField = validateRequiredFields({ email, password });
+    if (missingField) {
       return res.status(400).json({ error: "email and password required" });
     }
 

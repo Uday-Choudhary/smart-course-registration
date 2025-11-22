@@ -1,9 +1,9 @@
-const express=require("express");
-const router=express.Router();
-const {body,param,validationResult} =require("express-validator");
-const {verifyToken,requireAdmin} =require("../../miiddleware/authMiddleware");
-const {createDepartment,getAllDepartments,getDepartmentById,updateDepartment,deleteDepartment,}= 
-require("../../controllers/academic/department.controller");
+const express = require("express");
+const router = express.Router();
+const { body, param, validationResult } = require("express-validator");
+const { verifyToken, requireAdmin } = require("../../miiddleware/authMiddleware");
+const { createDepartment, getAllDepartments, getDepartmentById, updateDepartment, deleteDepartment, } =
+  require("../../controllers/academic/department.controller");
 
 // Validation middleware
 const handleValidationErrors = (req, res, next) => {
@@ -34,7 +34,7 @@ const idValidation = [
     .withMessage("ID must be a valid positive integer"),
 ];
 
-const updateDepartmentValidation =[
+const updateDepartmentValidation = [
   body("name")
     .optional()
     .trim()
@@ -46,19 +46,19 @@ const updateDepartmentValidation =[
 
 // Routes
 router.get("/", getAllDepartments);
-router.get("/:id",idValidation,handleValidationErrors,
+router.get("/:id", idValidation, handleValidationErrors,
   getDepartmentById
 );
 //admin only
-router.post("/create",verifyToken,requireAdmin,departmentValidation,handleValidationErrors,
+router.post("/create", verifyToken, requireAdmin, departmentValidation, handleValidationErrors,
   createDepartment
 );
 //admin only
-router.put("/:id",verifyToken,requireAdmin,idValidation,updateDepartmentValidation,handleValidationErrors,
+router.put("/:id", verifyToken, requireAdmin, idValidation, updateDepartmentValidation, handleValidationErrors,
   updateDepartment
 );
 // admin only
-router.delete("/:id",verifyToken,requireAdmin,idValidation,handleValidationErrors,
+router.delete("/:id", verifyToken, requireAdmin, idValidation, handleValidationErrors,
   deleteDepartment
 );
 module.exports = router;

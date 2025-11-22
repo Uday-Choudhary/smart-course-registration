@@ -1,12 +1,20 @@
 const prisma = require("../../prisma");
+const { validateId, validateRequiredFields } = require("../../utils/validators");
 
 // Create a new program
-exports.createProgram=async (req, res) => {
+exports.createProgram = async (req, res) => {
   try {
-    const {name,departmentId}=req.body;
+    const { name, departmentId } = req.body;
+
+    if (validateRequiredFields({ name, departmentId })) {
+      return res.status(400).json({ success: false, error: "Name and Department ID are required" });
+    }
+    if (!validateId(departmentId)) {
+      return res.status(400).json({ success: false, error: "Invalid Department ID" });
+    }
 
     // Verify that department exists
-    const department=await prisma.department.findUnique({
+    const department = await prisma.department.findUnique({
       where: { id: parseInt(departmentId) },
     });
     if (!department) {
@@ -16,32 +24,32 @@ exports.createProgram=async (req, res) => {
       });
     }
 
-    const program=await prisma.program.create({
+    const program = await prisma.program.create({
       data: {
-        name:name.trim(),
-        departmentId:parseInt(departmentId),
+        name: name.trim(),
+        departmentId: parseInt(departmentId),
       },
-      include:{
-        department:true,
+      include: {
+        department: true,
       },
     });
     res.status(201).json({
-      success:true,
-      message:"Program created successfully",
-      data:program,
+      success: true,
+      message: "Program created successfully",
+      data: program,
     });
   } catch (error) {
-    console.error("createProgram Error:",error);
+    console.error("createProgram Error:", error);
     if (error.code === 'P2002') {
       return res.status(409).json({
         success: false,
-        error:"Program with this name already exists" 
+        error: "Program with this name already exists"
       });
     }
     res.status(500).json({
-      success:false,
-      error:"Failed to create program",
-      details:error.message 
+      success: false,
+      error: "Failed to create program",
+      details: error.message
     });
   }
 };
@@ -49,26 +57,26 @@ exports.createProgram=async (req, res) => {
 // Get all programs
 exports.getAllPrograms = async (req, res) => {
   try {
-    const programs=await prisma.program.findMany({
-      orderBy:[
-        {departmentId:'asc' },
-        {name:'asc' },
+    const programs = await prisma.program.findMany({
+      orderBy: [
+        { departmentId: 'asc' },
+        { name: 'asc' },
       ],
-      include:{
-        department:true,
+      include: {
+        department: true,
       },
     });
     res.status(200).json({
-      success:true,
-      count:programs.length,
-      data:programs,
+      success: true,
+      count: programs.length,
+      data: programs,
     });
   } catch (error) {
     console.error("getAllPrograms Error:", error);
     res.status(500).json({
-      success:false,
-      error:"Failed to fetch programs",
-      details:error.message 
+      success: false,
+      error: "Failed to fetch programs",
+      details: error.message
     });
   }
 };
@@ -76,42 +84,51 @@ exports.getAllPrograms = async (req, res) => {
 // Get program by ID
 exports.getProgramById = async (req, res) => {
   try {
-    const {id}=req.params;
-    const program=await prisma.program.findUnique({
-      where:{ id: parseInt(id) },
-      include:{
-        department:true,
+    const { id } = req.params;
+    if (!validateId(id)) {
+      return res.status(400).json({ success: false, error: "Invalid program ID" });
+    }
+    const program = await prisma.program.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        department: true,
       },
     });
     if (!program) {
       return res.status(404).json({
-        success:false,
-        error:"Program not found",
+        success: false,
+        error: "Program not found",
       });
     }
     res.status(200).json({
-      success:true,
-      data:program,
+      success: true,
+      data: program,
     });
   } catch (error) {
     console.error("getProgramById Error:", error);
     res.status(500).json({
-      success:false,
-      error:"Failed to fetch program",
-      details:error.message 
+      success: false,
+      error: "Failed to fetch program",
+      details: error.message
     });
   }
 };
 
 // Update program by ID
-exports.updateProgram =async(req,res)=>{
-  try{
-    const {id}=req.params;
-    const {name,departmentId}=req.body;
-    const updateData={};
-    if (name!==undefined) updateData.name=name.trim();
-    if (departmentId!==undefined) {
-      const department=await prisma.department.findUnique({
+exports.updateProgram = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!validateId(id)) {
+      return res.status(400).json({ success: false, error: "Invalid program ID" });
+    }
+    const { name, departmentId } = req.body;
+    const updateData = {};
+    if (name !== undefined) updateData.name = name.trim();
+    if (departmentId !== undefined) {
+      if (!validateId(departmentId)) {
+        return res.status(400).json({ success: false, error: "Invalid Department ID" });
+      }
+      const department = await prisma.department.findUnique({
         where: { id: parseInt(departmentId) },
       });
       if (!department) {
@@ -120,66 +137,69 @@ exports.updateProgram =async(req,res)=>{
           error: "Department not found",
         });
       }
-      updateData.departmentId=parseInt(departmentId);
+      updateData.departmentId = parseInt(departmentId);
     }
 
-    const program=await prisma.program.update({
-      where:{id:parseInt(id)},
-      data:updateData,
-      include:{
-        department:true,
+    const program = await prisma.program.update({
+      where: { id: parseInt(id) },
+      data: updateData,
+      include: {
+        department: true,
       },
     });
     res.status(200).json({
-      success:true,
-      message:"Program updated successfully",
-      data:program,
+      success: true,
+      message: "Program updated successfully",
+      data: program,
     });
   } catch (error) {
     console.error("updateProgram Error:", error);
-    if (error.code==='P2025') {
+    if (error.code === 'P2025') {
       return res.status(404).json({
-        success:false,
-        error:"Program not found",
+        success: false,
+        error: "Program not found",
       });
     }
-    if (error.code==='P2002') {
+    if (error.code === 'P2002') {
       return res.status(409).json({
-        success:false,
-        error:"Program with this name already exists",
+        success: false,
+        error: "Program with this name already exists",
       });
     }
     res.status(500).json({
-      success:false,
-      error:"Failed to update program",
-      details:error.message 
+      success: false,
+      error: "Failed to update program",
+      details: error.message
     });
   }
 };
 
 // Delete program by ID
-exports.deleteProgram =async(req,res)=>{
+exports.deleteProgram = async (req, res) => {
   try {
-    const {id}=req.params;
+    const { id } = req.params;
+    if (!validateId(id)) {
+      return res.status(400).json({ success: false, error: "Invalid program ID" });
+    }
     await prisma.program.delete({
-      where:{id:parseInt(id)},
+      where: { id: parseInt(id) },
     });
     res.status(200).json({
-      success:true,
-      message:"Program deleted successfully",
+      success: true,
+      message: "Program deleted successfully",
     });
   } catch (error) {
     console.error("deleteProgram Error:", error);
-    if (error.code==='P2025') {
+    if (error.code === 'P2025') {
       return res.status(404).json({
-        success:false,
-        error:"Program not found",
+        success: false,
+        error: "Program not found",
       });
     }
     res.status(500).json({
-      success:false,
-      error:"Failed to delete program",
-      details:error.message 
+      success: false,
+      error: "Failed to delete program",
+      details: error.message
     });
   }
 };
