@@ -1,11 +1,10 @@
-const {PrismaClient}=require("@prisma/client");
-const prisma=new PrismaClient();
+const prisma = require("../../prisma");
 
 // Create a new program
 exports.createProgram=async (req, res) => {
   try {
     const {name,departmentId}=req.body;
-    
+
     // Verify that department exists
     const department=await prisma.department.findUnique({
       where: { id: parseInt(departmentId) },
@@ -34,12 +33,12 @@ exports.createProgram=async (req, res) => {
   } catch (error) {
     console.error("createProgram Error:",error);
     if (error.code === 'P2002') {
-      return res.status(409).json({ 
+      return res.status(409).json({
         success: false,
         error:"Program with this name already exists" 
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       success:false,
       error:"Failed to create program",
       details:error.message 
@@ -66,7 +65,7 @@ exports.getAllPrograms = async (req, res) => {
     });
   } catch (error) {
     console.error("getAllPrograms Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success:false,
       error:"Failed to fetch programs",
       details:error.message 
@@ -96,7 +95,7 @@ exports.getProgramById = async (req, res) => {
     });
   } catch (error) {
     console.error("getProgramById Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success:false,
       error:"Failed to fetch program",
       details:error.message 
@@ -150,7 +149,7 @@ exports.updateProgram =async(req,res)=>{
         error:"Program with this name already exists",
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       success:false,
       error:"Failed to update program",
       details:error.message 
@@ -177,7 +176,7 @@ exports.deleteProgram =async(req,res)=>{
         error:"Program not found",
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       success:false,
       error:"Failed to delete program",
       details:error.message 

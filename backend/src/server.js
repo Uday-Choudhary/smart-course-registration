@@ -2,10 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
-const { PrismaClient } = require("@prisma/client");
+const prisma = require("./prisma");
 
 const app = express();
-const prisma = new PrismaClient();
 
 app.use(cors());
 app.use(helmet());
@@ -60,5 +59,5 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () =>
-  console.log(`✅ Backend running on http://localhost:${PORT}`)
+  console.log(`Backend running on http://localhost:${PORT}`)
 );

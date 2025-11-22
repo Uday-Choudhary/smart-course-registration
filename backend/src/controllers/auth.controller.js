@@ -1,8 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-
-const prisma = new PrismaClient();
+const prisma = require("../prisma");
 
 // register
 exports.registerUser = async (req, res) => {
@@ -38,11 +34,11 @@ exports.registerUser = async (req, res) => {
     const hashedPass = await bcrypt.hash(password, 10);
 
     const newUser = await prisma.user.create({
-      data: { 
-        full_name: name, 
-        email, 
-        password: hashedPass, 
-        roleId: roleRecord.id 
+      data: {
+        full_name: name,
+        email,
+        password: hashedPass,
+        roleId: roleRecord.id
       },
       include: {
         role: true
@@ -51,11 +47,11 @@ exports.registerUser = async (req, res) => {
 
     return res.status(201).json({
       message: "user created",
-      user: { 
-        id: newUser.id, 
-        name: newUser.full_name, 
-        email: newUser.email, 
-        role: newUser.role.name 
+      user: {
+        id: newUser.id,
+        name: newUser.full_name,
+        email: newUser.email,
+        role: newUser.role.name
       },
     });
   } catch (err) {
@@ -72,13 +68,13 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ error: "email and password required" });
     }
 
-    const user = await prisma.user.findUnique({ 
+    const user = await prisma.user.findUnique({
       where: { email },
       include: {
         role: true
       }
     });
-    
+
     if (!user) {
       return res.status(400).json({ error: "wrong email or password" });
     }
@@ -97,15 +93,15 @@ exports.loginUser = async (req, res) => {
     return res.json({
       message: "logged in",
       token,
-      user: { 
-        id: user.id, 
-        name: user.full_name, 
-        email: user.email, 
-        role: user.role.name 
+      user: {
+        id: user.id,
+        name: user.full_name,
+        email: user.email,
+        role: user.role.name
       },
     });
   } catch (err) {
     console.error("login error:", err);
-    return res.status(500).json({ error: "server error" });  
+    return res.status(500).json({ error: "server error" });
   }
 };

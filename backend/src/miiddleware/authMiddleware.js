@@ -1,7 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
+const prisma = require("../prisma");
 
 const verifyToken = async (req, res, next) => {
   try {
@@ -51,7 +49,7 @@ const authorizeRole = (...allowedRoles) => {
     }
     const userRole = req.user.role;
     if (!allowedRoles.includes(userRole)) {
-      return res.status(403).json({ 
+      return res.status(403).json({
         error: "not allowed",
         required: allowedRoles,
         current: userRole

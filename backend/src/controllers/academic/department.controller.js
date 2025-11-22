@@ -1,5 +1,4 @@
-const {PrismaClient}=require("@prisma/client");
-const prisma=new PrismaClient();
+const prisma = require("../../prisma");
 
 // Create a new department
 exports.createDepartment=async (req, res) => {
@@ -18,12 +17,12 @@ exports.createDepartment=async (req, res) => {
   } catch (error) {
     console.error("createDepartment Error:",error);
     if (error.code === 'P2002') {
-      return res.status(409).json({ 
+      return res.status(409).json({
         success: false,
         error:"Department with this name already exists" 
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       success:false,
       error:"Failed to create department",
       details:error.message 
@@ -49,7 +48,7 @@ exports.getAllDepartments = async (req, res) => {
     });
   } catch (error) {
     console.error("getAllDepartments Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success:false,
       error:"Failed to fetch departments",
       details:error.message 
@@ -79,7 +78,7 @@ exports.getDepartmentById = async (req, res) => {
     });
   } catch (error) {
     console.error("getDepartmentById Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success:false,
       error:"Failed to fetch department",
       details:error.message 
@@ -118,7 +117,7 @@ exports.updateDepartment =async(req,res)=>{
         error:"Department with this name already exists",
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       success:false,
       error:"Failed to update department",
       details:error.message 
@@ -154,7 +153,7 @@ exports.deleteDepartment =async(req,res)=>{
         error:"Department not found",
       });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       success:false,
       error:"Failed to delete department",
       details:error.message 

@@ -1,5 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const prisma = require("../../prisma");
 
 // Create a new course
 exports.createCourse = async (req, res) => {
