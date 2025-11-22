@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const menuItems = [
@@ -8,7 +8,7 @@ const menuItems = [
     title: "STUDENT",
     visible: ["Student"], // This whole section only shows for students
     items: [
-      { icon: "/home.png", label: "Dashboard", href: "/", visible: ["Student"] },
+      { icon: "/home.png", label: "Dashboard", href: "/student", visible: ["Student"] },
       { icon: "/subject.png", label: "Browse Courses", href: "/student/browse-courses", visible: ["Student"] },
       { icon: "/assignment.png", label: "My Registrations", href: "/my-registrations", visible: ["Student"] },
       { icon: "/calendar.png", label: "My Timetable", href: "/student/timetable", visible: ["Student"] },
@@ -51,7 +51,7 @@ const menuItems = [
     items: [
       { icon: "/profile.png", label: "Profile", href: "/profile", visible: ["Admin", "Faculty", "Student"] },
       { icon: "/setting.png", label: "Settings", href: "/settings", visible: ["Admin", "Faculty", "Student"] },
-      { icon: "/logout.png", label: "Logout", href: "/logout", visible: ["Admin", "Faculty", "Student"] },
+      { icon: "/logout.png", label: "Logout", href: "#", visible: ["Admin", "Faculty", "Student"] },
     ],
   },
 ];
@@ -62,7 +62,14 @@ const menuItems = [
  * @param {string} props.role - The role of the current user (e.g., "student", "faculty", "admin")
  */
 const Menu = ({ role }) => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <div className="mt-8 text-sm flex flex-col gap-8">
       <p className="hidden lg:block text-gray-600">Welcome, {user?.name}!</p>
@@ -79,6 +86,18 @@ const Menu = ({ role }) => {
             </span>
             {section.items.map((item) => {
               if (item.visible.includes(role)) {
+                if (item.label === "Logout") {
+                  return (
+                    <button
+                      key={item.label}
+                      onClick={handleLogout}
+                      className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 md:px-2 rounded-4xl hover:bg-[#E4F1FF] transition w-full cursor-pointer"
+                    >
+                      <img src={item.icon} alt={item.label} width={20} height={20} />
+                      <span className="hidden lg:block">{item.label}</span>
+                    </button>
+                  );
+                }
                 return (
                   <Link
                     to={item.href}
