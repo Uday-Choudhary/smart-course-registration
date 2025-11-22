@@ -46,8 +46,8 @@ const createSchedule = async (req, res) => {
                 sectionCourseId: sectionCourse.id,
                 roomId: parseInt(roomId),
                 dayOfWeek,
-                startTime: new Date(`1970-01-01T${startTime}Z`),
-                endTime: new Date(`1970-01-01T${endTime}Z`),
+                startTime: new Date(`1970-01-01T${startTime}`),
+                endTime: new Date(`1970-01-01T${endTime}`),
             },
             include: {
                 sectionCourse: {
@@ -74,8 +74,8 @@ const updateSchedule = async (req, res) => {
         const updateData = {
             roomId: parseInt(roomId),
             dayOfWeek,
-            startTime: new Date(`1970-01-01T${startTime}Z`),
-            endTime: new Date(`1970-01-01T${endTime}Z`),
+            startTime: new Date(`1970-01-01T${startTime}`),
+            endTime: new Date(`1970-01-01T${endTime}`),
         };
 
         if (sectionId && courseId) {

@@ -5,6 +5,7 @@ import RegisterPage from "./pages/Auth/RegisterPage";
 import StudentDashboard from "./components/dashboard/StudentDashboard";
 import BrowseCourses from "./pages/student/BrowseCourses";
 import CourseDetails from "./pages/student/CourseDetails";
+import MyTimetable from "./pages/student/MyTimetable";
 import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
 import Navbar from "./components/common/Navbar";
@@ -49,6 +50,7 @@ function AppContent() {
     "/admin/schedules",
     "/student/browse-courses",
     "/student/courses",
+    "/student/timetable",
   ];
 
   // ✅ Detect dynamic routes like `/admin/terms/1/courses` or `/student/courses/1`
@@ -91,6 +93,14 @@ function AppContent() {
           element={
             <ProtectedRoute allowedRoles={["Student"]}>
               <CourseDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/timetable"
+          element={
+            <ProtectedRoute allowedRoles={["Student"]}>
+              <MyTimetable />
             </ProtectedRoute>
           }
         />
