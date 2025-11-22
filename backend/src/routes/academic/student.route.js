@@ -7,6 +7,7 @@ const {
   updateStudent,
   deleteStudent,
   getMyProfile,
+  getMyTimetable,
 } = require("../../controllers/academic/student.controller");
 
 const {
@@ -15,6 +16,7 @@ const {
 } = require("../../miiddleware/authMiddleware");
 
 // Self profile for any authenticated user
+router.get("/timetable", verifyToken, getMyTimetable);
 router.get("/me", verifyToken, getMyProfile);
 
 // Admin CRUD
