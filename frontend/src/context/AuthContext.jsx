@@ -47,6 +47,14 @@ export const AuthProvider = ({ children }) => {
     setUser(null)
   }
 
+  // ⭐ NEW → update user instantly after profile update
+  const updateUserInContext = (updated) => {
+    setUser(prev => ({
+      ...prev,
+      ...updated
+    }))
+  }
+
   const value = useMemo(() => ({
     token,
     user,
@@ -54,7 +62,8 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    isAuthenticated: !!token
+    isAuthenticated: !!token,
+    updateUserInContext   // ⭐ expose it to all components
   }), [token, user, loading])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
@@ -67,5 +76,3 @@ export const useAuth = () => {
   }
   return context
 }
-
-

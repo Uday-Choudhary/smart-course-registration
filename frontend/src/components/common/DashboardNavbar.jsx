@@ -1,33 +1,43 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const DashboardNavbar = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const goToProfile = () => {
+    if (!user) return;
+
+    if (user.role === "Admin") navigate("/admin/profile");
+    else if (user.role === "Faculty") navigate("/faculty/profile");
+    else navigate("/student/profile");
+  };
 
   return (
-    <div className='flex items-center justify-between p-4 shadow-sm rounded-2xl bg-[#F7F7F7]'>
-      {/* SEARCH BAR */}
-      <div className='hidden md:flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-gray-300 px-10 bg-[#ffffff]'>
-        <img src="/search.png" alt="" width={14} height={14}/>
-        <input type="text" placeholder="Search..." className="w-[200px] p-2 bg-transparent outline-none placeholder-gray-700 text-gray-800"/>
+    <nav className="flex items-center justify-between px-6 py-4">
+      <h1 className="text-xl font-semibold text-gray-700">Dashboard</h1>
+
+      {/* TOP RIGHT USER BUTTON */}
+      <div
+        onClick={goToProfile}
+        className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-100 cursor-pointer transition"
+      >
+        <div className="w-10 h-10 rounded-full bg-indigo-200 flex items-center justify-center font-bold text-indigo-700">
+          {user?.name
+            ?.split(" ")
+            .map((n) => n[0])
+            .slice(0, 2)
+            .join("")}
+        </div>
+
+        <div className="hidden md:block text-left">
+          <p className="font-medium">{user?.name}</p>
+          <p className="text-xs text-gray-500">{user?.role}</p>
+        </div>
       </div>
-      {/* ICONS AND USER */}
-      <div className='flex items-center gap-7 justify-end w-full mx-3 py-1'>
-        <div className='w-7 h-7 flex items-center justify-center cursor-pointer'>
-          <img src="/message.png" alt="" width={20} height={20}/>
-        </div>
-        <div className='w-7 h-7 flex items-center justify-center cursor-pointer relative'>
-          <img src="/announcement.png" alt="" width={20} height={20}/>
-          <div className='absolute -top-3 -right-3 w-5 h-5 flex items-center justify-center bg-purple-500 text-white rounded-full text-xs'>1</div>
-        </div>
-        <div className='flex flex-col'>
-          <span className="text-xs leading-3 font-medium text-gray-800">{user?.name}</span>
-          <span className="text-[10px] text-gray-500 text-right">{user?.role}</span>
-        </div>
-        <img src="/avatar.png" alt="" width={36} height={36} className="rounded-full"/>
-      </div>
-    </div>
-  )
-}
+    </nav>
+  );
+};
 
 export default DashboardNavbar;

@@ -1,17 +1,27 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+
 import Home from "./pages/Home";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
+
 import StudentDashboard from "./components/dashboard/StudentDashboard";
 import BrowseCourses from "./pages/student/BrowseCourses";
 import CourseDetails from "./pages/student/CourseDetails";
 import MyTimetable from "./pages/student/MyTimetable";
+
 import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
+
 import Navbar from "./components/common/Navbar";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
-// Admin Pages
+// --- ADMIN PAGES ---
 import StudentsPage from "./pages/admin/StudentsPage";
 import FacultyPage from "./pages/admin/FacultyPage";
 import CoursesPage from "./pages/admin/CoursesPage";
@@ -21,6 +31,11 @@ import DeadlinesPage from "./pages/admin/DeadlinePage";
 import TermCoursesPage from "./pages/admin/TermCoursesPage";
 import RoomsPage from "./pages/admin/RoomsPage";
 import SchedulesPage from "./pages/admin/SchedulesPage";
+
+// --- PROFILE PAGES ---
+import AdminProfile from "./pages/admin/Profile";
+import FacultyProfile from "./pages/faculty/Profile";
+import StudentProfile from "./pages/student/Profile";
 
 function App() {
   return (
@@ -33,7 +48,6 @@ function App() {
 function AppContent() {
   const location = useLocation();
 
-  // Static paths where Navbar should be hidden
   const hideNavbarPaths = [
     "/login",
     "/register",
@@ -53,25 +67,30 @@ function AppContent() {
     "/student/timetable",
   ];
 
-  // ✅ Detect dynamic routes like `/admin/terms/1/courses` or `/student/courses/1`
-  const isDynamicAdminRoute = /^\/admin\/terms\/\d+\/courses$/.test(location.pathname);
-  const isStudentCourseDetail = /^\/student\/courses\/\d+$/.test(location.pathname);
+  const isDynamicAdminRoute = /^\/admin\/terms\/\d+\/courses$/.test(
+    location.pathname
+  );
 
-  // ✅ Hide Navbar for admin dashboard and dynamic admin routes
+  const isStudentCourseDetail = /^\/student\/courses\/\d+$/.test(
+    location.pathname
+  );
+
   const shouldHideNavbar =
-    hideNavbarPaths.includes(location.pathname) || isDynamicAdminRoute || isStudentCourseDetail;
+    hideNavbarPaths.includes(location.pathname) ||
+    isDynamicAdminRoute ||
+    isStudentCourseDetail;
 
   return (
     <>
       {!shouldHideNavbar && <Navbar />}
 
       <Routes>
-        {/* ===== PUBLIC ROUTES ===== */}
+        {/* PUBLIC */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* ===== STUDENT DASHBOARD ===== */}
+        {/* STUDENT */}
         <Route
           path="/student"
           element={
@@ -80,6 +99,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/student/browse-courses"
           element={
@@ -88,6 +108,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/student/courses/:id"
           element={
@@ -96,6 +117,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/student/timetable"
           element={
@@ -105,7 +127,19 @@ function AppContent() {
           }
         />
 
-        {/* ===== FACULTY DASHBOARD ===== */}
+        {/* STUDENT PROFILE */}
+        <Route
+          path="/student/profile"
+          element={
+            <ProtectedRoute allowedRoles={["Student"]}>
+              <StudentDashboard>
+                <StudentProfile />
+              </StudentDashboard>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* FACULTY */}
         <Route
           path="/faculty"
           element={
@@ -115,7 +149,19 @@ function AppContent() {
           }
         />
 
-        {/* ===== ADMIN DASHBOARD & PAGES ===== */}
+        {/* FACULTY PROFILE */}
+        <Route
+          path="/faculty/profile"
+          element={
+            <ProtectedRoute allowedRoles={["Faculty", "Admin"]}>
+              <FacultyDashboard>
+                <FacultyProfile />
+              </FacultyDashboard>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ADMIN */}
         <Route
           path="/admin"
           element={
@@ -125,7 +171,19 @@ function AppContent() {
           }
         />
 
-        {/* Students */}
+        {/* ADMIN PROFILE */}
+        <Route
+          path="/admin/profile"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminDashboard>
+                <AdminProfile />
+              </AdminDashboard>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ADMIN SUBPAGES */}
         <Route
           path="/admin/students"
           element={
@@ -137,7 +195,6 @@ function AppContent() {
           }
         />
 
-        {/* Faculty */}
         <Route
           path="/admin/faculty"
           element={
@@ -149,7 +206,6 @@ function AppContent() {
           }
         />
 
-        {/* Courses */}
         <Route
           path="/admin/courses"
           element={
@@ -161,7 +217,6 @@ function AppContent() {
           }
         />
 
-        {/* Sections */}
         <Route
           path="/admin/sections"
           element={
@@ -173,7 +228,6 @@ function AppContent() {
           }
         />
 
-        {/* Terms */}
         <Route
           path="/admin/terms"
           element={
@@ -185,7 +239,6 @@ function AppContent() {
           }
         />
 
-        {/* Deadlines */}
         <Route
           path="/admin/deadlines"
           element={
@@ -196,6 +249,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/admin/rooms"
           element={
@@ -207,7 +261,6 @@ function AppContent() {
           }
         />
 
-        {/* Term Courses (Dynamic Route) */}
         <Route
           path="/admin/terms/:termId/courses"
           element={
@@ -229,10 +282,6 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
-
-
-        {/* Redirect unknown routes */}
-        {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
       </Routes>
     </>
   );

@@ -14,13 +14,13 @@ const FormModal = ({ isOpen, onClose, children }) => {
   return ReactDOM.createPortal(
     <div
       className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center"
-      onClick={onClose}
+      onClick={onClose} 
     >
       <div
         className="bg-white p-8 rounded-lg shadow-xl w-full max-w-2xl relative"
         onClick={(e) => e.stopPropagation()} // Prevent outside click close
       >
-        {/* Close Button */}
+        {/* Close Button */} 
         <button
           onClick={onClose}
           className="absolute top-4 right-4 hover:scale-110 transition"
