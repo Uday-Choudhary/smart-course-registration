@@ -3,21 +3,26 @@ import { useAuth } from "../../context/AuthContext";
 import { apiClient } from "../../api/client";
 import { User, Mail, Phone, MapPin, Calendar, Droplet, Save, BookOpen } from "lucide-react";
 
-const SUBJECT_OPTIONS = ["ADA", "Maths", "DSA", "PSP", "AP", "SNW", "M1", "M2"];
+import { getAllCourses } from "../../api/courses";
 
 export default function FacultyProfile() {
   const { user, updateUserInContext } = useAuth();
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
+  const [availableSubjects, setAvailableSubjects] = useState([]);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await apiClient.get("/api/profile", { auth: true });
-        setForm(res.user);
+        const [profileRes, coursesRes] = await Promise.all([
+          apiClient.get("/api/profile", { auth: true }),
+          getAllCourses()
+        ]);
+        setForm(profileRes.user);
+        setAvailableSubjects(coursesRes);
       } catch (err) {
-        console.error("load profile:", err);
+        console.error("load profile/courses:", err);
       }
     };
     load();
@@ -25,10 +30,10 @@ export default function FacultyProfile() {
 
   const change = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
-  const toggleSubject = (sub) => {
+  const toggleSubject = (subCode) => {
     const curr = form.subjects || [];
-    const exists = curr.includes(sub);
-    const next = exists ? curr.filter(s => s !== sub) : [...curr, sub];
+    const exists = curr.includes(subCode);
+    const next = exists ? curr.filter(s => s !== subCode) : [...curr, subCode];
     change("subjects", next);
   };
 
@@ -61,8 +66,6 @@ export default function FacultyProfile() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-800">My Profile</h1>
         <p className="text-gray-500">Manage your personal information and subjects</p>
-        <h1 className="text-2xl font-bold text-gray-800">Faculty Profile</h1>
-        <p className="text-gray-500">Manage your personal information and teaching subjects</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8 items-start">
@@ -208,18 +211,22 @@ export default function FacultyProfile() {
             <div className="mt-6">
               <div className="text-sm text-slate-600 mb-2">Subjects</div>
               <div className="flex flex-wrap gap-2">
-                {SUBJECT_OPTIONS.map((s) => {
-                  const active = (form.subjects || []).includes(s);
+                {availableSubjects.map((course) => {
+                  const active = (form.subjects || []).includes(course.code);
                   return (
                     <button
-                      key={s}
-                      onClick={() => toggleSubject(s)}
-                      className={`px-3 py-1 rounded-full border ${active ? "bg-slate-800 text-white border-slate-800" : "bg-white text-slate-700 border-gray-200"}`}
+                      key={course.id}
+                      onClick={() => toggleSubject(course.code)}
+                      className={`px-3 py-1 rounded-full border text-sm transition ${active ? "bg-slate-800 text-white border-slate-800" : "bg-white text-slate-700 border-gray-200 hover:border-slate-300"}`}
+                      title={course.title}
                     >
-                      {s}
+                      {course.code}
                     </button>
                   );
                 })}
+                {availableSubjects.length === 0 && (
+                  <p className="text-sm text-gray-400 italic">No subjects available.</p>
+                )}
               </div>
             </div>
 
