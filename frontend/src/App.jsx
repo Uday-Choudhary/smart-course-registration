@@ -65,6 +65,9 @@ function AppContent() {
     "/student/browse-courses",
     "/student/courses",
     "/student/timetable",
+    "/student/profile",
+    "/admin/profile",
+    "/faculty/profile",
   ];
 
   const isDynamicAdminRoute = /^\/admin\/terms\/\d+\/courses$/.test(

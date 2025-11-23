@@ -45,15 +45,8 @@ const AdminDashboard = ({ children }) => {
 
       {/* RIGHT - MAIN CONTENT */}
       <div className="w-[82%] flex flex-col gap-4">
-        {/* NAVBAR — Make avatar clickable */}
-        <div className="bg-white rounded-2xl shadow-sm">
-          <Link
-            to="/admin/profile"
-            className="block"
-          >
-            <DashboardNavbar />
-          </Link>
-        </div>
+        {/* NAVBAR */}
+        <DashboardNavbar />
 
         {/* MAIN CONTENT */}
         <main

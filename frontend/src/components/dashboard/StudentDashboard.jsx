@@ -24,9 +24,7 @@ const StudentDashboard = ({ children }) => {
       {/* RIGHT - MAIN CONTENT */}
       <div className="w-[82%] flex flex-col gap-4">
         {/* NAVBAR */}
-        <div className="bg-white rounded-2xl shadow-sm">
-          <DashboardNavbar />
-        </div>
+        <DashboardNavbar />
 
         {/* MAIN */}
         <main className="bg-[#F7F7F7] rounded-2xl flex-1 p-8">
