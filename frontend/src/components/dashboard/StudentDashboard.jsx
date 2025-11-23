@@ -1,11 +1,11 @@
-import React from 'react'
-import SidebarAdmin from '../common/Sidebar'
-import { useAuth } from '../../context/AuthContext'
-import DashboardNavbar from '../common/DashboardNavbar'
-import { Link } from 'react-router-dom'
+import React from "react";
+import SidebarAdmin from "../common/Sidebar";
+import { useAuth } from "../../context/AuthContext";
+import DashboardNavbar from "../common/DashboardNavbar";
+import { Link } from "react-router-dom";
 
-const StudentDashboard = () => {
-  const { user } = useAuth()
+const StudentDashboard = ({ children }) => {
+  const { user } = useAuth();
 
   return (
     <div className="flex h-screen bg-[#ffffff] p-4 gap-4">
@@ -27,14 +27,25 @@ const StudentDashboard = () => {
         <div className="bg-white rounded-2xl shadow-sm">
           <DashboardNavbar />
         </div>
+
         {/* MAIN */}
         <main className="bg-[#F7F7F7] rounded-2xl flex-1 p-8">
-          <h1 className="text-2xl font-bold mb-4 text-gray-800">Student Dashboard</h1>
-          <p className="text-gray-700">This is where the main content of the student dashboard will go.</p>
+          {children ? (
+            children
+          ) : (
+            <>
+              <h1 className="text-2xl font-bold mb-4 text-gray-800">
+                Student Dashboard
+              </h1>
+              <p className="text-gray-700">
+                This is where the main content of the student dashboard will go.
+              </p>
+            </>
+          )}
         </main>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default StudentDashboard
+export default StudentDashboard;

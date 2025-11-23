@@ -1,11 +1,11 @@
-import React from 'react'
-import SidebarAdmin from '../common/Sidebar'
-import { useAuth } from '../../context/AuthContext'
-import DashboardNavbar from '../common/DashboardNavbar'
-import { Link } from 'react-router-dom'
+import React from "react";
+import SidebarAdmin from "../common/Sidebar";
+import { useAuth } from "../../context/AuthContext";
+import DashboardNavbar from "../common/DashboardNavbar";
+import { Link } from "react-router-dom";
 
-const FacultyDashboard = () => {
-  const { user } = useAuth()
+const FacultyDashboard = ({ children }) => {
+  const { user } = useAuth();
 
   return (
     <div className="flex h-screen bg-[#ffffff] p-4 gap-4">
@@ -22,19 +22,30 @@ const FacultyDashboard = () => {
       </div>
 
       {/* RIGHT - MAIN CONTENT */}
-      <div className="w-[82%] flex flex-col gap-4 ">
+      <div className="w-[82%] flex flex-col gap-4">
         {/* NAVBAR */}
         <div className="bg-white rounded-2xl shadow-sm">
           <DashboardNavbar />
         </div>
+
         {/* MAIN */}
-        <main className=" rounded-2xl flex-1 p-8 bg-[#F7F7F7]">
-          <h1 className="text-2xl font-bold mb-4 text-gray-800">Faculty Dashboard</h1>
-          <p className="text-gray-700">This is where the main content of the faculty dashboard will go.</p>
+        <main className="bg-[#F7F7F7] rounded-2xl flex-1 p-8">
+          {children ? (
+            children
+          ) : (
+            <>
+              <h1 className="text-2xl font-bold mb-4 text-gray-800">
+                Faculty Dashboard
+              </h1>
+              <p className="text-gray-700">
+                This is where the main content of the faculty dashboard will go.
+              </p>
+            </>
+          )}
         </main>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default FacultyDashboard
+export default FacultyDashboard;

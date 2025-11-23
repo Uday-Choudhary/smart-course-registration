@@ -11,15 +11,23 @@ const Navbar = () => {
     navigate("/login");
   };
 
+  // ➤ Compute role-based profile route
+  const profilePath =
+    user?.role === "Admin"
+      ? "/admin/profile"
+      : user?.role === "Faculty"
+      ? "/faculty/profile"
+      : "/student/profile";
+
   return (
     <nav className="z-50 flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur bg-white/100 text-slate-800 text-sm">
-      <Link
-        to="/"
-        className="flex items-center gap-2 font-semibold text-xl text-indigo-700"
-      >
+      
+      {/* LOGO */}
+      <Link to="/" className="flex items-center gap-2 font-semibold text-xl text-indigo-700">
         🎓 SmartReg
       </Link>
 
+      {/* MAIN NAV LINKS */}
       <div className="hidden md:flex items-center gap-8">
         <Link to="/" className="hover:text-indigo-600 transition">
           Home
@@ -35,6 +43,7 @@ const Navbar = () => {
         </a>
       </div>
 
+      {/* RIGHT SIDE */}
       <div className="hidden md:flex items-center gap-3">
         {!isAuthenticated ? (
           <>
@@ -44,6 +53,7 @@ const Navbar = () => {
             >
               Login
             </Link>
+
             <Link
               to="/register"
               className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition"
@@ -52,11 +62,30 @@ const Navbar = () => {
             </Link>
           </>
         ) : (
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-700">
-              {user?.name}{" "}
-              <span className="text-indigo-600 font-medium">({user?.role})</span>
-            </span>
+          <div className="flex items-center gap-5">
+
+            {/* USER NAME + ROLE */}
+            <div className="flex flex-col text-right">
+              <span className="text-sm text-slate-700 font-medium">{user?.name}</span>
+              <span className="text-xs text-indigo-600">{user?.role}</span>
+            </div>
+
+            {/* PROFILE AVATAR */}
+            <button
+              onClick={() => navigate(profilePath)}
+              className="w-10 h-10 rounded-full bg-indigo-500 text-white flex items-center justify-center hover:scale-105 transition shadow-sm"
+              title="Profile"
+            >
+              {user?.name
+                ? user.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .slice(0, 2)
+                    .join("")
+                : "U"}
+            </button>
+
+            {/* LOGOUT BUTTON */}
             <button
               onClick={handleLogout}
               className="px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition"
@@ -67,6 +96,7 @@ const Navbar = () => {
         )}
       </div>
 
+      {/* MOBILE MENU ICON */}
       <button id="open-menu" className="md:hidden active:scale-90 transition">
         <svg
           xmlns="http://www.w3.org/2000/svg"

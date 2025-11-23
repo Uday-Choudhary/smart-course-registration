@@ -21,16 +21,15 @@ const AdminDashboard = ({ children }) => {
     "/admin/schedules"
   ];
 
-  // ✅ Allow dynamic routes like /admin/terms/1/courses
+  // Allow dynamic routes like /admin/terms/1/courses
   const isTermCoursesPage = /^\/admin\/terms\/\d+\/courses$/.test(location.pathname);
 
-  // Check if current path is one of the no-padding or dynamic term page
   const isNoPaddingPage =
     noPaddingPaths.includes(location.pathname) || isTermCoursesPage;
 
   return (
     <div className="flex h-screen bg-[#ffffff] p-4 gap-4">
-      {/* ===== LEFT - SIDEBAR ===== */}
+      {/* LEFT - SIDEBAR */}
       <div className="w-[18%] p-4 bg-[#F7F7F7] rounded-3xl shadow-sm h-full overflow-y-auto flex flex-col">
         <Link
           to="/"
@@ -44,17 +43,21 @@ const AdminDashboard = ({ children }) => {
         <SidebarAdmin role={user?.role} />
       </div>
 
-      {/* ===== RIGHT - MAIN CONTENT ===== */}
+      {/* RIGHT - MAIN CONTENT */}
       <div className="w-[82%] flex flex-col gap-4">
-        {/* NAVBAR */}
+        {/* NAVBAR — Make avatar clickable */}
         <div className="bg-white rounded-2xl shadow-sm">
-          <DashboardNavbar />
+          <Link
+            to="/admin/profile"
+            className="block"
+          >
+            <DashboardNavbar />
+          </Link>
         </div>
 
         {/* MAIN CONTENT */}
         <main
-          className={`rounded-2xl shadow-sm flex-1 bg-[#F7F7F7] ${isNoPaddingPage ? "" : "p-8"
-            }`}
+          className={`rounded-2xl shadow-sm flex-1 bg-[#F7F7F7] ${isNoPaddingPage ? "" : "p-8"}`}
         >
           {children || (
             <>
