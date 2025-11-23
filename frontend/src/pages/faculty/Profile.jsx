@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { apiClient } from "../../api/client";
 import { User, Mail, Phone, MapPin, Calendar, Droplet, Save, BookOpen } from "lucide-react";
@@ -6,7 +7,7 @@ import { User, Mail, Phone, MapPin, Calendar, Droplet, Save, BookOpen } from "lu
 import { getAllCourses } from "../../api/courses";
 
 export default function FacultyProfile() {
-  const { user, updateUserInContext } = useAuth();
+  const { updateUserInContext } = useAuth();
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
@@ -68,12 +69,12 @@ export default function FacultyProfile() {
         <p className="text-gray-500">Manage your personal information and subjects</p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
         {/* Left Sidebar - Profile Card */}
-        <div className="w-full lg:w-1/3">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="h-32 bg-gradient-to-r from-slate-700 to-slate-900"></div>
-            <div className="px-6 pb-8 pt-20 relative">
+        <div className="col-span-1 md:col-span-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden h-full flex flex-col">
+            <div className="h-32 bg-gradient-to-r from-slate-700 to-slate-900 shrink-0"></div>
+            <div className="px-6 pb-8 pt-20 relative flex-1">
               <div className="w-24 h-24 rounded-full bg-white p-1 absolute -top-12 left-1/2 transform -translate-x-1/2 shadow-md">
                 <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center text-3xl font-bold text-slate-700">
                   {form.name ? form.name.split(" ").map(n => n[0]).slice(0, 2).join("") : "F"}
@@ -103,11 +104,20 @@ export default function FacultyProfile() {
                 </div>
               </div>
             </div>
+
+            <div className="px-6 pb-6 pt-6 border-t border-gray-100">
+              <Link
+                to="/change-password"
+                className="block w-full py-2 px-4 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl text-center hover:bg-gray-50 transition"
+              >
+                Change Password
+              </Link>
+            </div>
           </div>
         </div>
 
         {/* Right Content - Edit Form */}
-        <div className="flex-1">
+        <div className="col-span-1 md:col-span-8">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-semibold text-gray-800">Faculty Profile</h2>
@@ -245,5 +255,6 @@ export default function FacultyProfile() {
         </div>
       </div>
     </div>
+
   );
 }

@@ -1,4 +1,5 @@
 const prisma = require("../../prisma");
+const bcrypt = require("bcryptjs");
 
 // getting all faculyt
 exports.getAllFaculty = async (req, res) => {
@@ -72,7 +73,7 @@ exports.createFaculty = async (req, res) => {
         sex,
         subjects: subjects ? JSON.stringify(subjects) : null, // store as JSON string
         roleId: role.id,
-        password: "default@123", // temporary password
+        password: await bcrypt.hash("default@123", 10), // temporary password hashed
       },
       select: {
         id: true,

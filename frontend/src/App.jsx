@@ -9,6 +9,7 @@ import {
 import Home from "./pages/Home";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
+import ChangePassword from "./pages/Auth/ChangePassword";
 
 import StudentDashboard from "./components/dashboard/StudentDashboard";
 import BrowseCourses from "./pages/student/BrowseCourses";
@@ -68,6 +69,7 @@ function AppContent() {
     "/student/profile",
     "/admin/profile",
     "/faculty/profile",
+    "/change-password",
   ];
 
   const isDynamicAdminRoute = /^\/admin\/terms\/\d+\/courses$/.test(
@@ -92,6 +94,14 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute allowedRoles={["Student", "Faculty", "Admin"]}>
+              <ChangePassword />
+            </ProtectedRoute>
+          }
+        />
 
         {/* STUDENT */}
         <Route

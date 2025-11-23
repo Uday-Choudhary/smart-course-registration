@@ -47,6 +47,10 @@ export const AuthProvider = ({ children }) => {
     setUser(null)
   }
 
+  const changePassword = async (oldPassword, newPassword) => {
+    return apiClient.post('/api/change-password', { oldPassword, newPassword }, { auth: true })
+  }
+
   // ⭐ NEW → update user instantly after profile update
   const updateUserInContext = (updated) => {
     setUser(prev => ({
@@ -63,7 +67,9 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     isAuthenticated: !!token,
-    updateUserInContext   // ⭐ expose it to all components
+    isAuthenticated: !!token,
+    updateUserInContext,   // ⭐ expose it to all components
+    changePassword
   }), [token, user, loading])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

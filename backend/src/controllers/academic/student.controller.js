@@ -1,5 +1,6 @@
 const prisma = require("../../prisma");
 const { validateEmail } = require("../../utils/validators");
+const bcrypt = require("bcryptjs");
 
 // GET all students (Admin)
 exports.getAllStudents = async (req, res) => {
@@ -47,7 +48,7 @@ exports.createStudent = async (req, res) => {
         birthday,
         bloodType,
         roleId: role.id,
-        password: "default@123", // temporary password
+        password: await bcrypt.hash("default@123", 10), // temporary password hashed
       },
       select: {
         id: true,
