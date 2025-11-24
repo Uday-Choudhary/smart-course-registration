@@ -23,6 +23,7 @@ app.use("/api/enroll", require("./routes/academic/enroll.route"));
 app.use("/api/students", require("./routes/academic/student.route"));
 app.use("/api/faculty", require("./routes/academic/faculty.route"));
 app.use("/api/profile", require("./routes/profile.route"));
+app.use("/api/notifications", require("./routes/notification.route"));
 
 
 

@@ -32,6 +32,7 @@ import DeadlinesPage from "./pages/admin/DeadlinePage";
 import TermCoursesPage from "./pages/admin/TermCoursesPage";
 import RoomsPage from "./pages/admin/RoomsPage";
 import SchedulesPage from "./pages/admin/SchedulesPage";
+import ReportPage from "./pages/admin/ReportPage";
 
 // --- PROFILE PAGES ---
 import AdminProfile from "./pages/admin/Profile";
@@ -63,6 +64,7 @@ function AppContent() {
     "/admin/deadlines",
     "/admin/rooms",
     "/admin/schedules",
+    "/admin/reports",
     "/student/browse-courses",
     "/student/courses",
     "/student/timetable",
@@ -291,6 +293,17 @@ function AppContent() {
             <ProtectedRoute allowedRoles={["Admin"]}>
               <AdminDashboard>
                 <SchedulesPage />
+              </AdminDashboard>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/reports"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminDashboard>
+                <ReportPage />
               </AdminDashboard>
             </ProtectedRoute>
           }
