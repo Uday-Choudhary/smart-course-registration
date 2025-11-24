@@ -7,8 +7,9 @@ const prisma = require("./prisma");
 const app = express();
 
 app.use(cors());
-app.use(helmet());
 app.use(express.json());
+app.use(helmet());
+
 
 
 app.use("/api/department", require("./routes/academic/department.route"));

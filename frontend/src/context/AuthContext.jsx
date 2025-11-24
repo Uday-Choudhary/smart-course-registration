@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     isAuthenticated: !!token,
-    isAuthenticated: !!token,
+
     updateUserInContext,   // ⭐ expose it to all components
     changePassword
   }), [token, user, loading])
