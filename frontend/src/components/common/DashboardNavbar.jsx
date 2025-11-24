@@ -1,7 +1,8 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Bell, Search } from "lucide-react";
+import { Search } from "lucide-react";
+import NotificationDropdown from "./NotificationDropdown";
 
 const DashboardNavbar = () => {
   const { user } = useAuth();
@@ -29,10 +30,7 @@ const DashboardNavbar = () => {
 
       <div className="flex items-center gap-4">
         {/* NOTIFICATION BELL */}
-        <button className="p-2 rounded-full hover:bg-gray-100 text-gray-600 transition relative">
-          <Bell size={23} />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-        </button>
+        <NotificationDropdown />
 
         {/* USER PROFILE */}
         <div
