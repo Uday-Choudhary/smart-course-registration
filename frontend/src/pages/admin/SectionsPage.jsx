@@ -66,7 +66,7 @@ const SectionsPage = () => {
     }
 
     const renderRow = (item) => (
-        <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+        <tr key={item.id} className="border-b border-gray-100 hover:bg-[#f3e8ff] transition-colors duration-200">
             <td className="p-4 font-medium text-gray-800">{item.sectionCode}</td>
             <td className="hidden md:table-cell text-gray-700">
                 {item.sectionCourses && item.sectionCourses.length > 0
