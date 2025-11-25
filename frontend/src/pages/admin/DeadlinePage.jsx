@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "../../components/admin/common/Table";
 import TableSearch from "../../components/admin/common/TableSearch";
 import Pagination from "../../components/admin/common/Pagination";
 import FormModal from "../../components/admin/common/FormModal";
 import DeadlineForm from "../../components/admin/deadlines/DeadlineForm";
-import { deadlinesData, role } from "../../lib/data";
+import { getAllDeadlines, deleteDeadline as deleteDeadlineApi } from "../../api/deadlines";
+import { useAuth } from "../../context/AuthContext";
 
 const columns = [
     { header: "Term", accessor: "term" },
@@ -29,10 +30,30 @@ const formatDate = (dateStr) => {
 };
 
 const DeadlinesPage = () => {
+    const { user } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalType, setModalType] = useState("create");
     const [selectedDeadline, setSelectedDeadline] = useState(null);
-    const [deadlines, setDeadlines] = useState(deadlinesData);
+    const [deadlines, setDeadlines] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        loadDeadlines();
+    }, []);
+
+    const loadDeadlines = async () => {
+        try {
+            setLoading(true);
+            const data = await getAllDeadlines();
+            setDeadlines(Array.isArray(data) ? data : []);
+        } catch (err) {
+            setError("Failed to load deadlines");
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const openModal = (type, deadline = null) => {
         setModalType(type);
@@ -43,26 +64,17 @@ const DeadlinesPage = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedDeadline(null);
+        loadDeadlines(); // Refresh list
     };
 
-    // CRUD handlers
-    const addDeadline = (deadline) => {
-        setDeadlines([...deadlines, { ...deadline, id: deadlines.length + 1 }]);
-        closeModal();
-    };
-
-    const updateDeadline = (updatedDeadline) => {
-        setDeadlines(
-            deadlines.map((d) =>
-                d.id === updatedDeadline.id ? { ...d, ...updatedDeadline } : d
-            )
-        );
-        closeModal();
-    };
-
-    const deleteDeadline = () => {
-        setDeadlines(deadlines.filter((d) => d.id !== selectedDeadline.id));
-        closeModal();
+    const handleDeleteDeadline = async () => {
+        try {
+            await deleteDeadlineApi(selectedDeadline.id);
+            closeModal();
+        } catch (err) {
+            alert("Failed to delete deadline");
+            console.error(err);
+        }
     };
 
     const renderRow = (item) => (
@@ -70,8 +82,12 @@ const DeadlinesPage = () => {
             key={item.id}
             className="border-b border-gray-200 even:bg-gray-50 text-sm hover:bg-[#f3e8ff] transition"
         >
-            <td className="p-3 text-gray-800 font-medium">{item.term}</td>
-            <td className="text-gray-700">{item.course}</td>
+            <td className="p-3 text-gray-800 font-medium">
+                {item.course?.term ? `${item.course.term.semester} ${item.course.term.year}` : "-"}
+            </td>
+            <td className="text-gray-700">
+                {item.course ? `${item.course.code} - ${item.course.title}` : "-"}
+            </td>
             <td className="text-gray-700">{formatDate(item.registrationOpen)}</td>
             <td className="text-gray-700">{formatDate(item.addDropStart)}</td>
             <td className="text-gray-700">{formatDate(item.addDropEnd)}</td>
@@ -101,6 +117,8 @@ const DeadlinesPage = () => {
         </tr>
     );
 
+    if (loading) return <div className="p-8">Loading deadlines...</div>;
+
     return (
         <div className="bg-white rounded-xl shadow-sm flex-1">
             {/* ===== HEADER ===== */}
@@ -112,7 +130,7 @@ const DeadlinesPage = () => {
                     <TableSearch />
 
                     {/* ➕ Add Deadline */}
-                    {role === "admin" && (
+                    {user?.role === "Admin" && (
                         <button
                             onClick={() => openModal("create")}
                             title="Add Deadline"
@@ -132,6 +150,12 @@ const DeadlinesPage = () => {
                     )}
                 </div>
             </div>
+
+            {error && (
+                <div className="mx-6 mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                    {error}
+                </div>
+            )}
 
             {/* ===== DEADLINES TABLE ===== */}
             <div className="px-4 md:px-6 py-3 overflow-x-auto">
@@ -157,7 +181,7 @@ const DeadlinesPage = () => {
                                 Cancel
                             </button>
                             <button
-                                onClick={deleteDeadline}
+                                onClick={handleDeleteDeadline}
                                 className="bg-red-500 text-white px-4 py-2 rounded"
                             >
                                 Delete
@@ -168,7 +192,7 @@ const DeadlinesPage = () => {
                     <DeadlineForm
                         type={modalType}
                         data={selectedDeadline}
-                        onSubmit={modalType === "create" ? addDeadline : updateDeadline}
+                        onClose={closeModal}
                     />
                 )}
             </FormModal>

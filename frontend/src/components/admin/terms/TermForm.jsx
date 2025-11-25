@@ -85,10 +85,9 @@ const TermForm = ({ term, onClose }) => {
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">-- Select Semester --</option>
-            <option value="Spring">Spring</option>
-            <option value="Summer">Summer</option>
-            <option value="Fall">Fall</option>
-            <option value="Winter">Winter</option>
+            <option value="Even Semester">Even Semester</option>
+            <option value="Odd Semester">Odd Semester</option>
+            <option value="Summer Term">Summer Term</option>
           </select>
         </div>
 

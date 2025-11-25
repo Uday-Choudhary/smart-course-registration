@@ -13,6 +13,12 @@ const getAllSchedules = async (req, res) => {
                     },
                 },
                 room: true,
+                faculty: {
+                    select: {
+                        id: true,
+                        full_name: true,
+                    }
+                }
             },
         });
         console.log("Schedules from DB:", schedules);
@@ -47,6 +53,7 @@ const createSchedule = async (req, res) => {
                 dayOfWeek,
                 startTime: new Date(`1970-01-01T${startTime}`),
                 endTime: new Date(`1970-01-01T${endTime}`),
+                facultyId: req.body.facultyId || null,
             },
             include: {
                 sectionCourse: {
@@ -75,6 +82,7 @@ const updateSchedule = async (req, res) => {
             dayOfWeek,
             startTime: new Date(`1970-01-01T${startTime}`),
             endTime: new Date(`1970-01-01T${endTime}`),
+            facultyId: req.body.facultyId || null,
         };
 
         if (sectionId && courseId) {

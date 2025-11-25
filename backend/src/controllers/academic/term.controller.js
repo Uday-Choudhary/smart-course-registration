@@ -76,6 +76,11 @@ exports.getTermById = async (req, res) => {
             code: true,
             title: true,
             creditHours: true,
+            faculties: {
+              select: {
+                full_name: true
+              }
+            }
           },
         },
         sections: {

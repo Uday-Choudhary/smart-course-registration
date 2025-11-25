@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { createCourse, updateCourse } from '../../../api/courses'
 import { getAllTerms } from '../../../api/terms'
+import { getAllFaculty } from '../../../api/faculty'
 
 const CourseForm = ({ course, onClose }) => {
   const [formData, setFormData] = useState({
@@ -8,26 +9,32 @@ const CourseForm = ({ course, onClose }) => {
     title: '',
     creditHours: '',
     description: '',
-    termId: ''
+    termId: '',
+    facultyIds: []
   })
   const [terms, setTerms] = useState([])
-  const [loadingTerms, setLoadingTerms] = useState(true)
+  const [faculties, setFaculties] = useState([])
+  const [loadingOptions, setLoadingOptions] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    const loadTerms = async () => {
+    const loadOptions = async () => {
       try {
-        setLoadingTerms(true)
-        const termsData = await getAllTerms()
+        setLoadingOptions(true)
+        const [termsData, facultiesData] = await Promise.all([
+          getAllTerms(),
+          getAllFaculty()
+        ])
         setTerms(Array.isArray(termsData) ? termsData : [])
+        setFaculties(Array.isArray(facultiesData) ? facultiesData : [])
       } catch (err) {
-        setError('Failed to load terms')
+        setError('Failed to load options')
       } finally {
-        setLoadingTerms(false)
+        setLoadingOptions(false)
       }
     }
-    loadTerms()
+    loadOptions()
   }, [])
 
   useEffect(() => {
@@ -37,7 +44,8 @@ const CourseForm = ({ course, onClose }) => {
         title: course.title || '',
         creditHours: course.creditHours?.toString() || '',
         description: course.description || '',
-        termId: course.termId?.toString() || ''
+        termId: course.termId?.toString() || '',
+        facultyIds: course.faculties ? course.faculties.map(f => f.id) : []
       })
     } else {
       setFormData({
@@ -45,7 +53,8 @@ const CourseForm = ({ course, onClose }) => {
         title: '',
         creditHours: '',
         description: '',
-        termId: ''
+        termId: '',
+        facultyIds: []
       })
     }
   }, [course])
@@ -55,6 +64,17 @@ const CourseForm = ({ course, onClose }) => {
     setFormData({
       ...formData,
       [name]: value
+    })
+  }
+
+  const handleFacultyChange = (e) => {
+    const { value, checked } = e.target
+    setFormData(prev => {
+      if (checked) {
+        return { ...prev, facultyIds: [...prev.facultyIds, value] }
+      } else {
+        return { ...prev, facultyIds: prev.facultyIds.filter(id => id !== value) }
+      }
     })
   }
 
@@ -143,7 +163,7 @@ const CourseForm = ({ course, onClose }) => {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Term <span className="text-red-500">*</span>
           </label>
-          {loadingTerms ? (
+          {loadingOptions ? (
             <div className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100">
               Loading terms...
             </div>
@@ -163,6 +183,35 @@ const CourseForm = ({ course, onClose }) => {
               ))}
             </select>
           )}
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Assign Faculty
+          </label>
+          <div className="w-full px-3 py-2 border border-gray-300 rounded-md max-h-40 overflow-y-auto">
+            {loadingOptions ? (
+              <p className="text-gray-500">Loading faculty...</p>
+            ) : faculties.length > 0 ? (
+              faculties.map(faculty => (
+                <div key={faculty.id} className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    id={`faculty-${faculty.id}`}
+                    value={faculty.id}
+                    checked={formData.facultyIds.includes(faculty.id)}
+                    onChange={handleFacultyChange}
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor={`faculty-${faculty.id}`} className="text-sm text-gray-700">
+                    {faculty.full_name}
+                  </label>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500">No faculty found.</p>
+            )}
+          </div>
         </div>
 
         <div className="mb-4">
