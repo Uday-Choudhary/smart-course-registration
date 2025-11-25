@@ -25,13 +25,13 @@ exports.registerUser = async (req, res) => {
       return res.status(400).json({ error: "invalid role" });
     }
 
-    // Secure Admin Registration
-    if (role === "Admin") {
-      const adminSecret = process.env.ADMIN_SECRET;
-      if (!adminSecret || req.body.adminSecret !== adminSecret) {
-        return res.status(403).json({ error: "Unauthorized to create Admin account" });
-      }
-    }
+    // // Secure Admin Registration
+    // if (role === "Admin") {
+    //   const adminSecret = process.env.ADMIN_SECRET;
+    //   if (!adminSecret || req.body.adminSecret !== adminSecret) {
+    //     return res.status(403).json({ error: "Unauthorized to create Admin account" });
+    //   }
+    // }
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {

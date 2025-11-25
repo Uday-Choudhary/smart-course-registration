@@ -15,6 +15,7 @@ import StudentDashboard from "./components/dashboard/StudentDashboard";
 import BrowseCourses from "./pages/student/BrowseCourses";
 import CourseDetails from "./pages/student/CourseDetails";
 import MyTimetable from "./pages/student/MyTimetable";
+import MyRegistrations from "./pages/student/MyRegistrations";
 
 import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
@@ -68,6 +69,7 @@ function AppContent() {
     "/student/browse-courses",
     "/student/courses",
     "/student/timetable",
+    "/student/my-registrations",
     "/student/profile",
     "/admin/profile",
     "/faculty/profile",
@@ -138,6 +140,15 @@ function AppContent() {
           element={
             <ProtectedRoute allowedRoles={["Student"]}>
               <MyTimetable />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/student/my-registrations"
+          element={
+            <ProtectedRoute allowedRoles={["Student"]}>
+              <MyRegistrations />
             </ProtectedRoute>
           }
         />

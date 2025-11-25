@@ -16,8 +16,8 @@ const Menu = ({ role }) => {
     user?.role === "Admin"
       ? "/admin/profile"
       : user?.role === "Faculty"
-      ? "/faculty/profile"
-      : "/student/profile";
+        ? "/faculty/profile"
+        : "/student/profile";
 
   const menuItems = [
     // === STUDENT MENU ===
@@ -27,7 +27,7 @@ const Menu = ({ role }) => {
       items: [
         { icon: "/home.png", label: "Dashboard", href: "/student", visible: ["Student"] },
         { icon: "/subject.png", label: "Browse Courses", href: "/student/browse-courses", visible: ["Student"] },
-        { icon: "/assignment.png", label: "My Registrations", href: "/my-registrations", visible: ["Student"] },
+        { icon: "/assignment.png", label: "My Registrations", href: "/student/my-registrations", visible: ["Student"] },
         { icon: "/calendar.png", label: "My Timetable", href: "/student/timetable", visible: ["Student"] },
         { icon: "/announcement.png", label: "Notifications", href: "/notifications", visible: ["Student"] },
       ],
