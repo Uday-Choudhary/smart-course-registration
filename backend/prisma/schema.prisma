@@ -32,6 +32,8 @@ model User {
   
   // Faculty relations
   sectionCoursesTaught SectionCourse[]
+  coursesTaught        Course[]        @relation("CourseFaculty")
+  schedulesTaught      SectionSchedule[]
   
   role           Role           @relation(fields: [roleId], references: [id])
   waitlists      Waitlist[]
@@ -56,6 +58,19 @@ model Course {
   term        Term @relation(fields: [termId], references: [id])
   
   sectionCourses SectionCourse[]
+  faculties      User[]          @relation("CourseFaculty")
+  deadline       Deadline?
+}
+
+model Deadline {
+  id                Int      @id @default(autoincrement())
+  courseId          Int      @unique
+  course            Course   @relation(fields: [courseId], references: [id])
+  registrationOpen  DateTime
+  addDropStart      DateTime
+  addDropEnd        DateTime
+  registrationClose DateTime
+  waitlistClose     DateTime
 }
 
 model Section {
@@ -99,9 +114,11 @@ model SectionSchedule {
   endTime         DateTime
   roomId          Int
   sectionCourseId Int
+  facultyId       String?
 
   sectionCourse   SectionCourse @relation(fields: [sectionCourseId], references: [id])
   room            Room          @relation(fields: [roomId], references: [id])
+  faculty         User?         @relation(fields: [facultyId], references: [id])
 }
 
 model Registration {

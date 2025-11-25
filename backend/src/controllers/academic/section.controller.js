@@ -119,7 +119,13 @@ exports.getAllSections = async (req, res) => {
         term: true,
         sectionCourses: {
           include: {
-            course: true,
+            course: {
+              include: {
+                faculties: {
+                  select: { id: true, full_name: true }
+                }
+              }
+            },
             faculty: {
               select: { id: true, full_name: true, email: true },
             },
@@ -157,7 +163,13 @@ exports.getSectionById = async (req, res) => {
         term: true,
         sectionCourses: {
           include: {
-            course: true,
+            course: {
+              include: {
+                faculties: {
+                  select: { id: true, full_name: true }
+                }
+              }
+            },
             faculty: {
               select: { id: true, full_name: true, email: true },
             },

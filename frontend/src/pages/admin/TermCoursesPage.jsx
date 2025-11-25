@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Pagination from "../../components/admin/common/Pagination";
 import Table from "../../components/admin/common/Table";
-import TableSearch from "../../components/admin/common/TableSearch";
-import { coursesData, termsData } from "../../lib/data";
+import { getTermById } from "../../api/terms";
 
 const columns = [
-    { header: "Course Code", accessor: "courseCode" },
-    { header: "Course Name", accessor: "courseName", className: "hidden md:table-cell" },
+    { header: "Course Code", accessor: "code" },
+    { header: "Course Name", accessor: "title", className: "hidden md:table-cell" },
     { header: "Credit Hours", accessor: "creditHours", className: "hidden lg:table-cell" },
     { header: "Teachers", accessor: "teachers", className: "hidden lg:table-cell" },
     { header: "Actions", accessor: "action" },
@@ -15,12 +14,41 @@ const columns = [
 
 const TermCoursesPage = () => {
     const { termId } = useParams();
-    const term = termsData.find((t) => t.id === Number(termId));
+    const [term, setTerm] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    if (!term) {
+    useEffect(() => {
+        const fetchTerm = async () => {
+            try {
+                setLoading(true);
+                const data = await getTermById(termId);
+                setTerm(data);
+            } catch (err) {
+                setError("Failed to load term details");
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (termId) {
+            fetchTerm();
+        }
+    }, [termId]);
+
+    if (loading) {
         return (
             <div className="flex justify-center items-center h-full text-gray-600">
-                <h2 className="text-lg font-medium">Term not found ❌</h2>
+                Loading...
+            </div>
+        );
+    }
+
+    if (error || !term) {
+        return (
+            <div className="flex justify-center items-center h-full text-gray-600">
+                <h2 className="text-lg font-medium">{error || "Term not found ❌"}</h2>
             </div>
         );
     }
@@ -30,11 +58,13 @@ const TermCoursesPage = () => {
             key={item.id}
             className="border-b border-gray-200 even:bg-gray-50 text-sm hover:bg-[#f3e8ff] transition"
         >
-            <td className="p-4 font-medium text-gray-800">{item.courseCode}</td>
-            <td className="hidden md:table-cell text-gray-700">{item.courseName}</td>
+            <td className="p-4 font-medium text-gray-800">{item.code}</td>
+            <td className="hidden md:table-cell text-gray-700">{item.title}</td>
             <td className="hidden md:table-cell text-gray-700">{item.creditHours}</td>
             <td className="hidden md:table-cell text-gray-700">
-                {item.teachers.join(", ")}
+                {item.faculties && item.faculties.length > 0
+                    ? item.faculties.map(f => f.full_name).join(", ")
+                    : "N/A"}
             </td>
             <td className="pr-4">
                 <div className="flex items-center justify-center gap-2">
@@ -70,7 +100,7 @@ const TermCoursesPage = () => {
 
             {/* ===== TABLE ===== */}
             <div className="px-4 md:px-6 py-2">
-                <Table columns={columns} renderRow={renderRow} data={coursesData} />
+                <Table columns={columns} renderRow={renderRow} data={term.courses || []} />
             </div>
 
             {/* ===== PAGINATION ===== */}

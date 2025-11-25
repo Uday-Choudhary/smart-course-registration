@@ -133,7 +133,7 @@ const SchedulesPage = () => {
                         hour12: true
                     }) : 'N/A'}
                 </td>
-                <td className="p-4 text-gray-700">{item.sectionCourse?.faculty?.full_name || 'N/A'}</td>
+                <td className="p-4 text-gray-700">{item.faculty?.full_name || 'N/A'}</td>
                 <td className="pr-4">
                     <div className="flex items-center justify-center gap-2">
                         <button

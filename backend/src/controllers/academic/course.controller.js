@@ -19,6 +19,9 @@ exports.createCourse = async (req, res) => {
         creditHours: parseInt(creditHours),
         description: description ? description.trim() : null,
         termId: parseInt(termId),
+        faculties: req.body.facultyIds ? {
+          connect: req.body.facultyIds.map(id => ({ id }))
+        } : undefined,
       },
     });
 
@@ -56,6 +59,13 @@ exports.getAllCourses = async (req, res) => {
             id: true,
             year: true,
             semester: true,
+          },
+        },
+        faculties: {
+          select: {
+            id: true,
+            full_name: true,
+            email: true,
           },
         },
         sectionCourses: {
@@ -149,6 +159,11 @@ exports.updateCourse = async (req, res) => {
     if (creditHours !== undefined) updateData.creditHours = parseInt(creditHours);
     if (description !== undefined) updateData.description = description ? description.trim() : null;
     if (termId !== undefined) updateData.termId = parseInt(termId);
+    if (req.body.facultyIds) {
+      updateData.faculties = {
+        set: req.body.facultyIds.map(id => ({ id }))
+      };
+    }
 
     const course = await prisma.course.update({
       where: { id: parseInt(id) },

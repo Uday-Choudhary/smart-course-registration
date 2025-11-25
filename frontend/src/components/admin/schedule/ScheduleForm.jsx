@@ -11,10 +11,12 @@ const ScheduleForm = ({ schedule, onClose }) => {
     dayOfWeek: "",
     startTime: "",
     endTime: "",
+    facultyId: "",
   });
   const [rooms, setRooms] = useState([]);
   const [sections, setSections] = useState([]);
   const [availableCourses, setAvailableCourses] = useState([]);
+  const [availableFaculties, setAvailableFaculties] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -27,6 +29,7 @@ const ScheduleForm = ({ schedule, onClose }) => {
         dayOfWeek: schedule.dayOfWeek || "",
         startTime: schedule.startTime ? new Date(schedule.startTime).toTimeString().slice(0, 5) : "",
         endTime: schedule.endTime ? new Date(schedule.endTime).toTimeString().slice(0, 5) : "",
+        facultyId: schedule.facultyId || "",
       });
     }
     loadData();
@@ -45,6 +48,20 @@ const ScheduleForm = ({ schedule, onClose }) => {
       setAvailableCourses([]);
     }
   }, [formData.sectionId, sections]);
+
+  // Update available faculties when course changes
+  useEffect(() => {
+    if (formData.courseId && availableCourses.length > 0) {
+      const selectedCourse = availableCourses.find(c => c.id === parseInt(formData.courseId));
+      if (selectedCourse && selectedCourse.faculties) {
+        setAvailableFaculties(selectedCourse.faculties);
+      } else {
+        setAvailableFaculties([]);
+      }
+    } else {
+      setAvailableFaculties([]);
+    }
+  }, [formData.courseId, availableCourses]);
 
   const loadData = async () => {
     try {
@@ -146,6 +163,30 @@ const ScheduleForm = ({ schedule, onClose }) => {
           </select>
           {formData.sectionId && availableCourses.length === 0 && (
             <p className="text-sm text-red-500 mt-1">No courses added to this section yet.</p>
+          )}
+        </div>
+
+        {/* Select Faculty */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Faculty (Optional)
+          </label>
+          <select
+            name="facultyId"
+            value={formData.facultyId}
+            onChange={handleChange}
+            disabled={!formData.courseId || availableFaculties.length === 0}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+          >
+            <option value="">-- Select Faculty --</option>
+            {availableFaculties.map((f) => (
+              <option key={f.id} value={f.id}>
+                {f.full_name}
+              </option>
+            ))}
+          </select>
+          {formData.courseId && availableFaculties.length === 0 && (
+            <p className="text-sm text-gray-500 mt-1">No faculty assigned to this course.</p>
           )}
         </div>
 
