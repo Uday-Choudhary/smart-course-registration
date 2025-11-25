@@ -6,9 +6,24 @@ const prisma = require("./prisma");
 
 const app = express();
 
+// Manual CORS Middleware
+// app.use((req, res, next) => {
+//   const allowedOrigins = ['http://localhost:5173', 'http://127.0.0.1:5173'];
+//   const origin = req.headers.origin;
+//   if (allowedOrigins.includes(origin)) {
+//     res.setHeader('Access-Control-Allow-Origin', origin);
+//   }
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   res.header('Access-Control-Allow-Credentials', true);
+//   if (req.method === 'OPTIONS') {
+//       return res.sendStatus(200);
+//   }
+//   return next();
+// });
 app.use(cors());
 app.use(express.json());
-app.use(helmet());
+// app.use(helmet()); // Temporarily disabled for debugging
 
 
 
