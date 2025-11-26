@@ -5,7 +5,11 @@ const {
     createSchedule,
     updateSchedule,
     deleteSchedule,
+    getFacultySchedule,
 } = require('../../controllers/academic/schedule.controller');
+const { verifyToken, requireFacultyOrAdmin } = require('../../miiddleware/authMiddleware');
+
+router.get('/faculty', verifyToken, requireFacultyOrAdmin, getFacultySchedule);
 
 router.get('/', getAllSchedules);
 router.post('/create', createSchedule);

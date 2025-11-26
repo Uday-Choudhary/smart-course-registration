@@ -38,6 +38,7 @@ import ReportPage from "./pages/admin/ReportPage";
 // --- PROFILE PAGES ---
 import AdminProfile from "./pages/admin/Profile";
 import FacultyProfile from "./pages/faculty/Profile";
+import FacultyTimetable from "./pages/faculty/MyTimetable";
 import StudentProfile from "./pages/student/Profile";
 
 function App() {
@@ -73,6 +74,7 @@ function AppContent() {
     "/student/profile",
     "/admin/profile",
     "/faculty/profile",
+    "/faculty/timetable",
     "/change-password",
   ];
 
@@ -183,6 +185,15 @@ function AppContent() {
               <FacultyDashboard>
                 <FacultyProfile />
               </FacultyDashboard>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/faculty/timetable"
+          element={
+            <ProtectedRoute allowedRoles={["Faculty", "Admin"]}>
+              <FacultyTimetable />
             </ProtectedRoute>
           }
         />

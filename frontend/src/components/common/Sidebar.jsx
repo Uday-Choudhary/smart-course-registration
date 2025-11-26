@@ -39,6 +39,7 @@ const Menu = ({ role }) => {
       visible: ["Faculty"],
       items: [
         { icon: "/home.png", label: "Dashboard", href: "/faculty", visible: ["Faculty"] },
+        { icon: "/calendar.png", label: "My Timetable", href: "/faculty/timetable", visible: ["Faculty"] },
         { icon: "/class.png", label: "My Sections", href: "/faculty/sections", visible: ["Faculty"] },
         { icon: "/student.png", label: "Student Rosters", href: "/faculty/rosters", visible: ["Faculty"] },
         { icon: "/result.png", label: "Export Lists", href: "/faculty/export", visible: ["Faculty"] },
