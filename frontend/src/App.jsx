@@ -24,6 +24,7 @@ import Navbar from "./components/common/Navbar";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // --- ADMIN PAGES ---
+import DashboardPage from "./pages/admin/DashboardPage";
 import StudentsPage from "./pages/admin/StudentsPage";
 import FacultyPage from "./pages/admin/FacultyPage";
 import CoursesPage from "./pages/admin/CoursesPage";
@@ -58,6 +59,7 @@ function AppContent() {
     "/student",
     "/faculty",
     "/admin",
+    "/admin/dashboard",
     "/admin/students",
     "/admin/faculty",
     "/admin/courses",
@@ -203,7 +205,7 @@ function AppContent() {
           path="/admin"
           element={
             <ProtectedRoute allowedRoles={["Admin"]}>
-              <AdminDashboard />
+              <DashboardPage />
             </ProtectedRoute>
           }
         />

@@ -1,7 +1,7 @@
-const prisma = require("../prisma");
+const prisma = require("../../prisma");
 
 // Get main dashboard statistics
-exports.getDashboardStats = async (req, res) => {
+exports.getAdminDashboardStats = async (req, res) => {
     try {
         // Get current term (most recent)
         const currentTerm = await prisma.term.findFirst({
@@ -205,7 +205,7 @@ exports.getDashboardStats = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("getDashboardStats Error:", error);
+        console.error("getAdminDashboardStats Error:", error);
         res.status(500).json({
             success: false,
             error: "Failed to fetch dashboard statistics",
