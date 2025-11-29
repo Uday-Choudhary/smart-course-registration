@@ -6,6 +6,8 @@ import DashboardNavbar from "../common/DashboardNavbar";
 import UserCard from "../common/UserCard";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
 const AdminDashboard = ({ children }) => {
   const { user } = useAuth();
   const location = useLocation();
@@ -21,7 +23,7 @@ const AdminDashboard = ({ children }) => {
     const fetchStats = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:4000/api/dashboard/stats", {
+        const response = await axios.get(`${API_URL}/api/dashboard/stats`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setStats(response.data);
