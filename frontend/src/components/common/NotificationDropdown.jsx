@@ -4,6 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import moment from "moment";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
 const NotificationDropdown = () => {
     const { user } = useAuth();
     const [notifications, setNotifications] = useState([]);
@@ -15,7 +17,7 @@ const NotificationDropdown = () => {
     const fetchNotifications = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get("http://localhost:4000/api/notifications", {
+            const response = await axios.get(`${API_URL}/api/notifications`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setNotifications(response.data);
@@ -47,7 +49,7 @@ const NotificationDropdown = () => {
         try {
             const token = localStorage.getItem("token");
             await axios.put(
-                `http://localhost:4000/api/notifications/${id}/read`,
+                `${API_URL}/api/notifications/${id}/read`,
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -65,7 +67,7 @@ const NotificationDropdown = () => {
         try {
             const token = localStorage.getItem("token");
             await axios.put(
-                "http://localhost:4000/api/notifications/read-all",
+                `${API_URL}/api/notifications/read-all`,
                 {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );

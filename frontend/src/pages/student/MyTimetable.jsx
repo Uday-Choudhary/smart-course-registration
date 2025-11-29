@@ -207,7 +207,8 @@ const MyTimetable = () => {
     const fetchTimetable = async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:4000/api/students/timetable", {
+            const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+            const response = await fetch(`${API_URL}/api/students/timetable`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

@@ -196,192 +196,193 @@ const styles = `
 `;
 
 const FacultyTimetable = () => {
-    const { user } = useAuth();
-    const [events, setEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchTimetable();
-    }, []);
+  useEffect(() => {
+    fetchTimetable();
+  }, []);
 
-    const fetchTimetable = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            // Assuming the route is mounted at /api/schedule and the new endpoint is /faculty
-            const response = await fetch("http://localhost:4000/api/schedule/faculty", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+  const fetchTimetable = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+      // Assuming the route is mounted at /api/schedule and the new endpoint is /faculty
+      const response = await fetch(`${API_URL}/api/schedule/faculty`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-            if (!response.ok) {
-                throw new Error("Failed to fetch timetable");
-            }
+      if (!response.ok) {
+        throw new Error("Failed to fetch timetable");
+      }
 
-            const data = await response.json();
-            const formattedEvents = data.map((item) => {
-                const start = getDateFromDayAndTime(item.dayOfWeek, item.startTime);
-                const end = getDateFromDayAndTime(item.dayOfWeek, item.endTime);
+      const data = await response.json();
+      const formattedEvents = data.map((item) => {
+        const start = getDateFromDayAndTime(item.dayOfWeek, item.startTime);
+        const end = getDateFromDayAndTime(item.dayOfWeek, item.endTime);
 
-                return {
-                    id: item.id,
-                    title: `${item.sectionCourse.course.code} - ${item.sectionCourse.course.title}`,
-                    start,
-                    end,
-                    resource: {
-                        ...item,
-                        courseCode: item.sectionCourse.course.code,
-                        courseTitle: item.sectionCourse.course.title,
-                        room: item.room.roomCode,
-                        section: item.sectionCourse.section.sectionCode,
-                        color: getEnhancedColor(item.sectionCourse.course.code),
-                    },
-                };
-            });
-
-            setEvents(formattedEvents);
-        } catch (error) {
-            console.error("Error fetching timetable:", error);
-            toast.error("Failed to load timetable");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const getDateFromDayAndTime = (dayName, timeString) => {
-        const date = moment().day(dayName);
-        const time = moment(timeString);
-
-        date.hour(time.hour());
-        date.minute(time.minute());
-        date.second(0);
-
-        return date.toDate();
-    };
-
-    // Enhanced color palette
-    const getEnhancedColor = (str) => {
-        const colors = [
-            { bg: '#FAE27C', border: '#eab308', text: '#854d0e' }, // Yellow
-            { bg: '#c7b8ff', border: '#8b5cf6', text: '#5b21b6' }, // Purple
-            { bg: '#b9e3ff', border: '#3b82f6', text: '#1e40af' }, // Blue
-            { bg: '#ffd6e0', border: '#f43f5e', text: '#9f1239' }, // Pink
-            { bg: '#ffe3b3', border: '#f97316', text: '#9a3412' }, // Orange
-            { bg: '#b8f2b6', border: '#22c55e', text: '#166534' }, // Green
-        ];
-
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = str.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        const index = Math.abs(hash) % colors.length;
-        return colors[index];
-    };
-
-    const eventStyleGetter = (event) => {
         return {
-            style: {
-                backgroundColor: 'transparent',
-                padding: 0,
-                border: 'none',
-            },
+          id: item.id,
+          title: `${item.sectionCourse.course.code} - ${item.sectionCourse.course.title}`,
+          start,
+          end,
+          resource: {
+            ...item,
+            courseCode: item.sectionCourse.course.code,
+            courseTitle: item.sectionCourse.course.title,
+            room: item.room.roomCode,
+            section: item.sectionCourse.section.sectionCode,
+            color: getEnhancedColor(item.sectionCourse.course.code),
+          },
         };
-    };
+      });
 
-    const EventComponent = ({ event }) => {
-        const colors = event.resource.color;
-        return (
-            <div
-                className="h-full w-full flex flex-col p-2 rounded-md border-l-4 transition-all hover:brightness-95"
-                style={{
-                    backgroundColor: colors.bg,
-                    borderLeftColor: colors.border,
-                    color: colors.text
-                }}
-            >
-                <div className="font-bold text-xs leading-tight mb-1">
-                    {event.resource.courseCode}
-                </div>
-                <div className="text-[10px] font-medium opacity-90 truncate">
-                    {event.resource.courseTitle}
-                </div>
-                <div className="mt-auto flex items-center gap-1 text-[10px] opacity-75">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
-                        <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
-                    </svg>
-                    {event.resource.room} - Sec {event.resource.section}
-                </div>
-            </div>
-        );
-    };
+      setEvents(formattedEvents);
+    } catch (error) {
+      console.error("Error fetching timetable:", error);
+      toast.error("Failed to load timetable");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const getDateFromDayAndTime = (dayName, timeString) => {
+    const date = moment().day(dayName);
+    const time = moment(timeString);
+
+    date.hour(time.hour());
+    date.minute(time.minute());
+    date.second(0);
+
+    return date.toDate();
+  };
+
+  // Enhanced color palette
+  const getEnhancedColor = (str) => {
+    const colors = [
+      { bg: '#FAE27C', border: '#eab308', text: '#854d0e' }, // Yellow
+      { bg: '#c7b8ff', border: '#8b5cf6', text: '#5b21b6' }, // Purple
+      { bg: '#b9e3ff', border: '#3b82f6', text: '#1e40af' }, // Blue
+      { bg: '#ffd6e0', border: '#f43f5e', text: '#9f1239' }, // Pink
+      { bg: '#ffe3b3', border: '#f97316', text: '#9a3412' }, // Orange
+      { bg: '#b8f2b6', border: '#22c55e', text: '#166534' }, // Green
+    ];
+
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    const index = Math.abs(hash) % colors.length;
+    return colors[index];
+  };
+
+  const eventStyleGetter = (event) => {
+    return {
+      style: {
+        backgroundColor: 'transparent',
+        padding: 0,
+        border: 'none',
+      },
+    };
+  };
+
+  const EventComponent = ({ event }) => {
+    const colors = event.resource.color;
     return (
-        <div className="flex h-screen bg-[#ffffff] p-4 gap-4">
-            <style>{styles}</style>
-            {/* LEFT - SIDEBAR */}
-            <div className="w-[18%] p-4 bg-[#F7F7F7] rounded-2xl">
-                <div className="flex items-center justify-center lg:justify-start gap-2 mb-8">
-                    <img src="/logo.png" alt="logo" width={32} height={32} />
-                    <span className="hidden lg:block font-bold text-gray-800">SchooLama</span>
-                </div>
-                <SidebarAdmin role={user?.role} />
-            </div>
-
-            {/* RIGHT - MAIN CONTENT */}
-            <div className="w-[82%] flex flex-col gap-4">
-                {/* NAVBAR */}
-                <div className="bg-white rounded-2xl shadow-sm">
-                    <DashboardNavbar />
-                </div>
-                {/* MAIN */}
-                <main className="bg-[#F7F7F7] rounded-2xl flex-1 p-8 overflow-hidden">
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-800">My Teaching Schedule</h1>
-                            <p className="text-gray-600 mt-1">View your assigned classes at a glance</p>
-                        </div>
-                        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm">
-                            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                            <span className="text-sm font-medium text-gray-700">
-                                {events.length} {events.length === 1 ? 'Class' : 'Classes'}
-                            </span>
-                        </div>
-                    </div>
-
-                    {loading ? (
-                        <div className="bg-white rounded-xl shadow-lg h-[calc(100%-5rem)] flex items-center justify-center">
-                            <div className="text-center">
-                                <div className="loading-skeleton w-64 h-64 mx-auto mb-4"></div>
-                                <p className="text-gray-600 font-medium">Loading your schedule...</p>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="bg-white rounded-xl shadow-lg h-[calc(100%-5rem)] overflow-hidden timetable-container">
-                            <Calendar
-                                localizer={localizer}
-                                events={events}
-                                startAccessor="start"
-                                endAccessor="end"
-                                style={{ height: "100%" }}
-                                defaultView="week"
-                                views={["week", "day", "agenda"]}
-                                min={new Date(0, 0, 0, 8, 0, 0)}
-                                max={new Date(0, 0, 0, 20, 0, 0)}
-                                eventPropGetter={eventStyleGetter}
-                                components={{
-                                    event: EventComponent,
-                                }}
-                                step={30}
-                                timeslots={2}
-                                showMultiDayTimes
-                            />
-                        </div>
-                    )}
-                </main>
-            </div>
+      <div
+        className="h-full w-full flex flex-col p-2 rounded-md border-l-4 transition-all hover:brightness-95"
+        style={{
+          backgroundColor: colors.bg,
+          borderLeftColor: colors.border,
+          color: colors.text
+        }}
+      >
+        <div className="font-bold text-xs leading-tight mb-1">
+          {event.resource.courseCode}
         </div>
+        <div className="text-[10px] font-medium opacity-90 truncate">
+          {event.resource.courseTitle}
+        </div>
+        <div className="mt-auto flex items-center gap-1 text-[10px] opacity-75">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+            <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
+          </svg>
+          {event.resource.room} - Sec {event.resource.section}
+        </div>
+      </div>
     );
+  };
+
+  return (
+    <div className="flex h-screen bg-[#ffffff] p-4 gap-4">
+      <style>{styles}</style>
+      {/* LEFT - SIDEBAR */}
+      <div className="w-[18%] p-4 bg-[#F7F7F7] rounded-2xl">
+        <div className="flex items-center justify-center lg:justify-start gap-2 mb-8">
+          <img src="/logo.png" alt="logo" width={32} height={32} />
+          <span className="hidden lg:block font-bold text-gray-800">SchooLama</span>
+        </div>
+        <SidebarAdmin role={user?.role} />
+      </div>
+
+      {/* RIGHT - MAIN CONTENT */}
+      <div className="w-[82%] flex flex-col gap-4">
+        {/* NAVBAR */}
+        <div className="bg-white rounded-2xl shadow-sm">
+          <DashboardNavbar />
+        </div>
+        {/* MAIN */}
+        <main className="bg-[#F7F7F7] rounded-2xl flex-1 p-8 overflow-hidden">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">My Teaching Schedule</h1>
+              <p className="text-gray-600 mt-1">View your assigned classes at a glance</p>
+            </div>
+            <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium text-gray-700">
+                {events.length} {events.length === 1 ? 'Class' : 'Classes'}
+              </span>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="bg-white rounded-xl shadow-lg h-[calc(100%-5rem)] flex items-center justify-center">
+              <div className="text-center">
+                <div className="loading-skeleton w-64 h-64 mx-auto mb-4"></div>
+                <p className="text-gray-600 font-medium">Loading your schedule...</p>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white rounded-xl shadow-lg h-[calc(100%-5rem)] overflow-hidden timetable-container">
+              <Calendar
+                localizer={localizer}
+                events={events}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: "100%" }}
+                defaultView="week"
+                views={["week", "day", "agenda"]}
+                min={new Date(0, 0, 0, 8, 0, 0)}
+                max={new Date(0, 0, 0, 20, 0, 0)}
+                eventPropGetter={eventStyleGetter}
+                components={{
+                  event: EventComponent,
+                }}
+                step={30}
+                timeslots={2}
+                showMultiDayTimes
+              />
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
 };
 
 export default FacultyTimetable;
