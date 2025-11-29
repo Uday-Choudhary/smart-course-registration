@@ -8,7 +8,6 @@ const StatCard = ({ icon, label, value, trend, color = 'blue' }) => {
         orange: 'from-orange-500 to-orange-600',
         red: 'from-red-500 to-red-600'
     };
-
     const gradientClass = colorClasses[color] || colorClasses.blue;
 
     return (
