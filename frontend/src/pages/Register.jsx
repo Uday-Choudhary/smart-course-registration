@@ -20,8 +20,19 @@ const Register = () => {
     if (!name) nextErrors.name = 'Name is required'
     if (!email) nextErrors.email = 'Email is required'
     else if (!emailRegex.test(email)) nextErrors.email = 'Enter a valid email'
-    if (!password) nextErrors.password = 'Password is required'
-    else if (password.length < 6) nextErrors.password = 'At least 6 characters'
+
+    if (!password) {
+      nextErrors.password = 'Password is required'
+    } else if (password.length < 8) {
+      nextErrors.password = 'At least 8 characters required'
+    } else if (!/[a-z]/.test(password)) {
+      nextErrors.password = 'Must contain a lowercase letter'
+    } else if (!/\d/.test(password)) {
+      nextErrors.password = 'Must contain a number'
+    } else if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+      nextErrors.password = 'Must contain a special character'
+    }
+
     if (!role) nextErrors.role = 'Role is required'
     setErrors(nextErrors)
     return Object.keys(nextErrors).length === 0

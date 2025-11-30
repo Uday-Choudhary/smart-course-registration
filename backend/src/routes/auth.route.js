@@ -15,8 +15,8 @@ const router = express.Router();
 //     legacyHeaders: false,
 // });
 
-router.post("/register", /* authLimiter, */ registerUser);
-router.post("/login", /* authLimiter, */ loginUser);
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 router.get("/profile", verifyToken, getProfile);
 router.post("/change-password", verifyToken, changePassword);
 
