@@ -42,8 +42,22 @@ const CourseDetails = () => {
         setMessage(null);
         setClashModal(null);
         try {
-            await enrollStudent(user.id, sectionId);
-            setMessage({ type: "success", text: "Successfully enrolled! Check 'My Registrations' to see your enrolled courses." });
+            const response = await enrollStudent(user.id, sectionId);
+
+            // Check if added to waitlist or successfully enrolled
+            if (response.waitlistEntry || response.waitlistPosition) {
+                // Added to waitlist
+                setMessage({
+                    type: "warning",
+                    text: `Section is full. You have been added to the waitlist at position ${response.waitlistPosition}.`
+                });
+            } else {
+                // Successfully enrolled
+                setMessage({
+                    type: "success",
+                    text: "Successfully enrolled! Check 'My Registrations' to see your enrolled courses."
+                });
+            }
         } catch (err) {
             console.error("Enrollment error:", err);
             if (err.status === 409) {
@@ -112,7 +126,12 @@ const CourseDetails = () => {
                     <h4 className="text-xl font-bold text-gray-900 mb-6">Available Sections</h4>
 
                     {message && (
-                        <div className={`mb-6 p-4 rounded-xl text-sm font-medium ${message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                        <div className={`mb-6 p-4 rounded-xl text-sm font-medium ${message.type === 'success'
+                                ? 'bg-green-50 text-green-700 border border-green-200'
+                                : message.type === 'warning'
+                                    ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                                    : 'bg-red-50 text-red-700 border border-red-200'
+                            }`}>
                             {message.text}
                         </div>
                     )}
