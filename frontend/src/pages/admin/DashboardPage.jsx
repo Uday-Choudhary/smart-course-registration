@@ -54,7 +54,6 @@ const DashboardPage = () => {
         { label: 'Manage Sections', path: '/admin/sections', icon: '📋' },
         { label: 'View Students', path: '/admin/students', icon: '👥' },
         { label: 'Set Deadlines', path: '/admin/deadlines', icon: '📅' },
-        { label: 'View Reports', path: '/admin/reports', icon: '📊' },
         { label: 'Manage Faculty', path: '/admin/faculty', icon: '👨‍🏫' }
     ];
 
