@@ -54,6 +54,7 @@ function AppContent() {
   const location = useLocation();
 
   const hideNavbarPaths = [
+    "/",
     "/login",
     "/register",
     "/student",
