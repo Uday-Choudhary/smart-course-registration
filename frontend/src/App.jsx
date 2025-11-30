@@ -125,7 +125,9 @@ function AppContent() {
           path="/student/browse-courses"
           element={
             <ProtectedRoute allowedRoles={["Student"]}>
-              <BrowseCourses />
+              <StudentDashboard>
+                <BrowseCourses />
+              </StudentDashboard>
             </ProtectedRoute>
           }
         />
@@ -134,7 +136,9 @@ function AppContent() {
           path="/student/courses/:id"
           element={
             <ProtectedRoute allowedRoles={["Student"]}>
-              <CourseDetails />
+              <StudentDashboard>
+                <CourseDetails />
+              </StudentDashboard>
             </ProtectedRoute>
           }
         />
@@ -143,7 +147,9 @@ function AppContent() {
           path="/student/timetable"
           element={
             <ProtectedRoute allowedRoles={["Student"]}>
-              <MyTimetable />
+              <StudentDashboard>
+                <MyTimetable />
+              </StudentDashboard>
             </ProtectedRoute>
           }
         />
@@ -152,7 +158,9 @@ function AppContent() {
           path="/student/my-registrations"
           element={
             <ProtectedRoute allowedRoles={["Student"]}>
-              <MyRegistrations />
+              <StudentDashboard>
+                <MyRegistrations />
+              </StudentDashboard>
             </ProtectedRoute>
           }
         />
