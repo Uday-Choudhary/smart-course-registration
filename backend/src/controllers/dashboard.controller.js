@@ -3,10 +3,45 @@ const prisma = require("../prisma");
 // Get main dashboard statistics
 exports.getDashboardStats = async (req, res) => {
     try {
-        // Get current term (most recent)
-        const currentTerm = await prisma.term.findFirst({
-            orderBy: { id: 'desc' }
+        // Determine Active Term based on recent activity
+        // 1. Check most recent registration
+        const lastRegistration = await prisma.registration.findFirst({
+            orderBy: { createdAt: 'desc' },
+            include: { section: true }
         });
+
+        // 2. Check most recent waitlist
+        const lastWaitlist = await prisma.waitlist.findFirst({
+            orderBy: { createdAt: 'desc' },
+            include: { section: true }
+        });
+
+        let currentTermId = null;
+
+        // Use the most recent activity
+        if (lastRegistration && lastWaitlist) {
+            currentTermId = lastRegistration.createdAt > lastWaitlist.createdAt
+                ? lastRegistration.section.termId
+                : lastWaitlist.section.termId;
+        } else if (lastRegistration) {
+            currentTermId = lastRegistration.section.termId;
+        } else if (lastWaitlist) {
+            currentTermId = lastWaitlist.section.termId;
+        }
+
+        let currentTerm;
+        if (currentTermId) {
+            currentTerm = await prisma.term.findUnique({
+                where: { id: currentTermId }
+            });
+        }
+
+        // Fallback to latest term if no activity found
+        if (!currentTerm) {
+            currentTerm = await prisma.term.findFirst({
+                orderBy: { id: 'desc' }
+            });
+        }
 
         if (!currentTerm) {
             return res.status(404).json({

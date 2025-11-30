@@ -218,27 +218,63 @@ const DashboardPage = () => {
                         </div>
                     </div>
 
-                    {/* Alerts */}
+                    {/* Sections with Waitlists - Detailed Table */}
                     {stats?.oversubscribedSections?.length > 0 && (
-                        <div className="bg-orange-50 border border-orange-200 rounded-xl p-6 mb-8">
-                            <div className="flex items-start gap-3">
-                                <svg className="w-6 h-6 text-orange-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                                </svg>
-                                <div className="flex-1">
-                                    <h4 className="font-semibold text-orange-900 mb-2">Oversubscribed Courses</h4>
-                                    <p className="text-orange-800 text-sm mb-3">
-                                        {stats.oversubscribedSections.length} section(s) have students on waitlist
-                                    </p>
-                                    <div className="space-y-2">
-                                        {stats.oversubscribedSections.slice(0, 3).map((section, index) => (
-                                            <div key={index} className="text-sm text-orange-900">
-                                                <span className="font-medium">{section.courseCode}</span> - {section.sectionCode}:
-                                                <span className="ml-1">{section.waitlisted} waitlisted</span>
-                                            </div>
+                        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-lg font-semibold text-gray-800">Sections with Waitlists</h3>
+                                <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
+                                    {stats.oversubscribedSections.length} section(s)
+                                </span>
+                            </div>
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr className="border-b bg-gray-50">
+                                            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Section</th>
+                                            <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Course</th>
+                                            <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Capacity</th>
+                                            <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Enrolled</th>
+                                            <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Waitlisted</th>
+                                            <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {stats.oversubscribedSections.map((section, index) => (
+                                            <tr key={index} className="border-b last:border-0 hover:bg-gray-50">
+                                                <td className="py-3 px-4">
+                                                    <span className="font-medium text-gray-900">{section.sectionCode}</span>
+                                                </td>
+                                                <td className="py-3 px-4">
+                                                    <div className="font-medium text-gray-900">{section.courseCode}</div>
+                                                    <div className="text-xs text-gray-500">{section.courseTitle}</div>
+                                                </td>
+                                                <td className="py-3 px-4 text-center">
+                                                    <span className="text-gray-700">{section.capacity}</span>
+                                                </td>
+                                                <td className="py-3 px-4 text-center">
+                                                    <span className="font-semibold text-green-600">{section.enrolled}</span>
+                                                </td>
+                                                <td className="py-3 px-4 text-center">
+                                                    <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-semibold">
+                                                        {section.waitlisted}
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 px-4 text-center">
+                                                    {section.enrolled >= section.capacity ? (
+                                                        <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                            Full
+                                                        </span>
+                                                    ) : (
+                                                        <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                            Available
+                                                        </span>
+                                                    )}
+                                                </td>
+                                            </tr>
                                         ))}
-                                    </div>
-                                </div>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     )}
