@@ -9,6 +9,7 @@ const {
   getMyProfile,
   getMyTimetable,
   getMyRegistrations,
+  getDashboardStats,
 } = require("../../controllers/academic/student.controller");
 
 const {
@@ -17,6 +18,7 @@ const {
 } = require("../../miiddleware/authMiddleware");
 
 // Self profile for any authenticated user
+router.get("/dashboard-stats", verifyToken, getDashboardStats);
 router.get("/registrations", verifyToken, getMyRegistrations);
 router.get("/timetable", verifyToken, getMyTimetable);
 router.get("/me", verifyToken, getMyProfile);
