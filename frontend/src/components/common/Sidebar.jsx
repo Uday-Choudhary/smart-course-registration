@@ -40,9 +40,7 @@ const Menu = ({ role }) => {
       items: [
         { icon: "/home.png", label: "Dashboard", href: "/faculty", visible: ["Faculty"] },
         { icon: "/calendar.png", label: "My Timetable", href: "/faculty/timetable", visible: ["Faculty"] },
-        { icon: "/class.png", label: "My Sections", href: "/faculty/sections", visible: ["Faculty"] },
-        { icon: "/student.png", label: "Student Rosters", href: "/faculty/rosters", visible: ["Faculty"] },
-        { icon: "/result.png", label: "Export Lists", href: "/faculty/export", visible: ["Faculty"] },
+        { icon: "/class.png", label: "Assigned Courses", href: "/faculty/sections", visible: ["Faculty"] },
         { icon: "/announcement.png", label: "Notifications", href: "/notifications", visible: ["Faculty"] },
       ],
     },

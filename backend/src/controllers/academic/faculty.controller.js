@@ -210,6 +210,7 @@ exports.getDashboardStats = async (req, res) => {
 
     console.log("=== FACULTY DASHBOARD STATS DEBUG ===");
     console.log("Faculty ID:", userId);
+    console.log("Faculty Email:", req.user.email); // Log the email
 
     // 1. Fetch all section courses taught by this faculty
     const sectionCourses = await prisma.sectionCourse.findMany({
@@ -240,7 +241,10 @@ exports.getDashboardStats = async (req, res) => {
       }
     });
 
-    console.log("Total section courses taught:", sectionCourses.length);
+    console.log("Total section courses taught (DB fetch):", sectionCourses.length);
+    if (sectionCourses.length > 0) {
+      console.log("Sample Section Course:", JSON.stringify(sectionCourses[0], null, 2));
+    }
 
     // 2. Fetch recent notifications
     const notifications = await prisma.notification.findMany({
@@ -264,14 +268,18 @@ exports.getDashboardStats = async (req, res) => {
       activeTermId = systemLatestTerm?.id;
     }
 
-    console.log("Active term ID:", activeTermId);
+    console.log("Calculated Active term ID:", activeTermId);
 
     // 4. Filter for Active Term
+    // TEMPORARY DEBUG: Show ALL sections, ignore term filtering
+    const activeSectionCourses = sectionCourses;
+    /*
     const activeSectionCourses = activeTermId
       ? sectionCourses.filter(sc => sc.section.termId === activeTermId)
       : [];
+    */
 
-    console.log("Active section courses:", activeSectionCourses.length);
+    console.log("Active section courses count:", activeSectionCourses.length);
 
     // 5. Calculate Stats
 

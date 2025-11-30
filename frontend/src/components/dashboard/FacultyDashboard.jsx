@@ -96,10 +96,10 @@ const FacultyDashboard = ({ children }) => {
 
               {/* Main Content Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* My Sections */}
+                {/* Assigned Courses */}
                 <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-bold text-gray-800">My Sections</h3>
+                    <h3 className="text-lg font-bold text-gray-800">Assigned Courses</h3>
                     <Link
                       to="/faculty/sections"
                       className="text-sm text-indigo-600 font-medium hover:text-indigo-700"
@@ -134,7 +134,7 @@ const FacultyDashboard = ({ children }) => {
                         </div>
                       ))
                     ) : (
-                      <p className="text-gray-500 text-center py-8">No sections assigned</p>
+                      <p className="text-gray-500 text-center py-8">No assigned courses</p>
                     )}
                   </div>
                 </div>
@@ -163,51 +163,6 @@ const FacultyDashboard = ({ children }) => {
                       <p className="text-gray-500 text-center py-4">No classes today</p>
                     )}
                   </div>
-                </div>
-              </div>
-
-              {/* Student Roster Summary */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-bold text-gray-800">Top Sections by Enrollment</h3>
-                  <Link
-                    to="/faculty/rosters"
-                    className="text-sm text-indigo-600 font-medium hover:text-indigo-700"
-                  >
-                    View Rosters
-                  </Link>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                  {dashboardData?.topSections?.length > 0 ? (
-                    dashboardData.topSections.map((section) => (
-                      <div
-                        key={section.id}
-                        className="p-4 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100"
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-semibold text-indigo-600">
-                            {section.courseCode}
-                          </span>
-                          <span className="text-xs text-gray-500">{section.sectionCode}</span>
-                        </div>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-2xl font-bold text-gray-800">
-                            {section.enrolledCount}
-                          </span>
-                          <span className="text-sm text-gray-500">/{section.capacity}</span>
-                        </div>
-                        <p className="text-xs text-gray-600 mt-1 truncate">{section.courseTitle}</p>
-                        <div className="mt-2 bg-gray-200 rounded-full h-1.5">
-                          <div
-                            className="bg-indigo-600 h-1.5 rounded-full"
-                            style={{ width: `${(section.enrolledCount / section.capacity) * 100}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-500 text-center py-4 col-span-5">No enrollment data</p>
-                  )}
                 </div>
               </div>
             </div>
