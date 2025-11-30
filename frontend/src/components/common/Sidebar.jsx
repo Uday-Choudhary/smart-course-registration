@@ -61,7 +61,6 @@ const Menu = ({ role }) => {
         { icon: "/calendar.png", label: "Manage Deadlines", href: "/admin/deadlines", visible: ["Admin"] },
         { icon: "/studyroom.png", label: "Manage Rooms", href: "/admin/rooms", visible: ["Admin"] },
         { icon: "/studyroom.png", label: "Manage Schedules", href: "/admin/schedules", visible: ["Admin"] },
-        { icon: "/exam.png", label: "View Reports", href: "/admin/reports", visible: ["Admin"] },
       ],
     },
 
