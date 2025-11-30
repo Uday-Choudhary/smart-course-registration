@@ -222,6 +222,34 @@ exports.enrollStudent = async (req, res) => {
 
       } else {
         // Case B: Section Full -> Add to Waitlist
+        // First check if already on waitlist
+        const existingWaitlist = await tx.waitlist.findFirst({
+          where: {
+            studentId: studentId,
+            sectionId: parseInt(sectionId)
+          }
+        });
+
+        if (existingWaitlist) {
+          // Already on waitlist - calculate current position
+          const position = await tx.waitlist.count({
+            where: {
+              sectionId: parseInt(sectionId),
+              createdAt: { lte: existingWaitlist.createdAt }
+            }
+          });
+
+          return {
+            status: 200,
+            body: {
+              message: "You are already on the waitlist for this section.",
+              waitlistPosition: position,
+              waitlistEntry: existingWaitlist
+            }
+          };
+        }
+
+        // Not on waitlist yet - add them
         const waitlistCount = await tx.waitlist.count({
           where: { sectionId: parseInt(sectionId) }
         });
