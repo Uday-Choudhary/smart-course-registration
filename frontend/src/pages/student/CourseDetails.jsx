@@ -47,12 +47,17 @@ const CourseDetails = () => {
         } catch (err) {
             console.error("Enrollment error:", err);
             if (err.status === 409) {
+                // Time clash detected - show modal with alternatives
                 const errorData = err.data;
                 setClashModal({
                     clashes: errorData.clashes || [],
                     alternatives: errorData.alternatives || []
                 });
+            } else if (err.status === 400 && err.data?.error === "Already registered") {
+                // Already enrolled in this section
+                setMessage({ type: "error", text: err.data?.message || "You are already enrolled in this section." });
             } else {
+                // Other errors
                 setMessage({ type: "error", text: err.data?.error || err.message || "Failed to enroll." });
             }
         } finally {

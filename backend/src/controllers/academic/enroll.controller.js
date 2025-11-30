@@ -153,11 +153,24 @@ exports.enrollStudent = async (req, res) => {
       },
     });
 
-    // 3. Check for Time Clashes
+    // 3. Check if Already Enrolled in This Section
+    const alreadyEnrolled = existingRegistrations.some(
+      reg => reg.sectionId === parseInt(sectionId)
+    );
+
+    if (alreadyEnrolled) {
+      return res.status(400).json({
+        success: false,
+        error: "Already registered",
+        message: "You are already enrolled in this section."
+      });
+    }
+
+    // 4. Check for Time Clashes
     const targetSchedules = targetSection.sectionCourses.flatMap(sc => sc.schedules);
     const clashes = findTimeClashes(targetSchedules, existingRegistrations);
 
-    // 4. Handle Clashes (Return Error + Alternatives)
+    // 5. Handle Clashes (Return Error + Alternatives)
     if (clashes.length > 0) {
       const alternatives = await findValidAlternatives(targetSection, existingRegistrations);
 
@@ -193,7 +206,7 @@ exports.enrollStudent = async (req, res) => {
       });
     }
 
-    // 5. Perform Enrollment (Atomic Transaction)
+    // 6. Perform Enrollment (Atomic Transaction)
     const result = await prisma.$transaction(async (tx) => {
       // Check capacity inside transaction
       const currentCount = await tx.registration.count({
