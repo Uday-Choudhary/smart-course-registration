@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
+
+  // Auto-redirect authenticated users to their dashboard
+  useEffect(() => {
+    if (!loading && isAuthenticated && user) {
+      if (user.role === "Admin") {
+        navigate("/admin", { replace: true });
+      } else if (user.role === "Faculty") {
+        navigate("/faculty", { replace: true });
+      } else {
+        navigate("/student", { replace: true });
+      }
+    }
+  }, [isAuthenticated, user, loading, navigate]);
 
   const handleGetStarted = () => {
     if (isAuthenticated && user) {
@@ -19,6 +32,18 @@ const Home = () => {
       navigate("/register");
     }
   };
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
