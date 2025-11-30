@@ -1,22 +1,79 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import SidebarAdmin from "../common/Sidebar";
 import { useAuth } from "../../context/AuthContext";
 import DashboardNavbar from "../common/DashboardNavbar";
-import { Link } from "react-router-dom";
+import StatCard from "./StatCard";
+import { Users, BookOpen, Clock, TrendingUp } from "lucide-react";
+import { apiClient } from "../../api/client";
 
 const FacultyDashboard = ({ children }) => {
   const { user } = useAuth();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        console.log("=== FRONTEND: Fetching faculty dashboard data ===");
+        const data = await apiClient.get("/api/academic/faculty/dashboard-stats", { auth: true });
+        console.log("=== FRONTEND: Received data ===", data);
+        if (data.success) {
+          console.log("=== FRONTEND: Dashboard data ===", data.data);
+          setDashboardData(data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch faculty dashboard data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  const stats = [
+    {
+      title: "Total Sections",
+      value: dashboardData?.totalSections?.toString() || "0",
+      icon: BookOpen,
+      color: "blue",
+      trend: { value: 0, positive: true, label: "this term" },
+    },
+    {
+      title: "Total Students",
+      value: dashboardData?.totalStudents?.toString() || "0",
+      icon: Users,
+      color: "green",
+      trend: { value: 0, positive: true, label: "across sections" },
+    },
+    {
+      title: "Upcoming Classes",
+      value: dashboardData?.upcomingClasses?.length?.toString() || "0",
+      icon: Clock,
+      color: "amber",
+      trend: {
+        value: dashboardData?.upcomingClasses?.[0]
+          ? `Next: ${new Date(dashboardData.upcomingClasses[0].startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+          : "No classes today",
+        positive: true,
+        label: ""
+      },
+    },
+  ];
 
   return (
     <div className="flex h-screen bg-[#ffffff] p-4 gap-4">
       {/* LEFT - SIDEBAR */}
-      <div className="w-[18%] p-4 bg-[#F7F7F7] rounded-2xl">
+      <div className="w-[18%] p-4 bg-[#F7F7F7] rounded-3xl shadow-sm h-full overflow-y-auto flex flex-col">
         <Link
           to="/"
-          className="flex items-center justify-center lg:justify-start gap-2 mb-8"
+          className="flex items-center justify-center lg:justify-start gap-2 mb-8 shrink-0"
         >
           <img src="/logo.png" alt="logo" width={32} height={32} />
-          <span className="hidden lg:block font-bold text-gray-800">SchooLama</span>
+          <span className="hidden lg:block font-bold text-gray-800">
+            SchooLama
+          </span>
         </Link>
         <SidebarAdmin role={user?.role} />
       </div>
@@ -26,19 +83,134 @@ const FacultyDashboard = ({ children }) => {
         {/* NAVBAR */}
         <DashboardNavbar />
 
-        {/* MAIN */}
-        <main className="bg-[#F7F7F7] rounded-2xl flex-1 p-8">
-          {children ? (
-            children
-          ) : (
-            <>
-              <h1 className="text-2xl font-bold mb-4 text-gray-800">
-                Faculty Dashboard
-              </h1>
-              <p className="text-gray-700">
-                This is where the main content of the faculty dashboard will go.
-              </p>
-            </>
+        {/* MAIN CONTENT */}
+        <main className="rounded-2xl shadow-sm flex-1 bg-[#F7F7F7] p-8 overflow-y-auto">
+          {children || (
+            <div className="space-y-8">
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {stats.map((stat, index) => (
+                  <StatCard key={index} {...stat} />
+                ))}
+              </div>
+
+              {/* Main Content Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* My Sections */}
+                <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-bold text-gray-800">My Sections</h3>
+                    <Link
+                      to="/faculty/sections"
+                      className="text-sm text-indigo-600 font-medium hover:text-indigo-700"
+                    >
+                      View All
+                    </Link>
+                  </div>
+                  <div className="space-y-3">
+                    {dashboardData?.mySections?.length > 0 ? (
+                      dashboardData.mySections.slice(0, 5).map((section) => (
+                        <div
+                          key={section.id}
+                          className="flex items-center justify-between p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                              {section.courseCode.substring(0, 2)}
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-gray-800">
+                                {section.courseCode} - {section.sectionCode}
+                              </p>
+                              <p className="text-xs text-gray-500">{section.courseTitle}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-semibold text-gray-700">
+                              {section.enrolledCount}/{section.capacity}
+                            </p>
+                            <p className="text-xs text-gray-500">Students</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-center py-8">No sections assigned</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Today's Schedule */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                  <h3 className="text-lg font-bold text-gray-800 mb-6">Today's Schedule</h3>
+                  <div className="space-y-4">
+                    {dashboardData?.upcomingClasses?.length > 0 ? (
+                      dashboardData.upcomingClasses.map((cls) => (
+                        <div key={cls.id} className="p-4 rounded-xl border-l-4 border-indigo-500 bg-indigo-50/50">
+                          <p className="text-xs font-semibold text-indigo-600 mb-1">
+                            {new Date(cls.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -
+                            {new Date(cls.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                          <h4 className="font-bold text-gray-800">{cls.courseCode}</h4>
+                          <p className="text-sm text-gray-500">
+                            {cls.sectionCode} • Room {cls.room}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            {cls.enrolledCount} students
+                          </p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-center py-4">No classes today</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Student Roster Summary */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-bold text-gray-800">Top Sections by Enrollment</h3>
+                  <Link
+                    to="/faculty/rosters"
+                    className="text-sm text-indigo-600 font-medium hover:text-indigo-700"
+                  >
+                    View Rosters
+                  </Link>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                  {dashboardData?.topSections?.length > 0 ? (
+                    dashboardData.topSections.map((section) => (
+                      <div
+                        key={section.id}
+                        className="p-4 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-semibold text-indigo-600">
+                            {section.courseCode}
+                          </span>
+                          <span className="text-xs text-gray-500">{section.sectionCode}</span>
+                        </div>
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-2xl font-bold text-gray-800">
+                            {section.enrolledCount}
+                          </span>
+                          <span className="text-sm text-gray-500">/{section.capacity}</span>
+                        </div>
+                        <p className="text-xs text-gray-600 mt-1 truncate">{section.courseTitle}</p>
+                        <div className="mt-2 bg-gray-200 rounded-full h-1.5">
+                          <div
+                            className="bg-indigo-600 h-1.5 rounded-full"
+                            style={{ width: `${(section.enrolledCount / section.capacity) * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-center py-4 col-span-5">No enrollment data</p>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
         </main>
       </div>
