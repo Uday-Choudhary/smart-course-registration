@@ -3,41 +3,64 @@ import { Link, useLocation } from "react-router-dom";
 import SidebarAdmin from "../common/Sidebar";
 import { useAuth } from "../../context/AuthContext";
 import DashboardNavbar from "../common/DashboardNavbar";
-import StatCard from "./StatCard"; // Reuse StatCard if we want, or create similar widgets
+import StatCard from "./StatCard";
 import { BookOpen, GraduationCap, Clock, Award } from "lucide-react";
+import { apiClient } from "../../api/client";
 
 const StudentDashboard = ({ children }) => {
   const { user } = useAuth();
   const location = useLocation();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Mock stats for now, similar to how the previous dashboard had them
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        console.log("=== FRONTEND: Fetching dashboard data ===");
+        const data = await apiClient.get("/api/academic/student/dashboard-stats", { auth: true });
+        console.log("=== FRONTEND: Received data ===", data);
+        if (data.success) {
+          console.log("=== FRONTEND: Dashboard data ===", data.data);
+          console.log("Enrolled Courses:", data.data.enrolledCourses);
+          console.log("Credits Earned:", data.data.creditsEarned);
+          setDashboardData(data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch dashboard data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   const stats = [
     {
-      title: "GPA",
-      value: "3.8",
-      icon: Award,
-      color: "indigo",
-      trend: { value: 0.2, positive: true, label: "this semester" },
-    },
-    {
       title: "Credits Earned",
-      value: "84",
+      value: dashboardData?.creditsEarned?.toString() || "0",
       icon: GraduationCap,
       color: "green",
-      trend: { value: 12, positive: true, label: "this year" },
+      trend: { value: 0, positive: true, label: "total" },
     },
     {
       title: "Enrolled Courses",
-      value: "5",
+      value: dashboardData?.enrolledCourses?.toString() || "0",
       icon: BookOpen,
       color: "blue",
     },
     {
       title: "Upcoming Classes",
-      value: "2",
+      value: dashboardData?.upcomingClasses?.length?.toString() || "0",
       icon: Clock,
       color: "amber",
-      trend: { value: "Next: 2PM", positive: true, label: "" },
+      trend: {
+        value: dashboardData?.upcomingClasses?.[0]
+          ? `Next: ${new Date(dashboardData.upcomingClasses[0].startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+          : "No classes today",
+        positive: true,
+        label: ""
+      },
     },
   ];
 
@@ -67,7 +90,7 @@ const StudentDashboard = ({ children }) => {
           {children || (
             <div className="space-y-8">
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {stats.map((stat, index) => (
                   <StatCard key={index} {...stat} />
                 ))}
@@ -84,22 +107,28 @@ const StudentDashboard = ({ children }) => {
                     </button>
                   </div>
                   <div className="space-y-4">
-                    {[1, 2, 3].map((item) => (
-                      <div
-                        key={item}
-                        className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"
-                      >
-                        <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                          <BookOpen className="h-5 w-5" />
+                    {dashboardData?.recentActivity?.length > 0 ? (
+                      dashboardData.recentActivity.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                            <BookOpen className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-800">
+                              {item.message}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {new Date(item.createdAt).toLocaleString()}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-800">
-                            Assignment "React Basics" graded
-                          </p>
-                          <p className="text-xs text-gray-500">2 hours ago</p>
-                        </div>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-center py-4">No recent activity</p>
+                    )}
                   </div>
                 </div>
 
@@ -107,20 +136,20 @@ const StudentDashboard = ({ children }) => {
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                   <h3 className="text-lg font-bold text-gray-800 mb-6">Today's Schedule</h3>
                   <div className="space-y-4">
-                    <div className="p-4 rounded-xl border-l-4 border-indigo-500 bg-indigo-50/50">
-                      <p className="text-xs font-semibold text-indigo-600 mb-1">
-                        09:00 AM - 10:30 AM
-                      </p>
-                      <h4 className="font-bold text-gray-800">Web Development</h4>
-                      <p className="text-sm text-gray-500">Room 304 • Dr. Smith</p>
-                    </div>
-                    <div className="p-4 rounded-xl border-l-4 border-emerald-500 bg-emerald-50/50">
-                      <p className="text-xs font-semibold text-emerald-600 mb-1">
-                        11:00 AM - 12:30 PM
-                      </p>
-                      <h4 className="font-bold text-gray-800">Database Systems</h4>
-                      <p className="text-sm text-gray-500">Lab 2 • Prof. Johnson</p>
-                    </div>
+                    {dashboardData?.upcomingClasses?.length > 0 ? (
+                      dashboardData.upcomingClasses.map((cls) => (
+                        <div key={cls.id} className="p-4 rounded-xl border-l-4 border-indigo-500 bg-indigo-50/50">
+                          <p className="text-xs font-semibold text-indigo-600 mb-1">
+                            {new Date(cls.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -
+                            {new Date(cls.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                          <h4 className="font-bold text-gray-800">{cls.courseTitle}</h4>
+                          <p className="text-sm text-gray-500">Room {cls.room} • {cls.courseCode}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-center py-4">No classes today</p>
+                    )}
                   </div>
                 </div>
               </div>
