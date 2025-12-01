@@ -23,6 +23,7 @@ const AdminDashboard = ({ children }) => {
   });
   const [oversubscribedSections, setOversubscribedSections] = useState([]);
   const [recentRegistrations, setRecentRegistrations] = useState([]);
+  const [allWaitlists, setAllWaitlists] = useState([]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -62,6 +63,14 @@ const AdminDashboard = ({ children }) => {
             waitlists: 0,
             capacityUtilization: 0
           });
+        }
+
+        // Fetch all waitlists
+        const waitlistResponse = await axios.get(`${API_URL}/api/dashboard/waitlists`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (waitlistResponse.data.success) {
+          setAllWaitlists(waitlistResponse.data.data || []);
         }
       } catch (error) {
         console.error("Failed to fetch dashboard stats", error);
@@ -211,6 +220,72 @@ const AdminDashboard = ({ children }) => {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* All Waitlists - Comprehensive Table */}
+              {allWaitlists.length > 0 && (
+                <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-gray-900">All Waitlists</h3>
+                    <span className="text-sm text-gray-500">{allWaitlists.length} student{allWaitlists.length !== 1 ? 's' : ''} waiting</span>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Student
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Course
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Section
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Position
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Joined
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {allWaitlists.map((waitlist) => (
+                          <tr key={waitlist.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900">{waitlist.studentName}</div>
+                              <div className="text-xs text-gray-500">{waitlist.studentEmail}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900">{waitlist.courseCode}</div>
+                              <div className="text-xs text-gray-500">{waitlist.courseTitle}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                              {waitlist.sectionCode}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-amber-100 text-amber-800">
+                                #{waitlist.position}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {new Date(waitlist.joinedAt).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                {waitlist.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               )}
