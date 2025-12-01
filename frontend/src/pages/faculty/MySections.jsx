@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { apiClient } from "../../api/client";
 import { BookOpen, Users, Calendar, Clock } from "lucide-react";
+import { useSearch } from "../../context/SearchContext";
 
 const MySections = () => {
     const [sections, setSections] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { searchQuery } = useSearch();
 
     useEffect(() => {
         const fetchSections = async () => {
@@ -24,6 +26,13 @@ const MySections = () => {
 
         fetchSections();
     }, []);
+
+    // Filter sections based on search query
+    const filteredSections = sections.filter(section =>
+        section.courseCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        section.courseTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        section.sectionCode.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     if (loading) {
         return (
@@ -45,17 +54,21 @@ const MySections = () => {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-gray-800">My Assigned Courses</h1>
-                <span className="text-sm text-gray-500">{sections.length} section{sections.length !== 1 ? 's' : ''}</span>
+                <span className="text-sm text-gray-500">
+                    {filteredSections.length} of {sections.length} section{sections.length !== 1 ? 's' : ''}
+                </span>
             </div>
 
-            {sections.length === 0 ? (
+            {filteredSections.length === 0 ? (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
                     <BookOpen className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500 text-lg">No courses assigned yet</p>
+                    <p className="text-gray-500 text-lg">
+                        {sections.length === 0 ? "No courses assigned yet" : "No courses match your search"}
+                    </p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {sections.map((section) => (
+                    {filteredSections.map((section) => (
                         <div
                             key={section.id}
                             className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all"
@@ -92,10 +105,10 @@ const MySections = () => {
                                         <div className="w-full bg-gray-200 rounded-full h-2">
                                             <div
                                                 className={`h-2 rounded-full ${section.enrolledCount >= section.capacity
-                                                        ? "bg-red-500"
-                                                        : section.enrolledCount >= section.capacity * 0.8
-                                                            ? "bg-amber-500"
-                                                            : "bg-green-500"
+                                                    ? "bg-red-500"
+                                                    : section.enrolledCount >= section.capacity * 0.8
+                                                        ? "bg-amber-500"
+                                                        : "bg-green-500"
                                                     }`}
                                                 style={{
                                                     width: `${Math.min((section.enrolledCount / section.capacity) * 100, 100)}%`
