@@ -41,6 +41,7 @@ import AdminProfile from "./pages/admin/Profile";
 import FacultyProfile from "./pages/faculty/Profile";
 import FacultyTimetable from "./pages/faculty/MyTimetable";
 import MySections from "./pages/faculty/MySections";
+import FacultyNotifications from "./pages/faculty/Notifications";
 import StudentProfile from "./pages/student/Profile";
 
 import { SearchProvider } from "./context/SearchContext";
@@ -84,6 +85,7 @@ function AppContent() {
     "/faculty/profile",
     "/faculty/timetable",
     "/faculty/sections",
+    "/notifications",
     "/change-password",
   ];
 
@@ -221,6 +223,17 @@ function AppContent() {
             <ProtectedRoute allowedRoles={["Faculty", "Admin"]}>
               <FacultyDashboard>
                 <MySections />
+              </FacultyDashboard>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute allowedRoles={["Faculty", "Admin", "Student"]}>
+              <FacultyDashboard>
+                <FacultyNotifications />
               </FacultyDashboard>
             </ProtectedRoute>
           }
