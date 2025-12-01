@@ -83,6 +83,7 @@ function AppContent() {
     "/admin/profile",
     "/faculty/profile",
     "/faculty/timetable",
+    "/faculty/sections",
     "/change-password",
   ];
 
