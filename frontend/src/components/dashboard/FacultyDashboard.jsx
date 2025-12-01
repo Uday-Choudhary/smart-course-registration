@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import SidebarAdmin from "../common/Sidebar";
 import { useAuth } from "../../context/AuthContext";
 import DashboardNavbar from "../common/DashboardNavbar";
@@ -9,6 +9,7 @@ import { apiClient } from "../../api/client";
 
 const FacultyDashboard = ({ children }) => {
   const { user } = useAuth();
+  const location = useLocation();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -81,7 +82,7 @@ const FacultyDashboard = ({ children }) => {
       {/* RIGHT - MAIN CONTENT */}
       <div className="w-[82%] flex flex-col gap-4">
         {/* NAVBAR */}
-        <DashboardNavbar showSearch={true} />
+        <DashboardNavbar showSearch={location.pathname === '/faculty/sections'} />
 
         {/* MAIN CONTENT */}
         <main className="rounded-2xl shadow-sm flex-1 bg-[#F7F7F7] p-8 overflow-y-auto">
