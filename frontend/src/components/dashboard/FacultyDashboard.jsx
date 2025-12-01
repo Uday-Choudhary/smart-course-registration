@@ -16,7 +16,7 @@ const FacultyDashboard = ({ children }) => {
     const fetchDashboardData = async () => {
       try {
         console.log("=== FRONTEND: Fetching faculty dashboard data ===");
-        const data = await apiClient.get("/api/academic/faculty/dashboard-stats", { auth: true });
+        const data = await apiClient.get("/api/faculty/dashboard-stats", { auth: true });
         console.log("=== FRONTEND: Received data ===", data);
         if (data.success) {
           console.log("=== FRONTEND: Dashboard data ===", data.data);

@@ -40,6 +40,7 @@ import ReportPage from "./pages/admin/ReportPage";
 import AdminProfile from "./pages/admin/Profile";
 import FacultyProfile from "./pages/faculty/Profile";
 import FacultyTimetable from "./pages/faculty/MyTimetable";
+import MySections from "./pages/faculty/MySections";
 import StudentProfile from "./pages/student/Profile";
 
 import { SearchProvider } from "./context/SearchContext";
@@ -209,6 +210,17 @@ function AppContent() {
           element={
             <ProtectedRoute allowedRoles={["Faculty", "Admin"]}>
               <FacultyTimetable />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/faculty/sections"
+          element={
+            <ProtectedRoute allowedRoles={["Faculty", "Admin"]}>
+              <FacultyDashboard>
+                <MySections />
+              </FacultyDashboard>
             </ProtectedRoute>
           }
         />
