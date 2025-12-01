@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { getAllCourses } from "../../api/courses";
 import { useAuth } from "../../context/AuthContext";
 
+import { useSearch } from "../../context/SearchContext";
+
 const BrowseCourses = () => {
     const { user } = useAuth();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const { searchQuery } = useSearch();
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -25,6 +28,11 @@ const BrowseCourses = () => {
 
         fetchCourses();
     }, []);
+
+    const filteredCourses = courses.filter(course =>
+        course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        course.code.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div className="space-y-6">
@@ -43,7 +51,7 @@ const BrowseCourses = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {courses.map((course) => (
+                    {filteredCourses.map((course) => (
                         <div
                             key={course.id}
                             onClick={() => navigate(`/student/courses/${course.id}`)}

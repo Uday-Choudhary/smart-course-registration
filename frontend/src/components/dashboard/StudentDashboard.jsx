@@ -18,10 +18,10 @@ const StudentDashboard = ({ children }) => {
     const fetchData = async () => {
       try {
         console.log("=== FRONTEND: Fetching dashboard data ===");
-
-        // Fetch dashboard stats
-        const data = await apiClient.get("/api/academic/student/dashboard-stats", { auth: true });
+        
+        const data = await apiClient.get("/api/students/dashboard-stats", { auth: true });
         console.log("=== FRONTEND: Received data ===", data);
+        
         if (data.success) {
           console.log("=== FRONTEND: Dashboard data ===", data.data);
           console.log("Enrolled Courses:", data.data.enrolledCourses);
@@ -93,7 +93,7 @@ const StudentDashboard = ({ children }) => {
       {/* RIGHT - MAIN CONTENT */}
       <div className="w-[82%] flex flex-col gap-4">
         {/* NAVBAR */}
-        <DashboardNavbar />
+        <DashboardNavbar showSearch={location.pathname === '/student/browse-courses'} />
 
         {/* MAIN CONTENT */}
         <main className="rounded-2xl shadow-sm flex-1 bg-[#F7F7F7] p-8 overflow-y-auto">

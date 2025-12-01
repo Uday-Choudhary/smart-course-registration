@@ -2,10 +2,12 @@ import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import NotificationDropdown from "./NotificationDropdown";
+import { useSearch } from "../../context/SearchContext";
 
-const DashboardNavbar = () => {
+const DashboardNavbar = ({ showSearch = true }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { searchQuery, setSearchQuery } = useSearch();
 
   const goToProfile = () => {
     if (!user) return;
@@ -16,7 +18,23 @@ const DashboardNavbar = () => {
   };
 
   return (
-    <nav className="flex items-center justify-end px-6 py-3 bg-white rounded-2xl shadow-sm border border-gray-100">
+
+    <nav className="flex items-center justify-between px-6 py-3 bg-white rounded-2xl shadow-sm border border-gray-100">
+      {/* SEARCH BAR */}
+      <div className="relative w-64">
+        {showSearch && (
+          <>
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition text-sm"
+            />
+          </>
+        )}
+      </div>
 
       <div className="flex items-center gap-4">
         {/* NOTIFICATION BELL */}

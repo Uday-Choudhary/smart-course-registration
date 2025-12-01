@@ -81,7 +81,7 @@ const FacultyDashboard = ({ children }) => {
       {/* RIGHT - MAIN CONTENT */}
       <div className="w-[82%] flex flex-col gap-4">
         {/* NAVBAR */}
-        <DashboardNavbar />
+        <DashboardNavbar showSearch={true} />
 
         {/* MAIN CONTENT */}
         <main className="rounded-2xl shadow-sm flex-1 bg-[#F7F7F7] p-8 overflow-y-auto">
