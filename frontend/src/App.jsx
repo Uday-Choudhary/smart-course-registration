@@ -36,6 +36,7 @@ import TermCoursesPage from "./pages/admin/TermCoursesPage";
 import RoomsPage from "./pages/admin/RoomsPage";
 import SchedulesPage from "./pages/admin/SchedulesPage";
 import ReportPage from "./pages/admin/ReportPage";
+import AdminNotifications from "./pages/admin/Notifications";
 
 // --- PROFILE PAGES ---
 import AdminProfile from "./pages/admin/Profile";
@@ -88,6 +89,7 @@ function AppContent() {
     "/faculty/sections",
     "/faculty/notifications",
     "/student/notifications",
+    "/admin/notifications",
     "/notifications",
     "/change-password",
   ];
@@ -258,6 +260,17 @@ function AppContent() {
           element={
             <ProtectedRoute allowedRoles={["Admin"]}>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/notifications"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminDashboard>
+                <AdminNotifications />
+              </AdminDashboard>
             </ProtectedRoute>
           }
         />
