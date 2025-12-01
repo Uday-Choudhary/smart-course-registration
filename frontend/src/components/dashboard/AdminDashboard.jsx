@@ -110,7 +110,7 @@ const AdminDashboard = ({ children }) => {
       {/* RIGHT - MAIN CONTENT */}
       <div className="w-[82%] flex flex-col gap-4">
         {/* NAVBAR */}
-        <DashboardNavbar />
+        <DashboardNavbar showSearch={true} />
 
         {/* MAIN CONTENT */}
         <main

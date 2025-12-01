@@ -42,10 +42,14 @@ import FacultyProfile from "./pages/faculty/Profile";
 import FacultyTimetable from "./pages/faculty/MyTimetable";
 import StudentProfile from "./pages/student/Profile";
 
+import { SearchProvider } from "./context/SearchContext";
+
 function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <SearchProvider>
+        <AppContent />
+      </SearchProvider>
     </BrowserRouter>
   );
 }
