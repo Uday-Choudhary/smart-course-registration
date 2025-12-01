@@ -16,6 +16,7 @@ import BrowseCourses from "./pages/student/BrowseCourses";
 import CourseDetails from "./pages/student/CourseDetails";
 import MyTimetable from "./pages/student/MyTimetable";
 import MyRegistrations from "./pages/student/MyRegistrations";
+import StudentNotifications from "./pages/student/Notifications";
 
 import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
@@ -85,6 +86,8 @@ function AppContent() {
     "/faculty/profile",
     "/faculty/timetable",
     "/faculty/sections",
+    "/faculty/notifications",
+    "/student/notifications",
     "/notifications",
     "/change-password",
   ];
@@ -186,6 +189,17 @@ function AppContent() {
           }
         />
 
+        <Route
+          path="/student/notifications"
+          element={
+            <ProtectedRoute allowedRoles={["Student"]}>
+              <StudentDashboard>
+                <StudentNotifications />
+              </StudentDashboard>
+            </ProtectedRoute>
+          }
+        />
+
         {/* FACULTY */}
         <Route
           path="/faculty"
@@ -196,7 +210,6 @@ function AppContent() {
           }
         />
 
-        {/* FACULTY PROFILE */}
         <Route
           path="/faculty/profile"
           element={
@@ -229,9 +242,9 @@ function AppContent() {
         />
 
         <Route
-          path="/notifications"
+          path="/faculty/notifications"
           element={
-            <ProtectedRoute allowedRoles={["Faculty", "Admin", "Student"]}>
+            <ProtectedRoute allowedRoles={["Faculty", "Admin"]}>
               <FacultyDashboard>
                 <FacultyNotifications />
               </FacultyDashboard>
