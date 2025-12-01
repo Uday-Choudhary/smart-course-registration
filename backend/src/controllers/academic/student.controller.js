@@ -423,8 +423,8 @@ exports.getDashboardStats = async (req, res) => {
       termId: r.section.termId
     })));
 
-    // Enrolled Courses (Active Term)
-    const enrolledCoursesCount = activeRegistrations.length;
+    // Enrolled Courses (All active registrations)
+    const enrolledCoursesCount = registrations.length;
 
     // Upcoming Classes (Today, Active Term)
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }); // e.g., "Monday"

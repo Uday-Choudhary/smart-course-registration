@@ -327,9 +327,13 @@ exports.dropCourse = async (req, res) => {
         }
       });
 
+      console.log(`[DropCourse] Dropped registration ${registrationId}. Checking waitlist for section ${registration.sectionId}...`);
+
       let promotedStudent = null;
 
       if (nextInLine) {
+        console.log(`[DropCourse] Found waitlisted student: ${nextInLine.studentId} (${nextInLine.student.full_name})`);
+
         // Promote the waitlisted student to enrollment
         const newEnrollment = await tx.registration.create({
           data: {
@@ -337,11 +341,13 @@ exports.dropCourse = async (req, res) => {
             sectionId: nextInLine.sectionId
           }
         });
+        console.log(`[DropCourse] Created registration for promoted student: ${newEnrollment.id}`);
 
         // Remove from waitlist
         await tx.waitlist.delete({
           where: { id: nextInLine.id }
         });
+        console.log(`[DropCourse] Removed waitlist entry: ${nextInLine.id}`);
 
         // Create notification for promoted student
         const courseInfo = registration.section.sectionCourses[0]?.course;
@@ -357,6 +363,8 @@ exports.dropCourse = async (req, res) => {
           name: nextInLine.student.full_name,
           email: nextInLine.student.email
         };
+      } else {
+        console.log(`[DropCourse] No students on waitlist for section ${registration.sectionId}`);
       }
 
       return { promotedStudent };

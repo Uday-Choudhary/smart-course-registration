@@ -1,38 +1,86 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import StatCard from "../components/dashboard/StatCard";
 import { BookOpen, GraduationCap, Clock, Award } from "lucide-react";
+import { getStudentDashboardStats } from "../api/students";
 
 const StudentDashboard = () => {
+    const [statsData, setStatsData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await getStudentDashboardStats();
+                if (response.success) {
+                    setStatsData(response.data);
+                } else {
+                    setError("Failed to load dashboard data");
+                }
+            } catch (err) {
+                console.error("Error fetching dashboard stats:", err);
+                setError("Failed to load dashboard data");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchStats();
+    }, []);
+
     const stats = [
         {
             title: "GPA",
-            value: "3.8",
+            value: statsData?.gpa || "N/A",
             icon: Award,
             color: "indigo",
-            trend: { value: 0.2, positive: true, label: "this semester" },
+            // trend: { value: 0.2, positive: true, label: "this semester" },
         },
         {
             title: "Credits Earned",
-            value: "84",
+            value: statsData?.creditsEarned || "0",
             icon: GraduationCap,
             color: "green",
-            trend: { value: 12, positive: true, label: "this year" },
+            // trend: { value: 12, positive: true, label: "this year" },
         },
         {
             title: "Enrolled Courses",
-            value: "5",
+            value: statsData?.enrolledCourses || "0",
             icon: BookOpen,
             color: "blue",
         },
         {
             title: "Upcoming Classes",
-            value: "2",
+            value: statsData?.upcomingClasses?.length || "0",
             icon: Clock,
             color: "amber",
-            trend: { value: "Next: 2PM", positive: true, label: "" },
+            trend: statsData?.upcomingClasses?.length > 0
+                ? { value: `Next: ${new Date(statsData.upcomingClasses[0].startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, positive: true, label: "" }
+                : null,
         },
     ];
+
+    if (loading) {
+        return (
+            <DashboardLayout title="Dashboard" subtitle="Welcome back, Student">
+                <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                </div>
+            </DashboardLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <DashboardLayout title="Dashboard" subtitle="Welcome back, Student">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <strong className="font-bold">Error!</strong>
+                    <span className="block sm:inline"> {error}</span>
+                </div>
+            </DashboardLayout>
+        );
+    }
 
     return (
         <DashboardLayout title="Dashboard" subtitle="Welcome back, Student">
@@ -49,27 +97,33 @@ const StudentDashboard = () => {
                 <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-lg font-bold text-gray-800">Recent Activity</h3>
-                        <button className="text-sm text-indigo-600 font-medium hover:text-indigo-700">
+                        {/* <button className="text-sm text-indigo-600 font-medium hover:text-indigo-700">
                             View All
-                        </button>
+                        </button> */}
                     </div>
                     <div className="space-y-4">
-                        {[1, 2, 3].map((item) => (
-                            <div
-                                key={item}
-                                className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"
-                            >
-                                <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                                    <BookOpen className="h-5 w-5" />
+                        {statsData?.recentActivity?.length > 0 ? (
+                            statsData.recentActivity.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"
+                                >
+                                    <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                        <BookOpen className="h-5 w-5" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-800">
+                                            {item.message}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                            {new Date(item.createdAt).toLocaleString()}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-sm font-medium text-gray-800">
-                                        Assignment "React Basics" graded
-                                    </p>
-                                    <p className="text-xs text-gray-500">2 hours ago</p>
-                                </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <p className="text-gray-500 text-center py-4">No recent activity</p>
+                        )}
                     </div>
                 </div>
 
@@ -77,20 +131,19 @@ const StudentDashboard = () => {
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <h3 className="text-lg font-bold text-gray-800 mb-6">Today's Schedule</h3>
                     <div className="space-y-4">
-                        <div className="p-4 rounded-xl border-l-4 border-indigo-500 bg-indigo-50/50">
-                            <p className="text-xs font-semibold text-indigo-600 mb-1">
-                                09:00 AM - 10:30 AM
-                            </p>
-                            <h4 className="font-bold text-gray-800">Web Development</h4>
-                            <p className="text-sm text-gray-500">Room 304 • Dr. Smith</p>
-                        </div>
-                        <div className="p-4 rounded-xl border-l-4 border-emerald-500 bg-emerald-50/50">
-                            <p className="text-xs font-semibold text-emerald-600 mb-1">
-                                11:00 AM - 12:30 PM
-                            </p>
-                            <h4 className="font-bold text-gray-800">Database Systems</h4>
-                            <p className="text-sm text-gray-500">Lab 2 • Prof. Johnson</p>
-                        </div>
+                        {statsData?.upcomingClasses?.length > 0 ? (
+                            statsData.upcomingClasses.map((cls) => (
+                                <div key={cls.id} className="p-4 rounded-xl border-l-4 border-indigo-500 bg-indigo-50/50">
+                                    <p className="text-xs font-semibold text-indigo-600 mb-1">
+                                        {new Date(cls.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(cls.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </p>
+                                    <h4 className="font-bold text-gray-800">{cls.courseTitle}</h4>
+                                    <p className="text-sm text-gray-500">Room {cls.room} • {cls.courseCode}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-gray-500 text-center py-4">No classes today</p>
+                        )}
                     </div>
                 </div>
             </div>
