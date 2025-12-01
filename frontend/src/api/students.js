@@ -29,3 +29,9 @@ export const getMyStudentProfile = async () => {
   const response = await apiClient.get('/api/students/me', { auth: true });
   return response;
 };
+
+// Get student dashboard stats
+export const getStudentDashboardStats = async () => {
+  const response = await apiClient.get('/api/students/dashboard-stats', { auth: true });
+  return response;
+};
