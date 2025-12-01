@@ -11,28 +11,38 @@ const StudentDashboard = ({ children }) => {
   const { user } = useAuth();
   const location = useLocation();
   const [dashboardData, setDashboardData] = useState(null);
+  const [waitlists, setWaitlists] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchData = async () => {
       try {
         console.log("=== FRONTEND: Fetching dashboard data ===");
+        
         const data = await apiClient.get("/api/students/dashboard-stats", { auth: true });
         console.log("=== FRONTEND: Received data ===", data);
+        
         if (data.success) {
           console.log("=== FRONTEND: Dashboard data ===", data.data);
           console.log("Enrolled Courses:", data.data.enrolledCourses);
           console.log("Credits Earned:", data.data.creditsEarned);
           setDashboardData(data.data);
         }
+
+        // Fetch waitlists
+        const waitlistData = await apiClient.get("/api/enroll/waitlists", { auth: true });
+        console.log("=== FRONTEND: Waitlist data ===", waitlistData);
+        if (waitlistData.success) {
+          setWaitlists(waitlistData.data || []);
+        }
       } catch (error) {
-        console.error("Failed to fetch dashboard data", error);
+        console.error("Failed to fetch data", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDashboardData();
+    fetchData();
   }, []);
 
   const stats = [
@@ -153,6 +163,60 @@ const StudentDashboard = ({ children }) => {
                   </div>
                 </div>
               </div>
+
+              {/* My Waitlists Section */}
+              {waitlists.length > 0 && (
+                <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-bold text-gray-800">My Waitlists</h3>
+                    <span className="text-sm text-gray-500">{waitlists.length} course{waitlists.length !== 1 ? 's' : ''}</span>
+                  </div>
+                  <div className="space-y-4">
+                    {waitlists.map((waitlist) => (
+                      <div
+                        key={waitlist.id}
+                        className="p-4 rounded-xl border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/30 transition-all"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h4 className="font-bold text-gray-800">
+                                {waitlist.course.code} - {waitlist.course.title}
+                              </h4>
+                              <span className="px-2 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-700">
+                                Position #{waitlist.position}
+                              </span>
+                            </div>
+                            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                              <span>Section: {waitlist.section.sectionCode}</span>
+                              <span>•</span>
+                              <span>Credits: {waitlist.course.creditHours}</span>
+                              <span>•</span>
+                              <span>Faculty: {waitlist.faculty.name}</span>
+                            </div>
+                            {waitlist.schedules && waitlist.schedules.length > 0 && (
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                {waitlist.schedules.map((schedule, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="text-xs px-2 py-1 bg-gray-100 rounded-md text-gray-700"
+                                  >
+                                    {schedule.day}: {new Date(`2000-01-01T${schedule.startTime}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -
+                                    {new Date(`2000-01-01T${schedule.endTime}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ({schedule.room})
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <div className="text-right text-xs text-gray-500">
+                            Joined: {new Date(waitlist.joinedAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </main>

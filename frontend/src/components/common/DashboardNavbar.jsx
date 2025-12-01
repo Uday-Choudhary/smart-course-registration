@@ -1,7 +1,6 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
 import NotificationDropdown from "./NotificationDropdown";
 import { useSearch } from "../../context/SearchContext";
 
@@ -19,6 +18,7 @@ const DashboardNavbar = ({ showSearch = true }) => {
   };
 
   return (
+
     <nav className="flex items-center justify-between px-6 py-3 bg-white rounded-2xl shadow-sm border border-gray-100">
       {/* SEARCH BAR */}
       <div className="relative w-64">
