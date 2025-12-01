@@ -29,7 +29,7 @@ const Menu = ({ role }) => {
         { icon: "/subject.png", label: "Browse Courses", href: "/student/browse-courses", visible: ["Student"] },
         { icon: "/assignment.png", label: "My Registrations", href: "/student/my-registrations", visible: ["Student"] },
         { icon: "/calendar.png", label: "My Timetable", href: "/student/timetable", visible: ["Student"] },
-        { icon: "/announcement.png", label: "Notifications", href: "/notifications", visible: ["Student"] },
+        { icon: "/announcement.png", label: "Notifications", href: "/student/notifications", visible: ["Student"] },
       ],
     },
 
@@ -41,7 +41,7 @@ const Menu = ({ role }) => {
         { icon: "/home.png", label: "Dashboard", href: "/faculty", visible: ["Faculty"] },
         { icon: "/calendar.png", label: "My Timetable", href: "/faculty/timetable", visible: ["Faculty"] },
         { icon: "/class.png", label: "Assigned Courses", href: "/faculty/sections", visible: ["Faculty"] },
-        { icon: "/announcement.png", label: "Notifications", href: "/notifications", visible: ["Faculty"] },
+        { icon: "/announcement.png", label: "Notifications", href: "/faculty/notifications", visible: ["Faculty"] },
       ],
     },
 
