@@ -1,5 +1,6 @@
 # 🎓 Smart Course Registration System
 
+<<<<<<< Updated upstream
 A modern, full-featured university course registration platform built with the MERN stack (PostgreSQL, Express, React, Node.js) that connects students, faculty, and administrators. Features role-based authentication, course management, waitlist automation, and timetable conflict detection.
 
 ![Tech Stack](https://img.shields.io/badge/React-19.1-blue) ![Node.js](https://img.shields.io/badge/Node.js-18+-green) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Latest-blue) ![Prisma](https://img.shields.io/badge/Prisma-5.22-brightgreen)
@@ -583,3 +584,142 @@ For support, email your-email@example.com or open an issue in the repository.
 ---
 
 **Made with ❤️ by the Smart Course Registration Team**
+=======
+A dynamic, university-level course registration platform designed to streamline the enrollment process for students, faculty, and administrators. This system goes beyond basic registration by offering **smart suggestions**, **automatic conflict detection**, **waitlist management**, and **insightful analytics**.
+
+## 🚀 Tech Stack
+
+### Frontend
+- **Framework:** [React 19](https://react.dev/)
+- **Build Tool:** [Vite](https://vitejs.dev/)
+- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/) & [Tailwindcss-animate](https://github.com/jamiebuilds/tailwindcss-animate)
+- **Routing:** [React Router DOM 7](https://reactrouter.com/)
+- **State Management & Data Fetching:** [Axios](https://axios-http.com/)
+- **Form Handling:** [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) (Validation)
+- **UI Components & Icons:** [Lucide React](https://lucide.dev/), [Framer Motion](https://www.framer.com/motion/) (Animations)
+- **Calendar:** [React Big Calendar](https://github.com/jquense/react-big-calendar)
+- **Notifications:** [React Hot Toast](https://react-hot-toast.com/)
+
+### Backend
+- **Runtime:** [Node.js](https://nodejs.org/)
+- **Framework:** [Express.js](https://expressjs.com/)
+- **Database:** [PostgreSQL](https://www.postgresql.org/)
+- **ORM:** [Prisma](https://www.prisma.io/)
+- **Authentication:** [JWT](https://jwt.io/) (JSON Web Tokens) & [Bcryptjs](https://www.npmjs.com/package/bcryptjs)
+- **Validation:** [Express Validator](https://express-validator.github.io/)
+- **Security:** [Helmet](https://helmetjs.github.io/), [CORS](https://www.npmjs.com/package/cors)
+- **Utilities:** [Moment.js](https://momentjs.com/) (Date handling)
+
+---
+
+## ✨ Key Features
+
+### 🔐 Authentication & Roles
+- **Secure Login/Register:** JWT-based authentication with encrypted passwords.
+- **Role-Based Access Control (RBAC):** Distinct portals for **Students**, **Faculty**, and **Admins**.
+
+### 📚 Course & Section Management
+- **Multi-Section Courses:** Support for multiple sections per course with different schedules and instructors.
+- **Room Management:** Assign classrooms and manage capacity.
+- **Term Management:** Configure academic terms and registration windows.
+
+### 📝 Student Registration
+- **Browse Catalog:** Search and filter available courses.
+- **Instant Registration:** Real-time enrollment with immediate feedback.
+- **Waitlist System:** Automatic waitlist placement when sections are full.
+- **Add/Drop:** Flexible course management within defined deadlines.
+
+### 📅 Smart Scheduling
+- **Timetable View:** Visual weekly calendar for students to view their schedule.
+- **Clash Detection:** Prevents scheduling conflicts (hard clashes) and warns about potential issues.
+
+### 👥 Faculty & Admin Tools
+- **Roster Management:** Faculty can view enrolled students.
+- **Dashboard:** Admin dashboard for managing users, courses, and system settings.
+- **Analytics:** Insights into seat usage and registration trends.
+
+---
+
+## 🛠️ Installation and Setup
+
+Follow these steps to get the project running locally.
+
+### Prerequisites
+- Node.js (v18+ recommended)
+- PostgreSQL installed and running
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd smart-course-registration
+```
+
+### 2. Backend Setup
+Navigate to the backend directory and install dependencies.
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file in the `backend` directory with the following variables:
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DB_NAME?schema=public"
+JWT_SECRET="your_super_secret_key"
+PORT=4000
+```
+
+Run database migrations:
+```bash
+npx prisma migrate dev --name init
+```
+
+Start the backend server:
+```bash
+npm run dev
+```
+
+### 3. Frontend Setup
+Open a new terminal, navigate to the frontend directory, and install dependencies.
+```bash
+cd frontend
+npm install
+```
+
+Start the frontend development server:
+```bash
+npm run dev
+```
+
+### 4. Run Both Concurrently
+You can also run both servers from the root or frontend directory if configured, but running them in separate terminals is recommended for easier debugging.
+
+---
+
+## Project Structure
+
+```
+smart-course-registration/
+├── backend/                # Node.js + Express API
+│   ├── prisma/             # Database schema and migrations
+│   ├── src/
+│   │   ├── controllers/    # Request handlers
+│   │   ├── middleware/     # Auth and validation middleware
+│   │   ├── routes/         # API route definitions
+│   │   └── utils/          # Helper functions
+│   └── package.json
+│
+├── frontend/               # React + Vite Application
+│   ├── src/
+│   │   ├── api/            # API integration
+│   │   ├── components/     # Reusable UI components
+│   │   ├── context/        # Global state (Auth, etc.)
+│   │   ├── pages/          # Page components
+│   │   └── App.jsx         # Main application entry
+│   └── package.json
+│
+└── README.md               # Project documentation
+```
+
+## 🤝 Contributing
+Contributions are welcome! Please fork the repository and submit a pull request.
+>>>>>>> Stashed changes
