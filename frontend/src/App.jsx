@@ -31,7 +31,7 @@ import FacultyPage from "./pages/admin/FacultyPage";
 import CoursesPage from "./pages/admin/CoursesPage";
 import SectionsPage from "./pages/admin/SectionsPage";
 import TermsPage from "./pages/admin/TermsPage";
-import DeadlinesPage from "./pages/admin/DeadlinePage";
+// import DeadlinesPage from "./pages/admin/DeadlinePage"; // Removed - deadline feature disabled
 import TermCoursesPage from "./pages/admin/TermCoursesPage";
 import RoomsPage from "./pages/admin/RoomsPage";
 import SchedulesPage from "./pages/admin/SchedulesPage";
@@ -74,7 +74,7 @@ function AppContent() {
     "/admin/courses",
     "/admin/sections",
     "/admin/terms",
-    "/admin/deadlines",
+    // "/admin/deadlines", // Removed - deadline feature disabled
     "/admin/rooms",
     "/admin/schedules",
     "/admin/reports",
@@ -343,6 +343,7 @@ function AppContent() {
           }
         />
 
+        {/* DEADLINE FEATURE DISABLED
         <Route
           path="/admin/deadlines"
           element={
@@ -353,6 +354,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        */}
 
         <Route
           path="/admin/rooms"

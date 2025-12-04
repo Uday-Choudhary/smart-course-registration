@@ -25,7 +25,7 @@ app.use("/api/faculty", require("./routes/academic/faculty.route"));
 app.use("/api/profile", require("./routes/profile.route"));
 app.use("/api/notifications", require("./routes/notification.route"));
 app.use("/api/dashboard", require("./routes/dashboard.route"));
-app.use("/api/deadline", require("./routes/academic/deadline.route"));
+// app.use("/api/deadline", require("./routes/academic/deadline.route")); // Commented out - deadline feature disabled
 
 
 

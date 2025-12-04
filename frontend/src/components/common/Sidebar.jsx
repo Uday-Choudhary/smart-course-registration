@@ -56,7 +56,7 @@ const Menu = ({ role }) => {
         { icon: "/teacher.png", label: "Manage Faculty", href: "/admin/faculty", visible: ["Admin"] },
         { icon: "/student.png", label: "Manage Students", href: "/admin/students", visible: ["Admin"] },
         { icon: "/calendar.png", label: "Manage Terms", href: "/admin/terms", visible: ["Admin"] },
-        { icon: "/calendar.png", label: "Manage Deadlines", href: "/admin/deadlines", visible: ["Admin"] },
+        // { icon: "/calendar.png", label: "Manage Deadlines", href: "/admin/deadlines", visible: ["Admin"] }, // Removed - deadline feature disabled
         { icon: "/studyroom.png", label: "Manage Rooms", href: "/admin/rooms", visible: ["Admin"] },
         { icon: "/studyroom.png", label: "Manage Schedules", href: "/admin/schedules", visible: ["Admin"] },
         { icon: "/announcement.png", label: "Notifications", href: "/admin/notifications", visible: ["Admin"] },
