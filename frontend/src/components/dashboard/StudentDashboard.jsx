@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import SidebarAdmin from "../common/Sidebar";
 import { useAuth } from "../../context/AuthContext";
 import DashboardNavbar from "../common/DashboardNavbar";
-import StatCard from "./StatCard";
+import UserCard from "../common/UserCard";
 import { BookOpen, GraduationCap, Clock, Award } from "lucide-react";
 import { apiClient } from "../../api/client";
 
@@ -18,10 +18,10 @@ const StudentDashboard = ({ children }) => {
     const fetchData = async () => {
       try {
         console.log("=== FRONTEND: Fetching dashboard data ===");
-        
+
         const data = await apiClient.get("/api/students/dashboard-stats", { auth: true });
         console.log("=== FRONTEND: Received data ===", data);
-        
+
         if (data.success) {
           console.log("=== FRONTEND: Dashboard data ===", data.data);
           console.log("Enrolled Courses:", data.data.enrolledCourses);
@@ -45,34 +45,7 @@ const StudentDashboard = ({ children }) => {
     fetchData();
   }, []);
 
-  const stats = [
-    {
-      title: "Credits Earned",
-      value: dashboardData?.creditsEarned?.toString() || "0",
-      icon: GraduationCap,
-      color: "green",
-      trend: { value: 0, positive: true, label: "total" },
-    },
-    {
-      title: "Enrolled Courses",
-      value: dashboardData?.enrolledCourses?.toString() || "0",
-      icon: BookOpen,
-      color: "blue",
-    },
-    {
-      title: "Upcoming Classes",
-      value: dashboardData?.upcomingClasses?.length?.toString() || "0",
-      icon: Clock,
-      color: "amber",
-      trend: {
-        value: dashboardData?.upcomingClasses?.[0]
-          ? `Next: ${new Date(dashboardData.upcomingClasses[0].startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-          : "No classes today",
-        positive: true,
-        label: ""
-      },
-    },
-  ];
+
 
   return (
     <div className="flex h-screen bg-[#ffffff] p-4 gap-4">
@@ -100,10 +73,25 @@ const StudentDashboard = ({ children }) => {
           {children || (
             <div className="space-y-8">
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {stats.map((stat, index) => (
-                  <StatCard key={index} {...stat} />
-                ))}
+              <div className="flex gap-4 justify-between flex-wrap mb-8">
+                <UserCard
+                  type="credit"
+                  title="Credits Earned"
+                  color="bg-[#b8f2b6]"
+                  count={dashboardData?.creditsEarned || 0}
+                />
+                <UserCard
+                  type="course"
+                  title="Enrolled Courses"
+                  color="bg-[#b9e3ff]"
+                  count={dashboardData?.enrolledCourses || 0}
+                />
+                <UserCard
+                  type="class"
+                  title="Upcoming Classes"
+                  color="bg-[#c7b8ff]"
+                  count={dashboardData?.upcomingClasses?.length || 0}
+                />
               </div>
 
               {/* Recent Activity & Schedule Section */}

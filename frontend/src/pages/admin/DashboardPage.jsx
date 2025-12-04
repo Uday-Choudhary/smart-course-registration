@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { getDashboardStats, getEnrollmentTrends, getCapacityAnalytics, getCalendarEvents } from '../../api/dashboard';
 import SidebarAdmin from '../../components/common/Sidebar';
 import DashboardNavbar from '../../components/common/DashboardNavbar';
-import StatCard from '../../components/admin/dashboard/StatCard';
+import UserCard from '../../components/common/UserCard';
 import CalendarWidget from '../../components/admin/dashboard/CalendarWidget';
+import { BookOpen, Layers, Users, Calendar, GraduationCap } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const DashboardPage = () => {
@@ -50,11 +51,11 @@ const DashboardPage = () => {
     };
 
     const quickActions = [
-        { label: 'Manage Courses', path: '/admin/courses', icon: '📚' },
-        { label: 'Manage Sections', path: '/admin/sections', icon: '📋' },
-        { label: 'View Students', path: '/admin/students', icon: '👥' },
-        { label: 'Set Deadlines', path: '/admin/deadlines', icon: '📅' },
-        { label: 'Manage Faculty', path: '/admin/faculty', icon: '👨‍🏫' }
+        { label: 'Manage Courses', path: '/admin/courses', icon: <BookOpen className="w-8 h-8 text-blue-600" /> },
+        { label: 'Manage Sections', path: '/admin/sections', icon: <Layers className="w-8 h-8 text-purple-600" /> },
+        { label: 'View Students', path: '/admin/students', icon: <Users className="w-8 h-8 text-green-600" /> },
+        { label: 'Set Deadlines', path: '/admin/deadlines', icon: <Calendar className="w-8 h-8 text-red-600" /> },
+        { label: 'Manage Faculty', path: '/admin/faculty', icon: <GraduationCap className="w-8 h-8 text-orange-600" /> }
     ];
 
     if (loading) {
@@ -97,31 +98,11 @@ const DashboardPage = () => {
                     </div>
 
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <StatCard
-                            icon={<svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" /></svg>}
-                            label="Total Students"
-                            value={stats?.stats?.totalStudents}
-                            color="blue"
-                        />
-                        <StatCard
-                            icon={<svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" /></svg>}
-                            label="Total Courses"
-                            value={stats?.stats?.totalCourses}
-                            color="green"
-                        />
-                        <StatCard
-                            icon={<svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>}
-                            label="Active Registrations"
-                            value={stats?.stats?.totalRegistrations}
-                            color="purple"
-                        />
-                        <StatCard
-                            icon={<svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" /></svg>}
-                            label="Waitlist Entries"
-                            value={stats?.stats?.totalWaitlists}
-                            color="orange"
-                        />
+                    <div className="flex gap-4 justify-between flex-wrap mb-8">
+                        <UserCard type="student" color="bg-[#FAE27C]" count={stats?.stats?.totalStudents} />
+                        <UserCard type="course" color="bg-[#c7b8ff]" count={stats?.stats?.totalCourses} />
+                        <UserCard type="registrations" color="bg-[#b9e3ff]" count={stats?.stats?.totalRegistrations} />
+                        <UserCard type="waitlist" color="bg-[#ffb3b3]" count={stats?.stats?.totalWaitlists} />
                     </div>
 
                     {/* Two Column Layout */}
@@ -288,7 +269,7 @@ const DashboardPage = () => {
                                     onClick={() => navigate(action.path)}
                                     className="flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-blue-50 rounded-lg transition-colors group"
                                 >
-                                    <span className="text-3xl mb-2">{action.icon}</span>
+                                    <span className="mb-2">{action.icon}</span>
                                     <span className="text-sm text-gray-700 group-hover:text-blue-600 text-center">
                                         {action.label}
                                     </span>

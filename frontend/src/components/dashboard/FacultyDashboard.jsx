@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import SidebarAdmin from "../common/Sidebar";
 import { useAuth } from "../../context/AuthContext";
 import DashboardNavbar from "../common/DashboardNavbar";
-import StatCard from "./StatCard";
+import UserCard from "../common/UserCard";
 import { Users, BookOpen, Clock, TrendingUp } from "lucide-react";
 import { apiClient } from "../../api/client";
 
@@ -33,35 +33,7 @@ const FacultyDashboard = ({ children }) => {
     fetchDashboardData();
   }, []);
 
-  const stats = [
-    {
-      title: "Total Sections",
-      value: dashboardData?.totalSections?.toString() || "0",
-      icon: BookOpen,
-      color: "blue",
-      trend: { value: 0, positive: true, label: "this term" },
-    },
-    {
-      title: "Total Students",
-      value: dashboardData?.totalStudents?.toString() || "0",
-      icon: Users,
-      color: "green",
-      trend: { value: 0, positive: true, label: "across sections" },
-    },
-    {
-      title: "Upcoming Classes",
-      value: dashboardData?.upcomingClasses?.length?.toString() || "0",
-      icon: Clock,
-      color: "amber",
-      trend: {
-        value: dashboardData?.upcomingClasses?.[0]
-          ? `Next: ${new Date(dashboardData.upcomingClasses[0].startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-          : "No classes today",
-        positive: true,
-        label: ""
-      },
-    },
-  ];
+
 
   return (
     <div className="flex h-screen bg-[#ffffff] p-4 gap-4">
@@ -89,10 +61,25 @@ const FacultyDashboard = ({ children }) => {
           {children || (
             <div className="space-y-8">
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {stats.map((stat, index) => (
-                  <StatCard key={index} {...stat} />
-                ))}
+              <div className="flex gap-4 justify-between flex-wrap mb-8">
+                <UserCard
+                  type="section"
+                  title="Total Sections"
+                  color="bg-[#ffd6e0]"
+                  count={dashboardData?.totalSections || 0}
+                />
+                <UserCard
+                  type="student"
+                  title="Total Students"
+                  color="bg-[#FAE27C]"
+                  count={dashboardData?.totalStudents || 0}
+                />
+                <UserCard
+                  type="class"
+                  title="Upcoming Classes"
+                  color="bg-[#b9e3ff]"
+                  count={dashboardData?.upcomingClasses?.length || 0}
+                />
               </div>
 
               {/* Main Content Grid */}
