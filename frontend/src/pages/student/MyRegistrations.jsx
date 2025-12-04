@@ -16,8 +16,9 @@ const MyRegistrations = () => {
 
     const fetchRegistrations = async () => {
         try {
-            const response = await getMyRegistrations();
-            setRegistrations(response.data || []);
+            // apiClient returns data directly, not wrapped in response.data
+            const data = await getMyRegistrations();
+            setRegistrations(data || []);
         } catch (err) {
             setError("Failed to load registrations");
             console.error(err);
@@ -36,12 +37,13 @@ const MyRegistrations = () => {
         setSuccessMessage(null);
 
         try {
-            const response = await dropCourse(registrationId);
+            // apiClient.delete returns the data directly, not wrapped in response.data
+            const data = await dropCourse(registrationId);
 
             // Show success message
             let message = "Course dropped successfully!";
-            if (response.promotedStudent) {
-                message += ` ${response.promotedStudent.name} has been promoted from the waitlist.`;
+            if (data.promotedStudent) {
+                message += ` ${data.promotedStudent.name} has been promoted from the waitlist.`;
             }
             setSuccessMessage(message);
 
@@ -51,7 +53,7 @@ const MyRegistrations = () => {
             // Clear success message after 5 seconds
             setTimeout(() => setSuccessMessage(null), 5000);
         } catch (err) {
-            setError(err.response?.data?.error || "Failed to drop course");
+            setError(err.message || "Failed to drop course");
             console.error(err);
         } finally {
             setDroppingId(null);

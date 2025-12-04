@@ -50,7 +50,7 @@ const ChangePassword = () => {
             setFormData({ oldPassword: "", newPassword: "", confirmPassword: "" });
             setTimeout(() => navigate(-1), 2000);
         } catch (err) {
-            setError(err.response?.data?.error || "Failed to change password");
+            setError(err.message || "Failed to change password");
         } finally {
             setLoading(false);
         }

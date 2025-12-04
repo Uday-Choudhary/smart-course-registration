@@ -12,9 +12,10 @@ const StudentDashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const response = await getStudentDashboardStats();
-                if (response.success) {
-                    setStatsData(response.data);
+                // apiClient returns data directly, not wrapped in response
+                const data = await getStudentDashboardStats();
+                if (data.success) {
+                    setStatsData(data.data);
                 } else {
                     setError("Failed to load dashboard data");
                 }
