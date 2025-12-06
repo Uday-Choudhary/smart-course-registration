@@ -1,6 +1,4 @@
 # 🎓 Smart Course Registration System
-
-<<<<<<< Updated upstream
 A modern, full-featured university course registration platform built with the MERN stack (PostgreSQL, Express, React, Node.js) that connects students, faculty, and administrators. Features role-based authentication, course management, waitlist automation, and timetable conflict detection.
 
 ![Tech Stack](https://img.shields.io/badge/React-19.1-blue) ![Node.js](https://img.shields.io/badge/Node.js-18+-green) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Latest-blue) ![Prisma](https://img.shields.io/badge/Prisma-5.22-brightgreen)
@@ -567,13 +565,6 @@ This project is open source and available under the [MIT License](LICENSE).
 - Built with modern web technologies
 - Inspired by university course registration systems
 - Special thanks to all contributors
-
----
-
-## Support
-
-For support, email your-email@example.com or open an issue in the repository.
-
 ---
 
 ## Links
@@ -722,4 +713,3 @@ smart-course-registration/
 
 ## 🤝 Contributing
 Contributions are welcome! Please fork the repository and submit a pull request.
->>>>>>> Stashed changes
