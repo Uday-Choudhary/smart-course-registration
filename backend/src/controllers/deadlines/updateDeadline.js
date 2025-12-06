@@ -1,5 +1,5 @@
-const prisma = require("../../prisma");
+// const prisma = require("../../prisma");
 
-const updateDeadline=async (req,res) => {
+// const updateDeadline = async (req, res) => {
 
-module.exports=updateDeadline;
+//     module.exports = updateDeadline;
