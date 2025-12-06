@@ -1,6 +1,7 @@
 const express = require("express");
-const { registerUser, loginUser } = require("../controllers/auth.controller");
-const { getProfile } = require("../controllers/profile.controller");
+const registerUser = require("../controllers/auth/registerUser");
+const loginUser = require("../controllers/auth/loginUser");
+const getProfile = require("../controllers/profiles/getProfile");
 const { verifyToken } = require("../miiddleware/authMiddleware");
 const rateLimit = require("express-rate-limit");
 

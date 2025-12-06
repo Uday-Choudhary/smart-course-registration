@@ -1,15 +1,14 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  getAllFaculty,
-  createFaculty,
-  updateFaculty,
-  deleteFaculty,
-  getDashboardStats,
-} = require("../../controllers/academic/faculty.controller.js");
+const getAllFaculty = require("../../controllers/faculties/getAllFaculty");
+const createFaculty = require("../../controllers/faculties/createFaculty");
+const updateFaculty = require("../../controllers/faculties/updateFaculty");
+const deleteFaculty = require("../../controllers/faculties/deleteFaculty");
+const getDashboardStats = require("../../controllers/faculties/getDashboardStats");
 
 const { verifyToken } = require("../../miiddleware/authMiddleware");
+
 
 // Faculty dashboard stats (authenticated)
 router.get("/dashboard-stats", verifyToken, getDashboardStats);

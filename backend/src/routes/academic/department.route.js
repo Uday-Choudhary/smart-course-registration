@@ -2,8 +2,12 @@ const express = require("express");
 const router = express.Router();
 const { body, param, validationResult } = require("express-validator");
 const { verifyToken, requireAdmin } = require("../../miiddleware/authMiddleware");
-const { createDepartment, getAllDepartments, getDepartmentById, updateDepartment, deleteDepartment, } =
-  require("../../controllers/academic/department.controller");
+const createDepartment = require("../../controllers/departments/createDepartment");
+const getAllDepartments = require("../../controllers/departments/getAllDepartments");
+const getDepartmentById = require("../../controllers/departments/getDepartmentById");
+const updateDepartment = require("../../controllers/departments/updateDepartment");
+const deleteDepartment = require("../../controllers/departments/deleteDepartment");
+
 
 // Validation middleware
 const handleValidationErrors = (req, res, next) => {

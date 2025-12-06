@@ -10,8 +10,6 @@ app.use(cors());
 app.use(express.json());
 app.use(helmet()); // 
 
-
-
 app.use("/api/department", require("./routes/academic/department.route"));
 app.use("/api/program", require("./routes/academic/program.route"));
 app.use("/api/term", require("./routes/academic/term.route"));

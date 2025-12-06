@@ -1,8 +1,13 @@
-const express=require("express");
-const router=express.Router();
-const {body,param,validationResult} =require("express-validator");
-const {verifyToken,requireAdmin} =require("../../miiddleware/authMiddleware");
-const {createRoom,getAllRooms,getRoomById,updateRoom,deleteRoom,}=require("../../controllers/academic/room.controller");
+const express = require("express");
+const router = express.Router();
+const { body, param, validationResult } = require("express-validator");
+const { verifyToken, requireAdmin } = require("../../miiddleware/authMiddleware");
+const createRoom = require("../../controllers/rooms/createRoom");
+const getAllRooms = require("../../controllers/rooms/getAllRooms");
+const getRoomById = require("../../controllers/rooms/getRoomById");
+const updateRoom = require("../../controllers/rooms/updateRoom");
+const deleteRoom = require("../../controllers/rooms/deleteRoom");
+
 
 // Validation middleware
 const handleValidationErrors = (req, res, next) => {
@@ -48,17 +53,17 @@ const updateRoomValidation = [
 ];
 
 // Routes
-router.get("/",getAllRooms);
-router.get("/:id",idValidation,handleValidationErrors,
+router.get("/", getAllRooms);
+router.get("/:id", idValidation, handleValidationErrors,
   getRoomById
 );
-router.post("/create",verifyToken,requireAdmin,roomValidation,handleValidationErrors,
+router.post("/create", verifyToken, requireAdmin, roomValidation, handleValidationErrors,
   createRoom
 );
-router.put("/:id",verifyToken,requireAdmin,idValidation,updateRoomValidation,handleValidationErrors,
+router.put("/:id", verifyToken, requireAdmin, idValidation, updateRoomValidation, handleValidationErrors,
   updateRoom
 );
-router.delete("/:id",verifyToken,requireAdmin,idValidation,handleValidationErrors,
+router.delete("/:id", verifyToken, requireAdmin, idValidation, handleValidationErrors,
   deleteRoom
 );
-module.exports=router;
+module.exports = router;

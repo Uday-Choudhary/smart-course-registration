@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const {
-    getDashboardStats,
-    getEnrollmentTrends,
-    getCapacityAnalytics,
-    getCalendarEvents
-} = require("../controllers/dashboard.controller");
-const { getAllWaitlists } = require("../controllers/admin/waitlist.controller");
+const getDashboardStats = require("../controllers/dashboard/getDashboardStats");
+const getEnrollmentTrends = require("../controllers/dashboard/getEnrollmentTrends");
+const getCapacityAnalytics = require("../controllers/dashboard/getCapacityAnalytics");
+const getCalendarEvents = require("../controllers/dashboard/getCalendarEvents");
+const getAllWaitlists = require("../controllers/waitlists/getAllWaitlists");
 const { verifyToken, requireAdmin } = require("../miiddleware/authMiddleware");
+
 
 // GET /api/dashboard/stats
 router.get("/stats", verifyToken, requireAdmin, getDashboardStats);

@@ -2,8 +2,12 @@ const express = require("express");
 const router = express.Router();
 const { body, param, validationResult } = require("express-validator");
 const { verifyToken, requireAdmin } = require("../../miiddleware/authMiddleware");
-const { createProgram, getAllPrograms, getProgramById, updateProgram, deleteProgram, } =
-  require("../../controllers/academic/program.controller");
+const createProgram = require("../../controllers/programs/createProgram");
+const getAllPrograms = require("../../controllers/programs/getAllPrograms");
+const getProgramById = require("../../controllers/programs/getProgramById");
+const updateProgram = require("../../controllers/programs/updateProgram");
+const deleteProgram = require("../../controllers/programs/deleteProgram");
+
 
 // Validation middleware
 const handleValidationErrors = (req, res, next) => {

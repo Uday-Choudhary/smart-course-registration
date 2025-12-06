@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const {
-    getAllSchedules,
-    createSchedule,
-    updateSchedule,
-    deleteSchedule,
-    getFacultySchedule,
-} = require('../../controllers/academic/schedule.controller');
+const getAllSchedules = require('../../controllers/schedules/getAllSchedules');
+const createSchedule = require('../../controllers/schedules/createSchedule');
+const updateSchedule = require('../../controllers/schedules/updateSchedule');
+const deleteSchedule = require('../../controllers/schedules/deleteSchedule');
+const getFacultySchedule = require('../../controllers/schedules/getFacultySchedule');
 const { verifyToken, requireFacultyOrAdmin } = require('../../miiddleware/authMiddleware');
+
 
 router.get('/faculty', verifyToken, requireFacultyOrAdmin, getFacultySchedule);
 
