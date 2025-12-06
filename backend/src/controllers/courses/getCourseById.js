@@ -1,15 +1,11 @@
 const prisma = require("../../prisma");
 
-/**
- * Get course by ID
- * @route GET /api/academic/courses/:id
- * @access Authenticated
- */
-const getCourseById = async (req, res) => {
+// access Authenticated
+const getCourseById=async(req, res) => {
     try {
-        const { id } = req.params;
+        const {id}=req.params;
 
-        const course = await prisma.course.findUnique({
+        const course=await prisma.course.findUnique({
             where: { id: parseInt(id) },
             include: {
                 sectionCourses: {
@@ -53,4 +49,4 @@ const getCourseById = async (req, res) => {
     }
 };
 
-module.exports = getCourseById;
+module.exports=getCourseById;

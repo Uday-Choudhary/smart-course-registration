@@ -1,13 +1,9 @@
 const prisma = require("../../prisma");
 
-/**
- * Get all courses
- * @route GET /api/academic/courses
- * @access Authenticated
- */
-const getAllCourses = async (req, res) => {
+// access Authenticated
+const getAllCourses=async(req, res) => {
     try {
-        const courses = await prisma.course.findMany({
+        const courses=await prisma.course.findMany({
             orderBy: {
                 code: 'asc',
             },
@@ -42,18 +38,18 @@ const getAllCourses = async (req, res) => {
         });
 
         res.status(200).json({
-            success: true,
-            count: courses.length,
-            data: courses,
+            success:true,
+            count:courses.length,
+            data:courses,
         });
     } catch (error) {
-        console.error("getAllCourses Error:", error);
+        console.error("getAllCourses Error:",error);
         res.status(500).json({
-            success: false,
+            success:false,
             error: "Failed to fetch courses",
             details: error.message
         });
     }
 };
 
-module.exports = getAllCourses;
+module.exports=getAllCourses;

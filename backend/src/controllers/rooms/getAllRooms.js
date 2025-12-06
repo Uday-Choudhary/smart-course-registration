@@ -1,42 +1,25 @@
 const prisma = require("../../prisma");
 
-const getAllRooms = async (req, res) => {
+const getAllRooms=async (req,res) => {
   try {
     const rooms = await prisma.room.findMany({
       orderBy: {
-        roomCode: 'asc',
-      },
-      include: {
+        roomCode: 'asc',},include: {
         schedules: {
           include: {
             sectionCourse: {
               include: {
                 section: {
                   include: {
-                    term: true,
-                  },
-                },
-                course: true,
-                faculty: true,
-              },
-            },
-          },
-        },
-      },
-    });
+                    term:true,},},course:true,faculty:true,},},},},},});
     res.status(200).json({
-      success: true,
-      count: rooms.length,
-      data: rooms,
-    });
+      success:true,count:rooms.length,data:rooms,});
   } catch (error) {
-    console.error("getAllRooms Error:", error);
+    console.error("getAllRooms Error:",error);
     res.status(500).json({
-      success: false,
-      error: "Failed to fetch rooms",
-      details: error.message
+      success:false,error:"Failed to fetch rooms",details:error.message
     });
   }
 }
 
-module.exports = getAllRooms;
+module.exports=getAllRooms;

@@ -1,15 +1,11 @@
 const prisma = require("../../prisma");
 
-/**
- * Get term by ID
- * @route GET /api/academic/terms/:id
- * @access Public
- */
-const getTermById = async (req, res) => {
+// access Public
+const getTermById=async(req, res) => {
     try {
-        const { id } = req.params;
-        const term = await prisma.term.findUnique({
-            where: { id: parseInt(id) },
+        const {id}=req.params;
+        const term=await prisma.term.findUnique({
+            where: {id:parseInt(id) },
             include: {
                 courses: {
                     select: {
@@ -50,22 +46,22 @@ const getTermById = async (req, res) => {
         });
         if (!term) {
             return res.status(404).json({
-                success: false,
+                success:false,
                 error: "Term not found",
             });
         }
         res.status(200).json({
-            success: true,
-            data: term,
+            success:true,
+            data:term,
         });
     } catch (error) {
         console.error("getTermById Error:", error);
         res.status(500).json({
-            success: false,
-            error: "Failed to fetch term",
-            details: error.message
+            success:false,
+            error:"Failed to fetch term",
+            details:error.message
         });
     }
 };
 
-module.exports = getTermById;
+module.exports=getTermById;

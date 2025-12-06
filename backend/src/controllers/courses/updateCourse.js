@@ -1,14 +1,10 @@
 const prisma = require("../../prisma");
 
-/**
- * Update course by ID
- * @route PUT /api/academic/courses/:id
- * @access Admin
- */
-const updateCourse = async (req, res) => {
+// access Admin
+const updateCourse=async(req, res) => {
     try {
-        const { id } = req.params;
-        const { code, title, creditHours, description, termId } = req.body;
+        const {id}=req.params;
+        const {code,title,creditHours,description,termId}=req.body;
 
         const updateData = {};
         if (code !== undefined) updateData.code = code.trim().toUpperCase();
@@ -22,7 +18,7 @@ const updateCourse = async (req, res) => {
             };
         }
 
-        const course = await prisma.course.update({
+        const course=await prisma.course.update({
             where: { id: parseInt(id) },
             data: updateData,
         });
@@ -33,14 +29,14 @@ const updateCourse = async (req, res) => {
             data: course,
         });
     } catch (error) {
-        console.error("updateCourse Error:", error);
+        console.error("updateCourse Error:",error);
         if (error.code === 'P2025') {
             return res.status(404).json({
-                success: false,
-                error: "Course not found",
+                success:false,
+                error:"Course not found",
             });
         }
-        if (error.code === 'P2002') {
+        if (error.code==='P2002') {
             return res.status(409).json({
                 success: false,
                 error: "Course with this code already exists",
@@ -54,4 +50,4 @@ const updateCourse = async (req, res) => {
     }
 };
 
-module.exports = updateCourse;
+module.exports=updateCourse;

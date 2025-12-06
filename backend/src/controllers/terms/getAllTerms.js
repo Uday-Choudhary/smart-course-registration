@@ -1,19 +1,15 @@
 const prisma = require("../../prisma");
 
-/**
- * Get all terms
- * @route GET /api/academic/terms
- * @access Admin
- */
-const getAllTerms = async (req, res) => {
+// access Admin
+const getAllTerms=async(req, res) => {
     try {
-        const terms = await prisma.term.findMany({
-            orderBy: [
+        const terms=await prisma.term.findMany({
+            orderBy:[
                 { year: 'desc' },
                 { semester: 'asc' },
             ],
-            include: {
-                courses: {
+            include:{
+                courses:{
                     select: {
                         id: true,
                         code: true,
@@ -24,18 +20,18 @@ const getAllTerms = async (req, res) => {
             },
         });
         res.status(200).json({
-            success: true,
-            count: terms.length,
-            data: terms,
+            success:true,
+            count:terms.length,
+            data:terms,
         });
     } catch (error) {
-        console.error("getAllTerms Error:", error);
+        console.error("getAllTerms Error:",error);
         res.status(500).json({
-            success: false,
-            error: "Failed to fetch terms",
-            details: error.message
+            success:false,
+            error:"Failed to fetch terms",
+            details:error.message
         });
     }
 };
 
-module.exports = getAllTerms;
+module.exports=getAllTerms;

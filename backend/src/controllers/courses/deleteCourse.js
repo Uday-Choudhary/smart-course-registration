@@ -1,22 +1,17 @@
 const prisma = require("../../prisma");
 
-/**
- * Delete course by ID
- * @route DELETE /api/academic/courses/:id
- * @access Admin
- */
-const deleteCourse = async (req, res) => {
+// access Admin
+const deleteCourse=async(req, res) => {
     try {
-        const { id } = req.params;
+        const {id}=req.params;
 
-        // Check if course has sections (via SectionCourse)
         const sectionCourses = await prisma.sectionCourse.findFirst({
             where: { courseId: parseInt(id) },
         });
 
         if (sectionCourses) {
             return res.status(400).json({
-                success: false,
+                success:false,
                 error: "Cannot delete course: Sections are associated with this course. Please remove course from sections first.",
             });
         }

@@ -1,18 +1,17 @@
 const prisma = require("../../prisma");
 
-const deleteFaculty = async (req, res) => {
+const deleteFaculty=async (req,res) => {
   try {
-    const { id } = req.params;
+    const {id}= req.params;
 
     await prisma.user.delete({
-      where: { id },
-    });
+      where: { id },});
 
-    res.json({ message: "Faculty deleted successfully" });
+    res.json({ message:"Faculty deleted successfully" });
   } catch (error) {
-    console.error("Error deleting faculty:", error);
-    res.status(500).json({ error: "Failed to delete faculty" });
+    console.error("Error deleting faculty:",error);
+    res.status(500).json({ error:"Failed to delete faculty" });
   }
 }
 
-module.exports = deleteFaculty;
+module.exports=deleteFaculty;
