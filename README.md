@@ -554,12 +554,6 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-## Authors
-
-- **Vamshi Pendyala** - [GitHub](https://github.com/dingdong-vamshi)
-
----
-
 ## Acknowledgments
 
 - Built with modern web technologies
